@@ -20,6 +20,7 @@ import getopt
 import collections
 import itertools
 from compiler.ast import flatten
+import operator
 
 
 def usage():
@@ -32,7 +33,24 @@ def usage():
 examples: python corfupy.py oracle-suppliers """ 
 	sys.exit(-1)
 
-def run(filename):
+#a = ["Oracle USA", "Oracle AUS"]
+#a1 = map(lambda line: line.split(), a)
+#a1.sort(key=itemgetter(1))
+#a2 = groupby(a1, itemgetter(1))
+#for elt, items in groupby(x, itemgetter(1)):
+#    print elt, items
+#    for i in items:
+#        print i
+
+
+#things = [("animal", "bear"), ("animal", "duck"), ("plant", "cactus"), ("vehicle", "speed boat"), ("vehicle", "school bus")]
+#
+#for key, group in groupby(things, lambda x: x[0]):
+#    for thing in group:
+#        print "A %s is a %s." % (thing[1], key)
+#    print " "
+
+def naive_most_used_word(filename):
 	lines = [line.strip() for line in open(filename)]
 	words = flatten(map(lambda line: line.split(), lines))
 	counter = collections.Counter(words)
@@ -44,4 +62,4 @@ if __name__ == "__main__":
 	if (len(args) < 1):
 		usage()
 	else:
-		run(args[0])
+		naive_most_used_word(args[0])
