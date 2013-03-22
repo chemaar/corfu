@@ -19,6 +19,7 @@ import getopt
 import getopt
 import collections
 import itertools
+from compiler.ast import flatten
 
 
 def usage():
@@ -33,10 +34,9 @@ examples: python corfupy.py oracle-suppliers """
 
 def run(filename):
 	lines = [line.strip() for line in open(filename)]
-	#splitting = map(lambda line: line.split(), lines)
-	#words = list(itertools.chain(splitting))
-	#counter = collections.Counter(words)
-	#print (counter.most_common())
+	words = flatten(map(lambda line: line.split(), lines))
+	counter = collections.Counter(words)
+	print (counter.most_common())
 
 if __name__ == "__main__":
 	"""CORFU reconciliator tool"""
