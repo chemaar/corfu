@@ -55,10 +55,6 @@ examples: python corfupy.py oracle-suppliers """
 Given a list of companies returns an associative array:
 [company_name] = unified_name
 """
-def naive_most_used_word_from_file(filename):
-    raw_company_names = [line.strip() for line in open(filename)]
-    return naive_most_used_word (raw_company_names)
-	
 def naive_most_used_word(raw_company_names):
 	max_words = 5
 	words = flatten(map(lambda company_name: company_name.split(), raw_company_names))
@@ -73,17 +69,25 @@ def create_unified_map(raw_company_names, unified_name):
 		unified_names[company_name] = unified_name
 	return unified_names
 
+""" 
+Given a file with a company per line returns the list of values
+"""
+def naive_most_used_word_from_file(filename):
+    raw_company_names = [line.strip() for line in open(filename)]
+    return naive_most_used_word (raw_company_names)
+	
+    
 class CorfuTester(unittest.TestCase):
 
     def testNaiveCorfu(self):        
-        company_names = self.testCompanyNames()
+        company_names = self.getCompanyNames()
         unified_name_expected = "Oracle Pty Corporation Australia Ltd"
         corfu_names = naive_most_used_word(company_names)
 
         for key, value in corfu_names.items():
             self.assertEqual(unified_name_expected,   value)
 
-    def testCompanyNames(self):
+    def getCompanyNames(self):
        return  ["Oracle", 
             "Oracle Australia Pty Limited", 
             "Oracle Australia Pty Limited DO NOT", 
