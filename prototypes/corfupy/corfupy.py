@@ -22,7 +22,7 @@ import itertools
 from compiler.ast import flatten
 import operator
 import unittest
-
+import numpy as np
 
 def usage():
 	#script = __getScriptPath()
@@ -56,7 +56,7 @@ Given a list of companies returns an associative array:
 [company_name] = unified_name
 """
 def naive_most_used_word(raw_company_names):
-	max_words = 5
+	max_words = round(np.mean(map(lambda company_name: len(company_name.split()), raw_company_names)))
 	words = flatten(map(lambda company_name: company_name.split(), raw_company_names))
 	counter = collections.Counter(words)
 	l = (itertools.islice(counter.most_common(), 0, max_words))
@@ -81,7 +81,7 @@ class CorfuTester(unittest.TestCase):
 
     def testNaiveCorfu(self):        
         company_names = self.getCompanyNames()
-        unified_name_expected = "Oracle Pty Corporation Australia Ltd"
+        unified_name_expected = "Oracle Pty Corporation Australia"
         corfu_names = naive_most_used_word(company_names)
 
         for key, value in corfu_names.items():
