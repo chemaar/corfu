@@ -59,8 +59,8 @@ def naive_most_used_word(raw_company_names):
 	max_words = round(np.mean(map(lambda company_name: len(company_name.split()), raw_company_names)))
 	words = flatten(map(lambda company_name: company_name.split(), raw_company_names))
 	counter = collections.Counter(words)
-	l = (itertools.islice(counter.most_common(), 0, max_words))
-	unified_name = 	" ".join(["".join(t[0]) for t in l])
+	first_max_words_names = (itertools.islice(counter.most_common(), 0, max_words))
+	unified_name = 	" ".join(["".join(name[0]) for name in 	first_max_words_names])
 	return create_unified_map(raw_company_names, unified_name)
 
 def create_unified_map(raw_company_names, unified_name):
