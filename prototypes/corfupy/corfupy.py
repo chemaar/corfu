@@ -21,6 +21,7 @@ import collections
 import itertools
 from compiler.ast import flatten
 import operator
+import unittest
 
 
 def usage():
@@ -54,9 +55,12 @@ examples: python corfupy.py oracle-suppliers """
 Given a list of companies returns an associative array:
 [company_name] = unified_name
 """
-def naive_most_used_word(filename):
+def naive_most_used_word_from_file(filename):
+    raw_company_names = [line.strip() for line in open(filename)]
+    return naive_most_used_word (raw_company_names)
+	
+def naive_most_used_word(raw_company_names):
 	max_words = 5
-	raw_company_names = [line.strip() for line in open(filename)]
 	words = flatten(map(lambda company_name: company_name.split(), raw_company_names))
 	counter = collections.Counter(words)
 	l = (itertools.islice(counter.most_common(), 0, max_words))
@@ -69,13 +73,70 @@ def create_unified_map(raw_company_names, unified_name):
 		unified_names[company_name] = unified_name
 	return unified_names
 
+class CorfuTester(unittest.TestCase):
+
+    def testNaiveCorfu(self):        
+        company_names = self.testCompanyNames()
+        unified_name_expected = "Oracle Pty Corporation Australia Ltd"
+        corfu_names = naive_most_used_word(company_names)
+
+        for key, value in corfu_names.items():
+            self.assertEqual(unified_name_expected,   value)
+
+    def testCompanyNames(self):
+       return  ["Oracle", 
+            "Oracle Australia Pty Limited", 
+            "Oracle Australia Pty Limited DO NOT", 
+            "Oracle Australia Pty Ltd", 
+            "Oracle Corpartion", 
+            "Oracle Corp Aust P/L", 
+            "Oracle Corp. Aust. P/L", 
+            "Oracle Corp Aust Pty Limited", 
+            "Oracle (Corp) Aust Pty Ltd", 
+            "Oracle Corp (Aust) Pty Ltd", 
+            "Oracle Corp Aust Pty Ltd", 
+            "Oracle Corp. Australia", 
+            "Oracle Corp. Australia Pty.Ltd.", 
+            "Oracle Corpoartion (Aust) Pty Ltd", 
+            "Oracle Corporate Aust Pty Ltd", 
+            "Oracle Corporation", 
+            "Oracle Corporation (Aust)", 
+            "Oracle Corporation Aust", 
+            "Oracle Corporation Aust P/L", 
+            "Oracle Corporation Aust Pty Limited", 
+            "Oracle Corporation (Aust) Pty Ltd", 
+            "Oracle Corporation Aust Pty Ltd", 
+            "Oracle Corporation Aust. Pty Ltd", 
+            "Oracle Corporation Australia", 
+            "Oracle Corporation Australia Limited", 
+            "Oracle Corporation Australia P/L", 
+            "Oracle Corporation Australia Pty", 
+            "Oracle Corporation Australia Pty Li", 
+            "Oracle Corporation Australia Pty Limited", 
+            "Oracle Corporation Australia Pty lt", 
+            "Oracle Corporation Australia Pty Lt", 
+            "Oracle corporation Australia Pty Ltd", 
+            "Oracle Corporation (Australia) Pty Ltd", 
+            "Oracle Corporation Australia Pty Ltd", 
+            "Oracle Corporation Australia PTY ltd", 
+            "Oracle Corporation Australia PTY LTD", 
+            "Oracle Corporation Ltd", 
+            "Oracle Corporation Pty Ltd", 
+            "Oracle Pty Limited", 
+            "Oracle Risk Consultants", 
+            "Oracle Systems (Aust) Pty Ltd", 
+            "Oracle Systems (Aust) Pty Ltd - ACT", 
+            "Oracle Systems Australia P/L", 
+            "Oracle Systems (Australia) Pty Ltd", 
+            "Oracle University"]
 if __name__ == "__main__":
-	"""CORFU reconciliator tool"""
-	args = sys.argv[1:]
-	if (len(args) < 1):
-		usage()
-	else:
-		print naive_most_used_word(args[0])
+    unittest.main()
+#	"""CORFU reconciliator tool"""
+#	args = sys.argv[1:]
+#	if (len(args) < 1):
+#		usage()
+#	else:
+#		print naive_most_used_word(args[0])
 
 
 
