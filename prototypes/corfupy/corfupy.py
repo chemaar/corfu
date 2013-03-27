@@ -50,11 +50,24 @@ examples: python corfupy.py oracle-suppliers """
 #        print "A %s is a %s." % (thing[1], key)
 #    print " "
 
+""" 
+Given a list of companies returns an associative array:
+[company_name] = unified_name
+"""
 def naive_most_used_word(filename):
-	lines = [line.strip() for line in open(filename)]
-	words = flatten(map(lambda line: line.split(), lines))
+	max_words = 5
+	raw_company_names = [line.strip() for line in open(filename)]
+	words = flatten(map(lambda company_name: company_name.split(), raw_company_names))
 	counter = collections.Counter(words)
-	print (counter.most_common())
+	l = (itertools.islice(counter.most_common(), 0, max_words))
+	unified_name = 	" ".join(["".join(t[0]) for t in l])
+	return create_unified_map(raw_company_names, unified_name)
+
+def create_unified_map(raw_company_names, unified_name):
+	unified_names = {}
+	for company_name in raw_company_names:
+		unified_names[company_name] = unified_name
+	return unified_names
 
 if __name__ == "__main__":
 	"""CORFU reconciliator tool"""
@@ -62,4 +75,8 @@ if __name__ == "__main__":
 	if (len(args) < 1):
 		usage()
 	else:
-		naive_most_used_word(args[0])
+		print naive_most_used_word(args[0])
+
+
+
+
