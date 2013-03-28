@@ -2,9 +2,10 @@
 import oauth2 as oauth
 import httplib2
 import time, os 
-import simplejson
 import urllib
 import urllib2
+import simplejson 
+import json
 
 import urlparse
 import BaseHTTPServer 
@@ -82,7 +83,6 @@ def make_request(client,url,request_headers={},error_string="Failed Request",met
 		resp,content = client.request(url, method, headers=request_headers, body=body)
 	else:
 		resp,content = client.request(url, method, headers=request_headers)
-	print resp.status
 
 	if resp.status >= 200 and resp.status < 300:
 		return content
@@ -191,8 +191,7 @@ def log_diagnostic_info(client,url,request_headers,method,body,resp,content,erro
 if __name__ == "__main__":
 	# Get authorization set up and create the OAuth client
 	client = get_auth()
-	# Simple profile call, returned in JSON
-        print "\n********Get the profile in JSON********"
+        print "\n********Get the company search in JSON********"
         company_name = "Oracle"
         service_url = "http://api.linkedin.com/v1/company-search"
         params = {"keywords":company_name,  "sort":"relevance", "count":"10"}
@@ -202,5 +201,11 @@ if __name__ == "__main__":
         request_url = query_url + encoded_data
         response = make_request(client,request_url, {"x-li-format":'json'})
         print response
+        companies_json = simplejson.loads(response)
+        companies = {}
+        for company in companies_json['companies']['values']:
+            companies[company['id']]=company['name']
+        for c in companies.items():
+            print c
 
 
