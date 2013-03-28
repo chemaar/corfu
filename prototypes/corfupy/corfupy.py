@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+#http://www.clips.ua.ac.be/pages/pattern-en
+#http://pixelmonkey.org/pub/nlp-training/
 __version__ = "1.0"
 __authors__ = "Jose María Alvarez"
 __license__ = "MIT License <http://www.opensource.org/licenses/mit-license.php>"
@@ -23,6 +25,11 @@ from compiler.ast import flatten
 import operator
 import unittest
 import numpy as np
+
+import nltk as nltk
+from nltk import cluster
+from nltk.cluster import euclidean_distance
+from numpy import array
 
 def usage():
 	#script = __getScriptPath()
@@ -80,14 +87,14 @@ def naive_most_used_word_from_file(filename):
 class CorfuTester(unittest.TestCase):
 
     def testNaiveCorfu(self):        
-        company_names = self.getCompanyNames()
+        company_names = getCompanyNames()
         unified_name_expected = "Oracle Pty Corporation Australia"
         corfu_names = naive_most_used_word(company_names)
 
         for key, value in corfu_names.items():
             self.assertEqual(unified_name_expected,   value)
 
-    def getCompanyNames(self):
+def getCompanyNames():
        return  ["Oracle", 
             "Oracle Australia Pty Limited", 
             "Oracle Australia Pty Limited DO NOT", 
@@ -133,8 +140,19 @@ class CorfuTester(unittest.TestCase):
             "Oracle Systems Australia P/L", 
             "Oracle Systems (Australia) Pty Ltd", 
             "Oracle University"]
+def cluster_test():
+    vectors = [array(company) for company in getCompanyNames()]
+    clusterer = cluster.KMeansClusterer(2, euclidean_distance)
+    clusterer.cluster(vectors, True)
+
 if __name__ == "__main__":
-    unittest.main()
+    rawtext = "Oracle"
+    sentences = nltk.sent_tokenize(rawtext) 
+    pattern = "NP: {<DT>?<JJ>*<NN>}"
+    NPChunker = nltk.RegexpParser(pattern) # create a chunk parser
+    result = NPChunker.parse(sentences) # parse the example sentence
+    print result
+   # unittest.main()
 #	"""CORFU reconciliator tool"""
 #	args = sys.argv[1:]
 #	if (len(args) < 1):
