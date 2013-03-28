@@ -3,6 +3,7 @@
 
 #http://www.clips.ua.ac.be/pages/pattern-en
 #http://pixelmonkey.org/pub/nlp-training/
+#http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html#sklearn.feature_extraction.text.CountVectorizer
 __version__ = "1.0"
 __authors__ = "Jose María Alvarez"
 __license__ = "MIT License <http://www.opensource.org/licenses/mit-license.php>"
