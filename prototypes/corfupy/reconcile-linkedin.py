@@ -1,3 +1,12 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+__version__ = "1.0"
+__authors__ = "Jose María Alvarez"
+__license__ = "MIT License <http://www.opensource.org/licenses/mit-license.php>"
+__contact__ = "chema.ar@gmail.com"
+__date__    = "2013-03-21"
+
 #http://api.linkedin.com/v1/company-search?keywords=Oracle&sort=relevance
 import oauth2 as oauth
 import httplib2

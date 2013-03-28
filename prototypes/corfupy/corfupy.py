@@ -148,6 +148,7 @@ def cluster_test():
 if __name__ == "__main__":
     rawtext = "Oracle"
     sentences = nltk.sent_tokenize(rawtext) 
+    sentences = [nltk.word_tokenize(sent) for sent in sentences] # NLTK word tokenizer
     pattern = "NP: {<DT>?<JJ>*<NN>}"
     NPChunker = nltk.RegexpParser(pattern) # create a chunk parser
     result = NPChunker.parse(sentences) # parse the example sentence
@@ -160,6 +161,8 @@ if __name__ == "__main__":
 #	else:
 #		print naive_most_used_word(args[0])
 
-
-
+#    rawtext = open(plain_text_file).read()
+ #   sentences = nltk.sent_tokenize(rawtext) # NLTK default sentence segmenter
+ #   sentences = [nltk.word_tokenize(sent) for sent in sentences] # NLTK word tokenizer
+  #  sentences = [nltk.pos_tag(sent) for sent in sentences] # NLTK POS tagger
 

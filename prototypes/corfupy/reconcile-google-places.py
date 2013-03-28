@@ -76,10 +76,3 @@ for place in query_result.places:
     details = _get_place_details(place.reference, YOUR_API_KEY,"false")
     print "URL "+details.get("url")
     print "Website "+details.get("website")
-    # Referencing any of the attributes below, prior to making a call to
-    # get_details() will raise a googleplaces.GooglePlacesAttributeError.
-    #print place.details # A dict matching the JSON response from Google.
-    #print place.local_phone_number
-    #print place.international_phone_number
-    #print place.website
-    #print place.url
