@@ -30,7 +30,9 @@ import numpy as np
 import nltk as nltk
 from nltk import cluster
 from nltk.cluster import euclidean_distance
+from nltk.corpus import stopwords
 from numpy import array
+from nltk import pos_tag, word_tokenize
 
 def usage():
 	#script = __getScriptPath()
@@ -141,19 +143,39 @@ def getCompanyNames():
             "Oracle Systems Australia P/L", 
             "Oracle Systems (Australia) Pty Ltd", 
             "Oracle University"]
+
+def stop_company_words():
+    return [ "DO", "NOT", 
+                "Aust","Aust.", "Australia", 
+                "Systems", 
+                 ")","(","-", ".", ",", ";", 
+                 "P/L", 
+                 "Consultants", 
+                 "ACT", 
+                "Corp","Corporation", "corporation", "Corpartion", "Corp.", "Corpoartion", "Corporate", 
+                "Pty","Pty.","Pty.Ltd", "PTY", 
+                "Ltd", "Limited", "ltd", "LTD", "Li", "lt", "Lt"]
+                
 def cluster_test():
     vectors = [array(company) for company in getCompanyNames()]
     clusterer = cluster.KMeansClusterer(2, euclidean_distance)
     clusterer.cluster(vectors, True)
 
 if __name__ == "__main__":
-    rawtext = "Oracle"
-    sentences = nltk.sent_tokenize(rawtext) 
-    sentences = [nltk.word_tokenize(sent) for sent in sentences] # NLTK word tokenizer
-    pattern = "NP: {<DT>?<JJ>*<NN>}"
-    NPChunker = nltk.RegexpParser(pattern) # create a chunk parser
-    result = NPChunker.parse(sentences) # parse the example sentence
-    print result
+    company_stop_words = stop_company_words()
+    company_names = getCompanyNames()
+    filtered_names = {}
+    for name in  company_names:
+        token_names= [word_tokenize(word) for word in [name]]
+        for tokens in token_names:
+            filtered_word_list = tokens[:]
+            for word in tokens:
+                if  word.lower in  stopwords.words('english') or word in company_stop_words :
+                    filtered_word_list.remove(word)
+            unified_name = 	" ".join(["".join(name_filtered) for name_filtered in filtered_word_list])
+            print name +"-->"+unified_name+"-->"
+            
+#FIXME: use of lowercase
    # unittest.main()
 #	"""CORFU reconciliator tool"""
 #	args = sys.argv[1:]
