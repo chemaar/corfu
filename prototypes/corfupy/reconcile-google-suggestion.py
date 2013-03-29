@@ -34,7 +34,7 @@ def _fetch_remote_xml(service_url, params={}, use_http_post=False):
     
 
 if __name__ == "__main__":
-        company_name = "Oracle"
+        company_name = "Oracle risk Australia"
         service_url = "http://google.com/complete/search"
         params = {"q":company_name,  "output":"toolbar"}
         response = _fetch_remote_xml (service_url, params)

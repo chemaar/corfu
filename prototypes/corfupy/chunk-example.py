@@ -4,6 +4,7 @@ import nltk
 sentences = ["Oracle",  "Oracle corporation"]
 #Tokenize
 token_names= [word_tokenize(sent) for sent in sentences]
+print token_names
 #Tag
 tagged_names = [pos_tag(item)  for item in token_names]
 #Chunk
