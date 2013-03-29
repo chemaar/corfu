@@ -215,6 +215,7 @@ class Unifier:
 
 def companies_as_d3(companies):
     company_names = {}
+    #1-Calculate ocurrences
     for company in companies:
         if len(company.unified_names) > 0:
             for unified_name in company.unified_names:            
@@ -224,7 +225,7 @@ def companies_as_d3(companies):
                     company_names[unified_name.rawname] =  1
         else :
             company_names[company.rawname] =  1
-    #FIXME: as json objects would be better!
+    #2-Serialize as fare json for D3, FIXME: as json objects would be much better!
     d3 = "{"
     d3 += "\"name\": \"flare\","    
     d3 += "\"children\": [{ "    
