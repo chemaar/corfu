@@ -87,6 +87,21 @@ def naive_most_used_word_from_file(filename):
     return naive_most_used_word (raw_company_names)
 	
     
+class Company:
+    rawname = ""
+    provider = ""
+    confidence = 0
+    unified_names = [] #set of Companies
+    def __init__(self, rawname,  provider="Raw", confidence=0):
+        self.rawname = rawname
+        self.provider = provider    
+        self.confidence = confidence
+        self.unified_names = [] 
+    def __str__(self):
+        uf = ", ".join(c.rawname for c in  self.unified_names)
+        return "R: "+self.rawname+" P: "+self.provider+" ("+str(self.confidence)+")"+" U: unified names: ["+uf+"]"
+    
+    
 class CorfuTester(unittest.TestCase):
 
     def testNaiveCorfu(self):        
@@ -160,20 +175,31 @@ def cluster_test():
     vectors = [array(company) for company in getCompanyNames()]
     clusterer = cluster.KMeansClusterer(2, euclidean_distance)
     clusterer.cluster(vectors, True)
+    
+def create_companies():
+        companies = []
+        company_names = getCompanyNames()
+        for name in company_names:
+            companies.append(Company(name))
+        return companies
+         
+class Unifier:    
+    def __init__(self):
+        self.company_stop_words =  stopwords.words('english') + stop_company_words()
+
+    def stop_words(self,  name):
+        token_names= word_tokenize(name)       
+        filtered_token_list = [w for w in  token_names if not w in self.company_stop_words ]
+        unified_name = 	" ".join(["".join(filtered_token) for filtered_token in filtered_token_list])
+        return unified_name
 
 if __name__ == "__main__":
-    company_stop_words = stop_company_words()
-    company_names = getCompanyNames()
-    filtered_names = {}
-    for name in  company_names:
-        token_names= [word_tokenize(word) for word in [name]]
-        for tokens in token_names:
-            filtered_word_list = tokens[:]
-            for word in tokens:
-                if  word.lower in  stopwords.words('english') or word in company_stop_words :
-                    filtered_word_list.remove(word)
-            unified_name = 	" ".join(["".join(name_filtered) for name_filtered in filtered_word_list])
-            print name +"-->"+unified_name+"-->"
+    companies = create_companies()
+    unifier = Unifier()
+    for company in companies:
+        unified_name = unifier.stop_words(company.rawname)
+        company.unified_names.append(Company(unified_name, 1))
+        print company
             
 #FIXME: use of lowercase
    # unittest.main()
