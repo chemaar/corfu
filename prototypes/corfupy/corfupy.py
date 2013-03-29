@@ -4,6 +4,8 @@
 #http://www.clips.ua.ac.be/pages/pattern-en
 #http://pixelmonkey.org/pub/nlp-training/
 #http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html#sklearn.feature_extraction.text.CountVectorizer
+#https://github.com/seatgeek/fuzzywuzzy
+
 __version__ = "1.0"
 __authors__ = "Jose María Alvarez"
 __license__ = "MIT License <http://www.opensource.org/licenses/mit-license.php>"
@@ -26,6 +28,7 @@ from compiler.ast import flatten
 import operator
 import unittest
 import numpy as np
+from sets import Set
 
 import nltk as nltk
 from nltk import cluster
@@ -33,6 +36,11 @@ from nltk.cluster import euclidean_distance
 from nltk.corpus import stopwords
 from numpy import array
 from nltk import pos_tag, word_tokenize
+from nltk.corpus import wordnet as wn
+
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
 
 def usage():
 	#script = __getScriptPath()
@@ -185,22 +193,43 @@ def create_companies():
          
 class Unifier:    
     def __init__(self):
-        self.company_stop_words =  stopwords.words('english') + stop_company_words()
-
+        self.stop_words_wn = stopwords.words('english') #Stop words from Wordnet
+        self.extracted_company_stop_words = stop_company_words() #Hand-made stop words 
+        expanded_company_stop_words = Set()
+        for word in   self.extracted_company_stop_words:
+            expanded_company_stop_words = expanded_company_stop_words | self.create_syns_from_wn(word)
+        self.company_stop_words = list(Set(self.stop_words_wn) | Set(self.extracted_company_stop_words) | expanded_company_stop_words)
+     
     def stop_words(self,  name):
         token_names= word_tokenize(name)       
         filtered_token_list = [w for w in  token_names if not w in self.company_stop_words ]
         unified_name = 	" ".join(["".join(filtered_token) for filtered_token in filtered_token_list])
         return unified_name
-
+        
+    def create_syns_from_wn(self, word):
+        syns = wn.synsets(word) 
+        lemmas = Set()
+        for syn in syns:
+            lemmas = lemmas | Set([lemma.name for lemma in syn.lemmas] )
+        return lemmas
+    
 if __name__ == "__main__":
-    companies = create_companies()
-    unifier = Unifier()
-    for company in companies:
-        unified_name = unifier.stop_words(company.rawname)
-        company.unified_names.append(Company(unified_name, 1))
-        print company
-            
+#   companies = create_companies()
+#   unifier = Unifier()
+#   for company in companies:
+#        unified_name = unifier.stop_words(company.rawname)
+#        company.unified_names.append(Company(unified_name, 1))
+#        print company
+    list =  ["Oracle"]
+    word = ["Oracle University"]
+    print process.extract(word,  list, limit=len(list))
+       
+    
+    
+  #print unifier.create_syns_from_wn("company")
+    
+    
+    
 #FIXME: use of lowercase
    # unittest.main()
 #	"""CORFU reconciliator tool"""
