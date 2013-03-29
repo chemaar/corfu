@@ -237,8 +237,7 @@ def company_concurrences(companies):
             company_names[company.rawname] =  1
     return company_names
             
-def companies_as_d3(companies):
-    company_names = company_concurrences(companies)
+def companies_as_d3(concurrences):
     d3 = "{"
     d3 += "\"name\": \"flare\","    
     d3 += "\"children\": [{ "    
@@ -246,7 +245,7 @@ def companies_as_d3(companies):
     d3 += "\"children\": [{ "    
     d3 += "\"name\": \"suppliers\","    
     d3 += "\"children\": [ "    
-    d3 += ", ".join(["{\"name\": \"%s\" , \"size\" : %s }"%(c,str(v))  for c, v in company_names.items()])
+    d3 += ", ".join(["{\"name\": \"%s\" , \"size\" : %s }"%(c,str(v))  for c, v in concurrences.items()])
     d3 += "]"   
     d3 += "}]"   
     d3 += "}]"   
@@ -254,23 +253,21 @@ def companies_as_d3(companies):
     return d3
     
 if __name__ == "__main__":
-   #companies = create_companies()
-   companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
+   companies = create_companies()
+   #companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
    print "Readed "+str(len(companies))
       #print companies_as_d3(companies)
    unifier = Unifier()
    print "Starting unification..."
-   i = 0
    for company in companies:        
         unified_name = unifier.stop_words(company.rawname)
         company.unified_names.append(Company(unified_name, 1))
-        #print "Unification of "+company.rawname+"-->"+ unified_name
-        i = i+1
-       # print str(i)
+        #print "Unification of "+company.rawname+"-->"+ unified_name      
    print "End unification..."
    print "Starting concurrences..."
-   print str(len(company_concurrences(companies).keys()))
+   concurrences = company_concurrences(companies)
    print "End concurrences..."
+   #print companies_as_d3(concurrences)  
    #list =  ["Oracle"]
    #word = ["Oracle University"]
    #print process.extract(word,  list, limit=len(list))
