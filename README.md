@@ -11,5 +11,5 @@ Dependencies
 4. Install extra nltk packages (select all)
 import nltk
 nltk.download()
-5. pip install -e git+git://github.com/seatgeek/fuzzywuzzy.git#egg=fuzzywuzzy
-6. pip install python-google-places
+5. sudo pip install -e git+git://github.com/seatgeek/fuzzywuzzy.git#egg=fuzzywuzzy
+6. sudo pip install python-google-places
