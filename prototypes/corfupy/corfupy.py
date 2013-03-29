@@ -212,17 +212,45 @@ class Unifier:
         for syn in syns:
             lemmas = lemmas | Set([lemma.name for lemma in syn.lemmas] )
         return lemmas
-    
+
+def companies_as_d3(companies):
+    company_names = {}
+    for company in companies:
+        if len(company.unified_names) > 0:
+            for unified_name in company.unified_names:            
+                if unified_name.rawname in company_names.keys():
+                    company_names[unified_name.rawname] = company_names[unified_name.rawname] + 1
+                else:
+                    company_names[unified_name.rawname] =  1
+        else :
+            company_names[company.rawname] =  1
+    #FIXME: as json objects would be better!
+    d3 = "{"
+    d3 += "\"name\": \"flare\","    
+    d3 += "\"children\": [{ "    
+    d3 += "\"name\": \"cluster\","    
+    d3 += "\"children\": [{ "    
+    d3 += "\"name\": \"suppliers\","    
+    d3 += "\"children\": [ "    
+    d3 += ", ".join(["{\"name\": \" %s \" , \"size\" : %s }"%(c,str(v))  for c, v in company_names.items()])
+    d3 += "]"   
+    d3 += "}]"   
+    d3 += "}]"   
+    d3 += "}"   
+    return d3
+           
+
 if __name__ == "__main__":
-#   companies = create_companies()
-#   unifier = Unifier()
-#   for company in companies:
-#        unified_name = unifier.stop_words(company.rawname)
-#        company.unified_names.append(Company(unified_name, 1))
-#        print company
-    list =  ["Oracle"]
-    word = ["Oracle University"]
-    print process.extract(word,  list, limit=len(list))
+   companies = create_companies()
+   #print companies_as_d3(companies)
+   unifier = Unifier()
+   for company in companies:
+        unified_name = unifier.stop_words(company.rawname)
+        company.unified_names.append(Company(unified_name, 1))
+   #print companies_as_d3(companies)
+   #list =  ["Oracle"]
+   #word = ["Oracle University"]
+   #print process.extract(word,  list, limit=len(list))
        
     
     
