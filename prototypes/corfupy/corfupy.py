@@ -56,20 +56,34 @@ class Company:
         return "R: "+self.rawname+" P: "+self.provider+" ("+str(self.confidence)+")"+" U: unified names: ["+uf+"]"
     
 class Unifier:    
-    def __init__(self):
-        self.stop_words_wn = stopwords.words('english') #Stop words from Wordnet
-        self.extracted_company_stop_words = stop_company_words() #Hand-made stop words 
-        expanded_company_stop_words = Set()
-        for word in   self.extracted_company_stop_words:
-            expanded_company_stop_words = expanded_company_stop_words | self.create_syns_from_wn(word)
-        self.company_stop_words = list(Set(self.stop_words_wn) | Set(self.extracted_company_stop_words) | expanded_company_stop_words)
+    def __init__(self,   list_most_used_words = []):
+        #Init sets
+        self.stop_words_wn = stopwords.words('english') #2-Stop words from Wordnet        
+        self.company_stop_words_expanded = self.expand_list_wn(stop_company_words() )
+        self.company_most_used_stop_words_expanded = self.expand_list_wn( list_most_used_words)    
      
-    def stop_words(self,  name):
+    #Given a list of words it returns an expanded list using wordnet
+    def expand_list_wn(self,  list):    
+        source = Set(list)
+        expanded_set = Set()
+        for word in   source:
+            expanded_set = expanded_set | self.create_syns_from_wn(word)
+        return expanded_set |  source
+    
+    #Given a set of words and a name returns the name without the set of words
+    def remove_set(self, set,  name): 
         token_names= word_tokenize(name)       
-        filtered_token_list = [w for w in  token_names if not w in self.company_stop_words ]
-        unified_name = 	" ".join(["".join(filtered_token) for filtered_token in filtered_token_list])
-        return unified_name
+        filtered_token_list = [w for w in  token_names if not w in set ]
+        cleaned_name = 	" ".join(["".join(filtered_token) for filtered_token in filtered_token_list])
+        return cleaned_name
         
+    def stop_words(self,  name):
+        return self.remove_set(self.company_stop_words_expanded ,  name)
+        
+    def stop_and_most_words(self,  name):
+        stop_unified_name = self.stop_words(name)
+        return self.remove_set(self.company_most_used_stop_words_expanded,  stop_unified_name)
+
     def create_syns_from_wn(self, word):
         syns = wn.synsets(word) 
         lemmas = Set()
@@ -118,7 +132,6 @@ def stop_company_words():
     for line in open(filename):
         fstop = filter(lambda x: x in string.letters or x in " ", line)
         stop_words.append(fstop.strip())
-    print stop_words
     return stop_words
 
 def getCompanyNames():
@@ -236,30 +249,28 @@ def companies_as_d3(concurrences):
     
 def list_most_used_words(companies):
 	words = flatten(map(lambda company: company.rawname.split(), companies))
-	counter = collections.Counter(words) 
-    #FIXME: calculate with percentiles
+	counter = collections.Counter(words)   #FIXME: calculate with percentiles
 	return [x[0] for x in filter ( lambda x: x [1] > 50,  (itertools.islice(counter.most_common(), 0, 1000)))]
 	
     
 if __name__ == "__main__":
    #companies = create_companies()
    companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
+   list_most_used_words = list_most_used_words(companies)
    print "Readed "+str(len(companies))
 #      #print companies_as_d3(companies)
-#   unifier = Unifier()
-#   print "Starting unification..."
-#   for company in companies:        
-#        unified_name = unifier.stop_words(company.rawname)
-#        company.unified_names.append(Company(unified_name, 1))
-#        print "Unification of "+company.rawname+"-->"+ unified_name      
-#   print "End unification..."
+   unifier = Unifier(list_most_used_words)
+   print "Starting unification..."
+   for company in companies:        
+        unified_name = unifier.stop_and_most_words(company.rawname)
+        company.unified_names.append(Company(unified_name, 1))
+        print "Unification of "+company.rawname+"-->"+ unified_name      
+   print "End unification..."
 #   print "Starting concurrences..."
 #   concurrences = company_concurrences(companies)
 #   print "End concurrences..."
    #print companies_as_d3(concurrences)  
-   #list =  ["Oracle"]
-   #word = ["Oracle University"]
-   #print process.extract(word,  list, limit=len(list))
+
    
     
 #FIXME: use of lowercase
