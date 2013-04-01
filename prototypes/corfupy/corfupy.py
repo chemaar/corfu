@@ -41,23 +41,6 @@ from nltk.corpus import wordnet as wn
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
-#a = ["Oracle USA", "Oracle AUS"]
-#a1 = map(lambda line: line.split(), a)
-#a1.sort(key=itemgetter(1))
-#a2 = groupby(a1, itemgetter(1))
-#for elt, items in groupby(x, itemgetter(1)):
-#    print elt, items
-#    for i in items:
-#        print i
-
-
-#things = [("animal", "bear"), ("animal", "duck"), ("plant", "cactus"), ("vehicle", "speed boat"), ("vehicle", "school bus")]
-#
-#for key, group in groupby(things, lambda x: x[0]):
-#    for thing in group:
-#        print "A %s is a %s." % (thing[1], key)
-#    print " "
-   
 class Company:
     rawname = ""
     provider = ""
@@ -248,22 +231,31 @@ def companies_as_d3(concurrences):
     d3 += "}]"   
     d3 += "}"   
     return d3
+
+
+    
+def list_most_used_words(companies):
+	words = flatten(map(lambda company: company.rawname.split(), companies))
+	counter = collections.Counter(words) 
+    #FIXME: calculate with percentiles
+	return [x[0] for x in filter ( lambda x: x [1] > 50,  (itertools.islice(counter.most_common(), 0, 1000)))]
+	
     
 if __name__ == "__main__":
-   companies = create_companies()
-   #companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
+   #companies = create_companies()
+   companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
    print "Readed "+str(len(companies))
-      #print companies_as_d3(companies)
-   unifier = Unifier()
-   print "Starting unification..."
-   for company in companies:        
-        unified_name = unifier.stop_words(company.rawname)
-        company.unified_names.append(Company(unified_name, 1))
-        print "Unification of "+company.rawname+"-->"+ unified_name      
-   print "End unification..."
-   print "Starting concurrences..."
-   concurrences = company_concurrences(companies)
-   print "End concurrences..."
+#      #print companies_as_d3(companies)
+#   unifier = Unifier()
+#   print "Starting unification..."
+#   for company in companies:        
+#        unified_name = unifier.stop_words(company.rawname)
+#        company.unified_names.append(Company(unified_name, 1))
+#        print "Unification of "+company.rawname+"-->"+ unified_name      
+#   print "End unification..."
+#   print "Starting concurrences..."
+#   concurrences = company_concurrences(companies)
+#   print "End concurrences..."
    #print companies_as_d3(concurrences)  
    #list =  ["Oracle"]
    #word = ["Oracle University"]
