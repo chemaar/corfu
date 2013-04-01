@@ -116,7 +116,7 @@ def create_companies_from_file(filename):
         #rawname = filter(lambda x: x in string.printable, line)
         #Be careful removing acronyms and blank spaces!
         rawname = filter(lambda x: x in string.letters or x in string.whitespace, line)
-        raw_companies.append(Company(rawname, 1)) 
+        raw_companies.append(Company(rawname.strip(), 1)) 
     return raw_companies
 
 
@@ -124,22 +124,19 @@ def create_companies():
         companies = []
         company_names = getCompanyNames()
         for name in company_names:
-            companies.append(Company(name))
+            rawname = filter(lambda x: x in string.letters or x in string.whitespace, name)
+            companies.append(Company(rawname.strip()))
         return companies
 
  
 def stop_company_words():
-    return [ "DO", "NOT", 
-                "Aust","Aust.", "Australia", 
-                "Systems", 
-                 ")","(","-", ".", ",", ";", "!", "\""                 
-                 "P/L", 
-                 "Consultants", 
-                 "ACT", 
-                "Corp","Corporation", "corporation", "Corpartion", "Corp.", "Corpoartion", "Corporate", 
-                "Pty","Pty.","Pty.Ltd", "PTY", 
-                "Ltd", "Limited", "ltd", "LTD", "Li", "lt", "Lt"]
-                
+    filename="stop-words.txt"
+    stop_words = []    
+    for line in open(filename):
+        fstop = filter(lambda x: x in string.letters or x in " ", line)
+        stop_words.append(fstop.strip())
+    print stop_words
+    return stop_words
 
 def getCompanyNames():
        return  ["Oracle", 
@@ -262,7 +259,7 @@ if __name__ == "__main__":
    for company in companies:        
         unified_name = unifier.stop_words(company.rawname)
         company.unified_names.append(Company(unified_name, 1))
-        #print "Unification of "+company.rawname+"-->"+ unified_name      
+        print "Unification of "+company.rawname+"-->"+ unified_name      
    print "End unification..."
    print "Starting concurrences..."
    concurrences = company_concurrences(companies)
