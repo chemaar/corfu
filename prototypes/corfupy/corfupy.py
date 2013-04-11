@@ -291,15 +291,15 @@ if __name__ == "__main__":
                 final_fuzzy_unified_name = titlecase(' '.join(unique_list(fuzzy_unified_name.split()))) 
                 company.unified_names.append(Company(final_fuzzy_unified_name, 1))
    print "End unification..."
-   print "Total companies "+str(len(companies))
-   for company in companies:
-        for unified_name in company.unified_names:            
-                print company.rawname+"#"+unified_name.rawname                
-        
-   #print "Starting concurrences..."
-   #concurrences = company_concurrences(companies)
-   #print len(concurrences.items())
-   #print "End concurrences..."
+   #print "Total companies "+str(len(companies))
+   #for company in companies:
+    #    for unified_name in company.unified_names:            
+     #           print company.rawname+"#"+unified_name.rawname                
+     #   
+   print "Starting concurrences..."
+   concurrences = company_concurrences(companies)
+   print len(concurrences.items())
+   print "End concurrences..."
    #print companies_as_d3(concurrences)  
 
 
