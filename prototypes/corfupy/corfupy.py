@@ -64,9 +64,11 @@ class Company:
 class Unifier:    
     def __init__(self,   list_most_used_words = []):
         #Init sets
+        self.my_stop_words=stop_company_words()
         self.stop_words_wn = stopwords.words('english') #2-Stop words from Wordnet        
-        self.company_stop_words_expanded = self.expand_list_wn(stop_company_words() )
+        self.company_stop_words_expanded = self.expand_list_wn( self.my_stop_words)
         self.company_most_used_stop_words_expanded = self.expand_list_wn( list_most_used_words)    
+        self.company_most_10_used_stop_words_expanded=Set(list_most_used_words[0:10])
      
     #Given a list of words it returns an expanded list using wordnet
     def expand_list_wn(self,  list):    
@@ -90,6 +92,10 @@ class Unifier:
         stop_unified_name = self.stop_words(name.lower())
         return self.remove_set(self.company_most_used_stop_words_expanded,  stop_unified_name)
 
+    def fuzzy(self,  name):
+        stop_unified_name = self.remove_set(self.my_stop_words ,  name.lower())
+        return self.remove_set(self.company_most_10_used_stop_words_expanded,  stop_unified_name.lower())
+        
     def create_syns_from_wn(self, word):
         syns = wn.synsets(word) 
         lemmas = Set()
@@ -275,13 +281,25 @@ if __name__ == "__main__":
    for company in companies:        
         unified_name = unifier.stop_and_most_words(company.rawname)        
         final_unified_name = titlecase(' '.join(unique_list(unified_name.split())))
-        company.unified_names.append(Company(final_unified_name, 1))
-        #print "Unification of "+company.rawname+"-->"+ final_unified_name
+        if final_unified_name:
+            company.unified_names.append(Company(final_unified_name, 1))
+        else:
+            fuzzy_unified_name = unifier.fuzzy(company.rawname)     
+            if not(fuzzy_unified_name) or len(fuzzy_unified_name) ==1:
+                    company.unified_names.append(Company("Others", 1))
+            else:
+                final_fuzzy_unified_name = titlecase(' '.join(unique_list(fuzzy_unified_name.split()))) 
+                company.unified_names.append(Company(final_fuzzy_unified_name, 1))
    print "End unification..."
-   print "Starting concurrences..."
-   concurrences = company_concurrences(companies)
-   print len(concurrences.items())
-   print "End concurrences..."
+   print "Total companies "+str(len(companies))
+   for company in companies:
+        for unified_name in company.unified_names:            
+                print company.rawname+"#"+unified_name.rawname                
+        
+   #print "Starting concurrences..."
+   #concurrences = company_concurrences(companies)
+   #print len(concurrences.items())
+   #print "End concurrences..."
    #print companies_as_d3(concurrences)  
 
 
