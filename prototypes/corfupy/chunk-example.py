@@ -1,7 +1,7 @@
 from nltk import pos_tag, word_tokenize
 import nltk
 #Read file
-sentences = ["Oracle",  "Oracle corporation"]
+sentences = ["Oracle",  "Oracle corporation",  "Zurich Real Estate Netherlands BV"]
 #Tokenize
 token_names= [word_tokenize(sent) for sent in sentences]
 print token_names

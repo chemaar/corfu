@@ -18,7 +18,7 @@ from googleplaces import GooglePlaces, GooglePlacesSearchResult,  GooglePlacesEr
 
 #Tesear Hack : remember to change your api key
 QUERY_API_URL='https://maps.googleapis.com/maps/api/place/textsearch/json'
-YOUR_API_KEY = 'AIzaSyCJZXAewk6RvVH9IFQAIllQc6dbTf-ovb'
+YOUR_API_KEY = 'AIzaSyCJZXAewk6RvVH9IFQAIllQc6dbTf-ovb4'
 
 def _fetch_remote_json(service_url, params={}, use_http_post=False):
     """Retrieves a JSON object from a URL."""
