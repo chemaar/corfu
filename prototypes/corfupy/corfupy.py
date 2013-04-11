@@ -40,6 +40,12 @@ from nltk.corpus import wordnet as wn
 
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
+from titlecase import titlecase
+
+def unique_list(l):
+    ulist = []
+    [ulist.append(x) for x in l if x not in ulist]
+    return ulist
 
 class Company:
     rawname = ""
@@ -81,7 +87,7 @@ class Unifier:
         return self.remove_set(self.company_stop_words_expanded ,  name)
         
     def stop_and_most_words(self,  name):
-        stop_unified_name = self.stop_words(name)
+        stop_unified_name = self.stop_words(name.lower())
         return self.remove_set(self.company_most_used_stop_words_expanded,  stop_unified_name)
 
     def create_syns_from_wn(self, word):
@@ -131,7 +137,7 @@ def stop_company_words():
     stop_words = []    
     for line in open(filename):
         fstop = filter(lambda x: x in string.letters or x in " ", line)
-        stop_words.append(fstop.strip())
+        stop_words.append(fstop.strip().lower())
     return stop_words
 
 def getCompanyNames():
@@ -250,9 +256,14 @@ def companies_as_d3(concurrences):
 def list_most_used_words(companies):
 	words = flatten(map(lambda company: company.rawname.split(), companies))
 	counter = collections.Counter(words)   #FIXME: calculate with percentiles
-	return [x[0] for x in filter ( lambda x: x [1] > 50,  (itertools.islice(counter.most_common(), 0, 1000)))]
-	
-    
+	return [x[0].lower() for x in filter ( lambda x: x [1] > 50,  (itertools.islice(counter.most_common(), 0, 1000)))]
+
+def unique_words(string, ignore_case=False):
+    key = None
+    if ignore_case:
+        key = str.lower
+    return " ".join(unique_everseen(string.split(), key=key))
+   
 if __name__ == "__main__":
    #companies = create_companies()
    companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
@@ -262,23 +273,15 @@ if __name__ == "__main__":
    unifier = Unifier(list_most_used_words)
    print "Starting unification..."
    for company in companies:        
-        unified_name = unifier.stop_and_most_words(company.rawname)
-        company.unified_names.append(Company(unified_name, 1))
-        print "Unification of "+company.rawname+"-->"+ unified_name      
+        unified_name = unifier.stop_and_most_words(company.rawname)        
+        final_unified_name = titlecase(' '.join(unique_list(unified_name.split())))
+        company.unified_names.append(Company(final_unified_name, 1))
+        #print "Unification of "+company.rawname+"-->"+ final_unified_name
    print "End unification..."
-#   print "Starting concurrences..."
-#   concurrences = company_concurrences(companies)
-#   print "End concurrences..."
+   print "Starting concurrences..."
+   concurrences = company_concurrences(companies)
+   print len(concurrences.items())
+   print "End concurrences..."
    #print companies_as_d3(concurrences)  
 
-   
-    
-#FIXME: use of lowercase
-   # unittest.main()
-#	"""CORFU reconciliator tool"""
-#	args = sys.argv[1:]
-#	if (len(args) < 1):
-#		usage()
-#	else:
-#		print naive_most_used_word(args[0])
 
