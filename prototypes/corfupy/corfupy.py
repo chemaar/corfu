@@ -137,7 +137,14 @@ def create_companies():
             companies.append(Company(rawname.strip()))
         return companies
 
- 
+def create_troll_companies():
+        companies = []
+        companies.append(Company("CAP GEMINI"))
+        companies.append(Company("Capgemini"))
+        companies.append(Company("Capgemini Ltd"))
+        companies.append(Company("Capgemini Ltd"))
+        return companies
+        
 def stop_company_words():
     filename="stop-words.txt"
     stop_words = []    
@@ -271,61 +278,73 @@ def unique_words(string, ignore_case=False):
     return " ".join(unique_everseen(string.split(), key=key))
    
 if __name__ == "__main__":
-   companies = create_companies()
+   #companies = create_companies()
+   companies = create_troll_companies()
    #companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
    list_most_used_words = list_most_used_words(companies)
    print "Readed "+str(len(companies))
 #      #print companies_as_d3(companies)
    unifier = Unifier(list_most_used_words)
+   all_unified_names = []
    print "Starting unification..."
    for company in companies:        
         unified_name = unifier.stop_and_most_words(company.rawname)        
         final_unified_name = titlecase(' '.join(unique_list(unified_name.split())))
         if final_unified_name:
             company.unified_names.append(Company(final_unified_name, 1))
+            all_unified_names.append(final_unified_name)
         else:
             fuzzy_unified_name = unifier.fuzzy(company.rawname)     
             if not(fuzzy_unified_name) or len(fuzzy_unified_name) ==1:
-                    company.unified_names.append(Company("Others", 1))
+                    company.unified_names.append(Company("Others", 1))                    
+                    #FIXME: Special case
             else:
                 final_fuzzy_unified_name = titlecase(' '.join(unique_list(fuzzy_unified_name.split()))) 
                 company.unified_names.append(Company(final_fuzzy_unified_name, 1))
+                all_unified_names.append(final_fuzzy_unified_name)
    print "End unification..."
+  
+ 
+  #Calculate the number of unified names [(Oracle, 10)]
+   counter = collections.Counter(all_unified_names)  
    #Once the list is available we create a second level using string comparison
    #Given a list of companies add new one comparing one element with others
-   #print "Total companies "+str(len(companies))
-   #for company in companies:
-    #    for unified_name in company.unified_names:            
-     #           print company.rawname+"#"+unified_name.rawname                
-     #
-  #Extract all unifiednames
-   choicesSet = Set()
-   for company in companies:
-       for unified_name in company.unified_names:            
-            choicesSet.add(unified_name.rawname)
-           
-   choices = list(choicesSet)
    for company in companies:
        company_unified_names=Set()
        new_unified_names = Set()
        for unified_name in company.unified_names:            
             company_unified_names.add(unified_name.rawname)
-            #if the confidence is 100 there is no change so no new name is added
-            #if the confidence is <100 the name is added
-            for name,  confidence in process.extract(unified_name.rawname, choices, limit=2):
-                if confidence < 100:
+            print "Extracting"
+            for name,  confidence in process.extract(unified_name.rawname, all_unified_names, limit=2): #FIXME: optimize this code only index one time
+                if confidence < 100: #if the confidence is <100 the name is added avoiding to add the same names
                     new_unified_names.add(name)            
-       print "Initial unified names "+str(len(company.unified_names))
-       final_unified_names =  new_unified_names - company_unified_names 
-       print "New distinct unified names "+str(len(final_unified_names))
-       for i in final_unified_names:
-                print "Rawname: "+company.rawname+" new unified name "+i
-            
-            
-   print "Starting concurrences..."
-   #concurrences = company_concurrences(companies)
-   #print len(concurrences.items())
-   print "End concurrences..."
-   #print companies_as_d3(concurrences)  
+       final_unified_names =  new_unified_names - company_unified_names  # FIXME: maybe optional
+       for name in final_unified_names:
+                company.unified_names.append(Company(name, 1))
+    #The company has now a new list of unified names
+    #How can we select the best a final name?
+    #The final unified name is the most used in all unified names
+       best_score = 0
+       best_name =  ""
+       most_common = counter.most_common()
+       for unified_name in company.unified_names:   
+              index = [x[0] for x in most_common] .index(unified_name.rawname) 
+              current_score = most_common[index][1]
+              if current_score > best_score: #unless others but so far Others is not in the list of all unified names
+                best_score = current_score
+                best_name = most_common[index][0]
+       print "Raw "+company.rawname+"->"+best_name
 
+  #Extract all unifiednames
+   #print "Starting concurrences..."
+   #concurrences = company_concurrences(companies)
+  # print len(concurrences.items())
+ #  print "End concurrences..."
+   #print companies_as_d3(concurrences)  
+ #print "Total companies "+str(len(companies))
+   #for company in companies:
+    #    for unified_name in company.unified_names:            
+     #           print company.rawname+"#"+unified_name.rawname                
+     #
+ 
 
