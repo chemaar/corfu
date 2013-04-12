@@ -47,6 +47,27 @@ def unique_list(l):
     [ulist.append(x) for x in l if x not in ulist]
     return ulist
 
+
+#A possibility is to generate the matrix only one time in which score[s1][s2] returns the scorer of s1 with s2
+#the method should select all scores such as score[s1], sort and return n
+#the method would be best_match(s1, limit):
+
+#def create_list_processed(choices):
+#   list_processed = []
+#   for choice in choices:
+#        list_processed.append(processor(choice))
+#
+#def create_score_matrix(list_queries, list_processed, scorer=WRatio)
+#   for query in list_queries:
+#       for processed in listprocessed:
+#           scores[query][processed] = scorer(query, processed)
+#
+#def best_match(s1, limit, scores):
+#   return scores[s1].sort(key=lambda i: -1*i[1])[:limit]
+
+#score_matrix = create_score_matrix(all_unified_names, create_list_processed(all_unified_names))
+#best_match(unified_name.rawname,2,score_matrix)
+        
 class Company:
     rawname = ""
     provider = ""
