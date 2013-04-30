@@ -28,6 +28,7 @@ from compiler.ast import flatten
 import operator
 import unittest
 import numpy as np
+from numpy import matrix
 from sets import Set
 
 import nltk as nltk
@@ -39,6 +40,7 @@ from nltk import pos_tag, word_tokenize
 from nltk.corpus import wordnet as wn
 
 from fuzzywuzzy import fuzz
+from fuzzywuzzy import utils
 from fuzzywuzzy import process
 from titlecase import titlecase
 
@@ -52,22 +54,27 @@ def unique_list(l):
 #the method should select all scores such as score[s1], sort and return n
 #the method would be best_match(s1, limit):
 
-#def create_list_processed(choices):
-#   list_processed = []
-#   for choice in choices:
-#        list_processed.append(processor(choice))
-#
-#def create_score_matrix(list_queries, list_processed, scorer=WRatio)
-#   for query in list_queries:
-#       for processed in listprocessed:
-#           scores[query][processed] = scorer(query, processed)
-#
-#def best_match(s1, limit, scores):
-#   return scores[s1].sort(key=lambda i: -1*i[1])[:limit]
+def create_list_processed(choices,  processor=utils.asciidammit):
+   list_processed = []
+   for choice in choices:
+        processed = processor(choice)
+        list_processed.append(processed)
+   return list_processed
 
-#score_matrix = create_score_matrix(all_unified_names, create_list_processed(all_unified_names))
-#best_match(unified_name.rawname,2,score_matrix)
-        
+def create_score_matrix(list_queries, list_processed, scorer=fuzz.WRatio):
+   scores = {}
+   for query in list_queries:
+       for processed in list_processed:
+              if not query in scores.keys():
+                  scores[query] = []
+              scores[query].append( (processed, scorer(query, processed)) )
+        #Previous sort
+       scores[query].sort(key=lambda x: [x[1]], reverse=True)
+   return scores
+
+def best_match(s1, limit, scores):
+    return scores[s1][:limit]
+    
 class Company:
     rawname = ""
     provider = ""
@@ -149,6 +156,14 @@ def create_companies_from_file(filename):
         raw_companies.append(Company(rawname.strip(), 1)) 
     return raw_companies
 
+def create_companies():
+        companies = []
+        company_names = getCompanyNames()
+        for name in company_names:
+            rawname = filter(lambda x: x in string.letters or x in string.whitespace, name)
+            companies.append(Company(rawname.strip()))
+        return companies
+        
 
 def create_companies():
         companies = []
@@ -173,53 +188,6 @@ def stop_company_words():
         fstop = filter(lambda x: x in string.letters or x in " ", line)
         stop_words.append(fstop.strip().lower())
     return stop_words
-
-def getCompanyNames():
-       return  ["Oracle", 
-            "Oracle Australia Pty Limited", 
-            "Oracle Australia Pty Limited DO NOT", 
-            "Oracle Australia Pty Ltd", 
-            "Oracle Corpartion", 
-            "Oracle Corp Aust P/L", 
-            "Oracle Corp. Aust. P/L", 
-            "Oracle Corp Aust Pty Limited", 
-            "Oracle (Corp) Aust Pty Ltd", 
-            "Oracle Corp (Aust) Pty Ltd", 
-            "Oracle Corp Aust Pty Ltd", 
-            "Oracle Corp. Australia", 
-            "Oracle Corp. Australia Pty.Ltd.", 
-            "Oracle Corpoartion (Aust) Pty Ltd", 
-            "Oracle Corporate Aust Pty Ltd", 
-            "Oracle Corporation", 
-            "Oracle Corporation (Aust)", 
-            "Oracle Corporation Aust", 
-            "Oracle Corporation Aust P/L", 
-            "Oracle Corporation Aust Pty Limited", 
-            "Oracle Corporation (Aust) Pty Ltd", 
-            "Oracle Corporation Aust Pty Ltd", 
-            "Oracle Corporation Aust. Pty Ltd", 
-            "Oracle Corporation Australia", 
-            "Oracle Corporation Australia Limited", 
-            "Oracle Corporation Australia P/L", 
-            "Oracle Corporation Australia Pty", 
-            "Oracle Corporation Australia Pty Li", 
-            "Oracle Corporation Australia Pty Limited", 
-            "Oracle Corporation Australia Pty lt", 
-            "Oracle Corporation Australia Pty Lt", 
-            "Oracle corporation Australia Pty Ltd", 
-            "Oracle Corporation (Australia) Pty Ltd", 
-            "Oracle Corporation Australia Pty Ltd", 
-            "Oracle Corporation Australia PTY ltd", 
-            "Oracle Corporation Australia PTY LTD", 
-            "Oracle Corporation Ltd", 
-            "Oracle Corporation Pty Ltd", 
-            "Oracle Pty Limited", 
-            "Oracle Risk Consultants", 
-            "Oracle Systems (Aust) Pty Ltd", 
-            "Oracle Systems (Aust) Pty Ltd - ACT", 
-            "Oracle Systems Australia P/L", 
-            "Oracle Systems (Australia) Pty Ltd", 
-            "Oracle University"]
 
                
 def cluster_test():
@@ -299,8 +267,7 @@ def unique_words(string, ignore_case=False):
     return " ".join(unique_everseen(string.split(), key=key))
    
 if __name__ == "__main__":
-   #companies = create_companies()
-   companies = create_troll_companies()
+   companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-min")
    #companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
    list_most_used_words = list_most_used_words(companies)
    print "Readed "+str(len(companies))
@@ -329,22 +296,22 @@ if __name__ == "__main__":
   #Calculate the number of unified names [(Oracle, 10)]
    counter = collections.Counter(all_unified_names)  
    #Once the list is available we create a second level using string comparison
+   score_matrix = create_score_matrix(all_unified_names, create_list_processed(all_unified_names))
    #Given a list of companies add new one comparing one element with others
    for company in companies:
        company_unified_names=Set()
        new_unified_names = Set()
        for unified_name in company.unified_names:            
-            company_unified_names.add(unified_name.rawname)
-            print "Extracting"
-            for name,  confidence in process.extract(unified_name.rawname, all_unified_names, limit=2): #FIXME: optimize this code only index one time
-                if confidence < 100: #if the confidence is <100 the name is added avoiding to add the same names
-                    new_unified_names.add(name)            
+            company_unified_names.add(unified_name.rawname)            
+            new_matches = best_match(unified_name.rawname,2,score_matrix)            
+            for name in [item[0] for item in filter(lambda x:x[1]<100, new_matches)]:
+                new_unified_names.add(name)            
        final_unified_names =  new_unified_names - company_unified_names  # FIXME: maybe optional
        for name in final_unified_names:
                 company.unified_names.append(Company(name, 1))
-    #The company has now a new list of unified names
-    #How can we select the best a final name?
-    #The final unified name is the most used in all unified names
+#    #The company has now a new list of unified names
+#    #How can we select the best a final name?
+#    #The final unified name is the most used in all unified names
        best_score = 0
        best_name =  ""
        most_common = counter.most_common()
