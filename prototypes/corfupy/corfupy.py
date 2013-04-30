@@ -296,7 +296,9 @@ if __name__ == "__main__":
   #Calculate the number of unified names [(Oracle, 10)]
    counter = collections.Counter(all_unified_names)  
    #Once the list is available we create a second level using string comparison
+   print "Creating score matrix"
    score_matrix = create_score_matrix(all_unified_names, create_list_processed(all_unified_names))
+   print "End Creating score matrix"
    #Given a list of companies add new one comparing one element with others
    for company in companies:
        company_unified_names=Set()
