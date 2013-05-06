@@ -11,7 +11,7 @@ __version__ = "1.0"
 __authors__ = "Jose María Alvarez"
 __license__ = "MIT License <http://www.opensource.org/licenses/mit-license.php>"
 __contact__ = "chema.ar@gmail.com"
-__date__    = "2013-03-21"
+__date__    = "2013-05-05"
 
 
 import os
@@ -51,6 +51,34 @@ def unique_list(l):
     ulist = []
     [ulist.append(x) for x in l if x not in ulist]
     return ulist
+    
+
+
+#A possibility is to generate the matrix only one time in which score[s1][s2] returns the scorer of s1 with s2
+#the method should select all scores such as score[s1], sort and return n
+#the method would be best_match(s1, limit):
+
+def create_list_processed(choices,  processor=utils.asciidammit):
+   list_processed = []
+   for choice in choices:
+        processed = processor(choice)
+        list_processed.append(processed)
+   return list_processed
+
+def create_score_matrix(list_queries, list_processed, scorer=fuzz.WRatio):
+   scores = {}
+   scores["Others"] = [("Others",100)]
+   for query in list_queries:
+       for processed in list_processed:
+              if not query in scores.keys():
+                  scores[query] = []
+              scores[query].append( (processed, scorer(query, processed)) )
+        #Previous sort
+       scores[query].sort(key=lambda x: [x[1]], reverse=True)
+   return scores
+
+def best_match(s1, limit, scores):
+    return scores[s1][:limit]
     
 def create_companies_from_file(filename):
     raw_companies = []
@@ -181,13 +209,12 @@ if __name__ == "__main__":
    for company in companies:        
         unified_name = unifier.unify(company.rawname)        
         final_unified_name = titlecase(' '.join(unique_list(unified_name.split())))
-        print company.rawname+"->"+final_unified_name
         if final_unified_name:
             company.unified_names.append(Company(final_unified_name, 1))
             all_unified_names.append(final_unified_name)
         else:
             fuzzy_unified_name = unifier.fuzzy(company.rawname)     
-            if not(fuzzy_unified_name) or len(fuzzy_unified_name) ==1:
+            if not(fuzzy_unified_name) or len(fuzzy_unified_name) ==0:
                     company.unified_names.append(Company("Others", 1))    #FIXME: Special case
             else:
                 final_fuzzy_unified_name = titlecase(' '.join(unique_list(fuzzy_unified_name.split()))) 
@@ -195,3 +222,40 @@ if __name__ == "__main__":
                 all_unified_names.append(final_fuzzy_unified_name)
    print "End unification..."
 
+#Calculate the number of unified names [(Oracle, 10)]
+   counter = collections.Counter(all_unified_names)  
+   most_common = counter.most_common()
+   most_common_list = [x[0] for x in most_common] 
+   #Once the list is available we create a second level using string comparison
+   print "Creating score matrix"
+   score_matrix = create_score_matrix(all_unified_names, create_list_processed(all_unified_names))
+   print "End Creating score matrix"
+   #Given a list of companies add new one comparing one element with others
+   for company in companies:
+       company_unified_names=Set()
+       new_unified_names = Set()
+       for unified_name in company.unified_names:            
+            company_unified_names.add(unified_name.rawname)            
+            new_matches = best_match(unified_name.rawname,2,score_matrix)            
+            for name in [item[0] for item in filter(lambda x:x[1]<100, new_matches)]:
+                new_unified_names.add(name)            
+       final_unified_names =  new_unified_names - company_unified_names  # FIXME: maybe optional
+       for name in final_unified_names:
+                company.unified_names.append(Company(name, 1))
+#    #The company has now a new list of unified names
+#    #How can we select the best a final name?
+#    #The final unified name is the most used in all unified names
+       best_score = 0
+       best_name =  ""       
+       for unified_name in company.unified_names:   
+              if unified_name.rawname in most_common_list:
+                index = most_common_list.index(unified_name.rawname) 
+                current_score = most_common[index][1]
+                if current_score > best_score: #unless others but so far Others is not in the list of all unified names
+                  best_score = current_score
+                  best_name = most_common[index][0]
+       set_best_names.add(best_name)
+       print "Raw "+company.rawname+"->"+best_name
+
+ 
+   print str(len(set_best_names))
