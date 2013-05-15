@@ -5,6 +5,7 @@
 #http://pixelmonkey.org/pub/nlp-training/
 #http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html#sklearn.feature_extraction.text.CountVectorizer
 #https://github.com/seatgeek/fuzzywuzzy
+#https://gist.github.com/alexbowe/879414
 
 __version__ = "1.0"
 __authors__ = "Jose María Alvarez"
@@ -63,6 +64,7 @@ def create_list_processed(choices,  processor=utils.asciidammit):
 
 def create_score_matrix(list_queries, list_processed, scorer=fuzz.WRatio):
    scores = {}
+   scores["Others"] = [("Others",100)]
    for query in list_queries:
        for processed in list_processed:
               if not query in scores.keys():
@@ -268,12 +270,11 @@ def unique_words(string, ignore_case=False):
    
 if __name__ == "__main__":
    companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-min")
-   #companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-clean")
    list_most_used_words = list_most_used_words(companies)
    print "Readed "+str(len(companies))
-#      #print companies_as_d3(companies)
    unifier = Unifier(list_most_used_words)
    all_unified_names = []
+   set_best_names=Set()
    print "Starting unification..."
    for company in companies:        
         unified_name = unifier.stop_and_most_words(company.rawname)        
@@ -295,6 +296,8 @@ if __name__ == "__main__":
  
   #Calculate the number of unified names [(Oracle, 10)]
    counter = collections.Counter(all_unified_names)  
+   most_common = counter.most_common()
+   most_common_list = [x[0] for x in most_common] 
    #Once the list is available we create a second level using string comparison
    print "Creating score matrix"
    score_matrix = create_score_matrix(all_unified_names, create_list_processed(all_unified_names))
@@ -315,21 +318,24 @@ if __name__ == "__main__":
 #    #How can we select the best a final name?
 #    #The final unified name is the most used in all unified names
        best_score = 0
-       best_name =  ""
-       most_common = counter.most_common()
+       best_name =  ""       
        for unified_name in company.unified_names:   
-              index = [x[0] for x in most_common] .index(unified_name.rawname) 
-              current_score = most_common[index][1]
-              if current_score > best_score: #unless others but so far Others is not in the list of all unified names
-                best_score = current_score
-                best_name = most_common[index][0]
+              if unified_name.rawname in most_common_list:
+                index = most_common_list.index(unified_name.rawname) 
+                current_score = most_common[index][1]
+                if current_score > best_score: #unless others but so far Others is not in the list of all unified names
+                  best_score = current_score
+                  best_name = most_common[index][0]
+       set_best_names.add(best_name)
        print "Raw "+company.rawname+"->"+best_name
 
+ 
+   print str(len(set_best_names))
   #Extract all unifiednames
    #print "Starting concurrences..."
    #concurrences = company_concurrences(companies)
-  # print len(concurrences.items())
- #  print "End concurrences..."
+   #print len(concurrences.items())
+   #print "End concurrences..."
    #print companies_as_d3(concurrences)  
  #print "Total companies "+str(len(companies))
    #for company in companies:
