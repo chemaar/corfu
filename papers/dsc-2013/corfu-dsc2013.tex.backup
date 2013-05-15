@@ -144,7 +144,7 @@ problems that have been tackled in other research works [1] to extract
 statistics of performance in bibliographic databases. The main objective is not 
 just a mere reconciliation process to link to existing resource but to create a 
 unique name or link. For instance in the case of the ongoing example “Oracle” 
-could be mapped to the entity Oracle and ``Oracle University'' to the entity ``Oracle\_University'' but 
+could be mapped to the entitye Oracle and ``Oracle University'' to the entity ``Oracle_University'' but 
 the problem of grouping by a unique (Big) name or resource still remains. That 
 is why a context-aware method based on Natural Language Processing techniques 
 has been designed, customized and implemented trying to exploit the naming 
