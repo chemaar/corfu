@@ -7,7 +7,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
-
+\usepackage{multirow}
 
 
 \usepackage{rotating}
@@ -35,7 +35,7 @@
 
 
 \begin{document}
-\title{A natural language processing and semantics-based technique to unify corporate names in the e-Procurement sector. \\ The CORFU approach.\thanks{THANKS}}
+\title{A natural language and semantic-based technique to unify corporate names in the e-Procurement sector. The CORFU approach.\thanks{THANKS}}
 
 \titlerunning{}
 
@@ -72,9 +72,121 @@ From a transparency point of view one of the most interesting services lies in t
 Depending on the capabilities of the public organization this kind of basic report can turn into a 
 complex task due to a lack of standardization in supplier names or the use of different descriptors for the type of contract. That is why 
 this paper presents a stepwise method based on natural language processing and semantics to deal with the hetereogenities in corporate names. 
-Furthermore a research study to evaluate the precision and recall of the proposed technique using as use case the public dataset of rewarded public 
-contracts in Australia during the period 2005-2012 is also presented, finally some discussion, conclusions and future work 
+Furthermore a research study to evaluate the precision and recall of the proposed technique, using as use case the public dataset of rewarded public 
+contracts in Australia during the period 2005-2012, is also presented, finally some discussion, conclusions and future work 
 are also outlined.
+\end{abstract}
+
+\section{Introduction}
+Public bodies are continuously publishing procurement opportunities in which 
+valuable metadata is available. Depending on the stage of the process new data arises such 
+as the supplier name that has been rewarded with the public contract. In this 
+context the extraction of statistics on how many contracts have been 
+rewarded to the same company is a relevant indicator to evaluate the transparency 
+of the whole process. Although companies that want to tender for a public contract must be 
+oficially registered and have an unique identification number, the truth is 
+that most of rewarded contracts the supplier is only identified by a name or a string literal typed 
+by a civil-servant. In this sense there is not usually a connection between 
+the oficial company registry and the process of rewarding contracts implying different 
+naming problems and inconsistenty in data that are spread to next stages preventing future 
+activities such as reporting.
+
+Organization, corporate, company or institution to name a few (hereafter these names will be used 
+to refer to the same entity) naming techniques based on internal identifiers or string literals implies 
+that the task of grouping contracts by a supplier is not a mere process of searching by the same literal. 
+Technical issues such as hyphenation, use of abbreviations or acronynms an transliteration are 
+common problems that must be addressed in order to provide a final corporate name and have been widely studied in the 
+field of Name Entity Recognition~\cite{citeulike:1657521} (NER) or name entity disambiguation~\cite{Sarmento:2009:AWN:1602022.1602085,Klein:2003:NER:1119176.1119204}. 
+Neverthless the problem that is being tackled in these approaches lies in the identification of organization 
+names in a raw text while in the e-Procurement sector the string literal identifying a supplier is already 
+known and it is not necessary to extract or recognize a potential name.
+
+
+Currently the application of semantic technologies and the Linking Open Data approach (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
+in several fields like e-Government (e.g. the Open Government Data initiative) tries to improve the knowledge about a specific area providing 
+common data models and formats to share information and data between agents. More specifically, in the European e-Procurement 
+context~\cite{e-Proc-map-paper} there is an increasing commitment to boost the use of electronic communications and transactions 
+processing by government institutions and other public sector organizations in order to provide added-value services with special focus on SMEs. 
+More specifically the LOD initiative seeks for creating a public data realm in which one the principles of this initiative that lies in the 
+unique identification or resources through URIs can become real. Thus entity reconciliation techniques~\cite{Serimi,conf/www/MaaliCP11} 
+coming from the ontology mapping and alignment areas or algorithms based on Natural Language Processing (hereafter NLP) have been 
+designed to link similar resources already available in different vocabularies, datasets or databases such as DBPedia or Freebase. 
+In the specific case of company names there is an open database, OpenCorporates, that has collected more than $52$ million of names 
+around the world and it can be considered a perfect candidate to perform the reconciliation process between a string literal and a 
+target resource to obtain an unique identifier. Nevertheless the issue of unifying supplier names as a human would do 
+faces new  problems that have been tackled in other research works~\cite{Galvez2006} to extract statistics of performance in bibliographic databases. 
+The main objective is not just a mere reconciliation process to link to existing resource but to create a unique name or link. For instance in the case 
+of the ongoing example the string literals ``Oracle'' and ``Oracle University'' could be respectively aligned 
+to the entity $<$Oracle$>$ and $<$Oracle\_University$>$ but the problem of grouping by a unique (\textit{Big}) name 
+or resource still remains. 
+
+
+In the particular case of Australia, the supplier name is introduced by typing a string literal without any assistance or 
+auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers}, 
+can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and 
+acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} or context-aware data that is 
+already known when the dataset is processed such as the country. Furthermore it is also well-known that a large company can 
+be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
+should take into account all rewarded contracts regardless the structure of the company. That is why a context-aware 
+method based on NLP techniques has been designed, customized and implemented trying to exploit the naming convention of 
+a specific dataset.
+
+
+\begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+  \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name}\\  \hline
+  Accenture & \multirow{12}{*}{Accenture} \\
+  ACCENTURE & \\ 
+  Accenture Aust Holdings & \\  
+  Accenture Aust Holdings Pty Ltd & \\
+  Accenture Australia & \\
+  ACCENTURE AUSTRALIA & \\
+  Accenture  Australia Holding P/L & \\
+  Accenture Australia Holdings P/Ltd & \\
+  Accenture Australia Holdings Pty & \\
+  Accenture Australia Holdings Pty Lt  & \\
+  \ldots  & \\
+  Accenture Australia Limited & \\ \hline
+  Accenture Australia Ltd & \multirow{3}{*}{Microsoft} \\
+  Microsoft Australia & \\ 
+  Microsoft Australia Pty Ltd & \\
+  \ldots  & \\
+  Microsoft Enterprise Services & \\ \hline
+  Oracle (Corp) Aust Pty Ltd  & \multirow{14}{*}{Oracle} \\
+  Oracle Corp (Aust) Pty Ltd  & \\
+  Oracle Corp Aust Pty Ltd & \\
+  ORACLE CORP AUST PTY LTD & \\
+  Oracle Corp. Australia & \\
+  ORACLE CORP AUSTRALIA P/L & \\
+  Oracle Corp. Australia Pty.Ltd. & \\
+  ORACLE CORP AUSTRALIA PTY LTD & \\
+  Oracle Corpoartion (Aust) Pty Ltd & \\
+  Oracle Corporate Aust Pty Ltd & \\
+  Oracle Corporation & \\
+  Oracle Risk Consultants & \\
+  ORACLE SYSTEMS (AUSTRALIA) PTY LTD & \\
+  \ldots  & \\
+  Oracle University  & \\ \hline
+  PRICEWATERHOUSECOOPERS(PWC)  & \multirow{8}{*}{PricewaterhouseCoopers} \\
+  PricewaterhouseCoopers Securities Ltd & \\
+  PriceWaterhouseCoopers Securities Ltd & \\
+  PRICEWATERHOUSE COOPERS SECURITIES LTD & \\
+  PricewaterhouseCoopers Services LLP & \\
+  Pricewaterhousecoopers Services Pty Ltd & \\
+  PriceWaterhouseCoopers (T/A: PriceWaterhouseCoopers Legal) & \\
+  \ldots  & \\
+  Pricewaterhouse (PWC) & \\ \hline
+  \ldots & \ldots \\
+  \hline
+  \end{tabular}
+  \caption{Examples of supplier names in Australian rewarded contracts.}
+  \label{tabla:aus-suppliers}
+  \end{center}
+\end{table} 
+
 
 % The aim of this paper is to present the application of a common model to describe the information about organizations in a standard way 
 % using the Linked Data approach. Several models and ontologies have been provided in order 
@@ -92,112 +204,80 @@ are also outlined.
 % information to trace the evolution and behavior of the organization over time. Finally, 
 % this work is interesting to improve the clarity and transparency of some scenarios in which 
 % organizations play a key role like e-procurement, e-health or financial transactions.
-\end{abstract}
-
-\section{Introduction}
-An organization is considered to be a set of constraints on the activities performed by agents.  
-This approach was presented in~\cite{Weber1978} who viewed the process of bureaucratization as a shift 
-from management. Previously, Mintzberg provided an analysis of organization structure 
-distinguishing among five basic parts of an organization and five distinct organization configurations. 
-This vision put together some mechanisms to achieve coordination with the objective of modeling goals, 
-business processes and rules, authority, positions and communication. In this context, some works 
-are emerged~\cite{Fox95anorganisation} trying to create ontologies and models that specify the realm of organizations but 
-different problems are arisen due to some factors: 1) missing pieces to define the status of the organization; 
-2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
-3) lack of text properties, 4) name mismatches, etc. 
-
-
-Public bodies are continuously publishing procurement opportunities in which 
-valuable metadata is available. Depending on the stage of the process new data 
-arises such as the supplier name or the organization that has been rewarded with 
-the public contract. In this context the extraction of statistics on how many 
-contracts are rewarded to the same company and as a consequence the value of 
-these contracts is a relevant indicator to evaluate the transparency of the 
-public procurement process. Nevertheless the use of different naming techniques 
-such as internal IDs or string literals implies that the task of grouping 
-contracts by a supplier is not a mere process of searching by the same literal. 
-In the particular case of Australia, the supplier name seems to be introduced by 
-typing a string literal without any assistance or auto-complete method. 
-Obviously a variety of errors can be found such as misspelling errors, same 
-company under different names, use of different kind of acronyms [2,3], etc. As 
-an example a company such as “Oracle”, “Accenture” or “Capgemini” can be found 
-under different name conventions: “Oracle Aust.”, “Oracle University”, “Oracle 
-Corpoartion (Aust) Pty Ltd”, “Oracle Corp Aust P/L”, “Accentrure”, “Accenture 
-Australia”, “CAP Gemini” among others. Although a large company can be divided 
-into several divisions or departments the truth is that to group statistics by 
-supplier, a method to unify organization names simulating the human way of 
-grouping names is required.
-
-
-In the Semantic Web area and more specifically in the Linked (Open) Data 
-initiative one of the principles lies in providing a real unique identification 
-of resources through URIs. Thus reconciliation techniques [5,6,7] coming from 
-the ontology mapping and alignment areas or algorithms based on Natural Language 
-Processing have been designed to link similar resources already available in 
-different vocabularies, datasets or databases such as DBPedia or Freebase. In 
-the specific case of company names there is an open database, OpenCorporates, 
-that has collected more than 52 million of names around the world and it can be 
-considered a perfect candidate to perform the reconciliation process between a 
-string literal and a resource in this database to obtain an unique identifier. 
-Nevertheless the issue of unifying supplier names as a human would do faces new 
-problems that have been tackled in other research works [1] to extract 
-statistics of performance in bibliographic databases. The main objective is not 
-just a mere reconciliation process to link to existing resource but to create a 
-unique name or link. For instance in the case of the ongoing example “Oracle” 
-could be mapped to the entity Oracle and ``Oracle University'' to the entity ``Oracle\_University'' but 
-the problem of grouping by a unique (Big) name or resource still remains. That 
-is why a context-aware method based on Natural Language Processing techniques 
-has been designed, customized and implemented trying to exploit the naming 
-convention of a specific dataset.
-
-
-The technique to generate a unique name before performing the reconciliation 
-process is a stepwise method, see 1, in which each step performs a filter over 
-the string literal trying to remove all unnecessary words in the name to finally 
-use an iterative process of string comparison and grouping to generate a unique 
-and relevant name for the input dataset. This process has been implemented using 
-the NLTK library and other external Python APIs such as fuzzywuzzy or a spell 
-checker based on the well-known Peter Norvig speller. After this initial process 
-of unifying names a second step to reconcile names can be easily done reusing 
-resources in OpenCorporates, DBPedia, Linkedin Companies or Google Places. 
-Although a naïve implementation is already available it is considered an 
-extension and ongoing work that is out of the scope of this report.  
-
-
 
 
 \section{Related Work}
-
-In the case of organizations it is quite a hard search to do because a lot of ontologies need some notion of Organization to point to. E.g. FOAF is about people but needs to mention the ``Organizations'' 
-of which a person is a member, Inference Web~\footnote{\url{http://inference-web.org/}} is about distributed 
-inference but covers trust and provenance which in turn requires a notion of organizations 
-(that are in a trust relationship). In each of these cases the representation of Organization is minimal. 
-Following the evaluation made by Dave Reynolds (Epimorphics Ltd) in this web report\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}, several approaches can be found. 
-Firstly, in previous works there are a number of similar upper ontologies (Proton, Sumo, SmartWeb) that include 
-some notion of Organization. These models have a lot of other intentions that are not match with 
-the specific requirement of a small and reusable model to describe organizations 
-but they should be reviewed. Secondly, if search engines are used to look for the concept of 
-Organization the next results will be found: Swoogle $3,990$ matches, Falcons gives $15,881$ hits for Organization concept 
-from $15$ highlighted vocabularies and Google turns up: 1) the ``Organization Ontology 1.0'' written in SHOE, 
-giving a basic hierarchy of organization, industries and employee roles; 2) an ``Organization Ontology for Enterprise Modelling'' 
+ 
+In the case of organizations it is quite a hard search to do because a lot of ontologies need some notion of 
+Organization to point to. For instance the Friend Of A Friend vocabulary is about people 
+but needs to mention the ``Organizations'' of which a person is a member, 
+Inference Web~\footnote{\url{http://inference-web.org/}} is about distributed inference but covers trust and provenance 
+which in turn requires a notion of organizations (that are in a trust relationship). In each of these cases 
+the representation of the concept $<$Organization$>$ is minimal.  Following the evaluation made by 
+Dave Reynolds (Epimorphics Ltd) in this web report\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}, 
+several approaches can be found. Firstly, in previous works there are a number of similar upper ontologies 
+(Proton, Sumo, SmartWeb) that include some notion of Organization. These models have a lot of other intentions that 
+do not match with the specific requirement of a small and reusable model to describe organizations. 
+Secondly, if search engines are used to look for the concept of $<$Organization$>$ the next results will 
+be found: Swoogle $3,990$ matches, Falcons gives $15,881$ hits for Organization concept from $15$ highlighted vocabularies 
+and Google turns up: 1) the ``Organization Ontology 1.0'' written in SHOE,  giving a basic hierarchy of 
+organization, industries and employee roles; 2) an ``Organization Ontology for Enterprise Modelling'' 
 which is focused on supply chain and 3) ``Enterprise Ontology'', an ontology to represent the activity of
- business enterprises expressed in Ontolingua. Jeni Tennison~\footnote{\url{http://www.jenitennison.com/}} has also pointed 
+business enterprises expressed in Ontolingua. Jeni Tennison~\footnote{\url{http://www.jenitennison.com/}} has also pointed 
 to an ontology developed by TSO for the London Gazette RDFa markup: Gazette Organization and Gazette Person. 
-According to the authors of this survey the following approaches should be reviewed: AKT Portal Ontology,
+According to the authors of this survey the following approaches should be reviewed: AKT Portal Ontology, 
 Proton top, Good Relations, FOAF, SIOC, Enterprise Modelling Ontology, Enterprise Ontology, Gazette organization and 
 person ontologies, Provenance Vocabulary Core Ontology, and other like School of ECS (University of Southampton) or 
 Academic Institution Internal Structure Ontology (AIISO), vocabularies for describing the internal organizational 
 structure of an academic institution. This situation implies a tangled environment for describing organizations and supposes
 a barrier to promote this information to the new Web of Data.
 
+Supervised-techniques~\cite{Bohn:2006:PHD}, twitter~\cite{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747}
+e-proc Eu
 
+ER LOD~\cite{conf/www/MaaliCP11,Serimi}
+
+name entity disambiguation
+
+clinical notes~\cite{Wang:2009:ARN:1667884.1667888}
+
+On the other hand an organization, corporate, company, etc. (hereafter these names 
+will be used to refer to the same entity) is considered to be a set 
+of constraints on the activities performed by agents~\cite{Weber1978}. Previously, 
+Mintzberg provided an analysis of organization structure distinguishing among 
+five basic parts of an organization and five distinct organization configurations. This vision put 
+together some mechanisms to achieve coordination with the objective of modeling goals, 
+business processes and rules, authority, positions and communication. In this context, some works 
+have emerged~\cite{Fox95anorganisation} trying to create ontologies and models that specify the realm of 
+organizations but different problems are arisen due to some factors: 1) missing pieces to define the status of the organization; 
+2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
+3) lack of text properties, 4) name mismatches, etc. 
+
+
+
+\subsection{Entity Reconciliation}
+This process can be briefly defined as the method for looking and mapping two different concepts or entities under a certain threshold. 
+There are a lot of  works presenting solutions about concept mapping, entity reconciliation, etc. 
+most of them are focused on NLP techniques (if two concepts have similar descriptions 
+then they should be similar) and others (ontology-based) that also exploit 
+the semantic information (hierarchy, number and type of relations) to establish a 
+potential mapping (if two concepts share similar properties and similar super classes then these 
+concepts should be similar). Apart from that there are also machine learning techniques to deal with these 
+mismatches in descriptions using statistical approaches. In recent times, this situation has been widely studied and applied to the field 
+of linking entities in the Linked Open Data realm. Although there is no way of creating a mapping with a 100\% of confidence 
+(without human validation) a  mapping with a certain percentage of confidence can be enough 
+(in the case of using these techniques as previous step of a reasoning process this situation should be 
+carefully managed in order to avoid the inference of incorrect facts). 
+
+
+\subsection{Existing Corporate Databases}
 In Figure~\ref{figure:open}, an example of an organization (in N3 format) using ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}}, 
 Open Corporates, is presented. This information is potentially relevant to this work due to the large database 
 that Open Corporates provides ($54,080,317$ of companies in May 2012) with high-valuable information like the company ID. 
 These data follow a mixed approach between Open and the LOD approach but a formal model describing the organizations is missing. 
 That is why the use of a common ontology could improve the information sharing and the exploitation of the information in a standard way generating new value-added services 
-of five starslike activity tracking. 
-
+of five stars like activity tracking. 
+% 
 \begin{figure}[!h]
 \begin{center}
 \begin{lstlisting}[language=SPARQL]
@@ -233,58 +313,87 @@ of five starslike activity tracking.
 \end{center}
 \end{figure}
 
-\subsection{Entity Reconciliation}
 
-This process can be briefly defined as the method for looking and mapping two 
-different concepts or entities under a certain threshold. There are a lot of 
-works presenting solutions about concept mapping, entity reconciliation, etc. 
-most of them are focused on natural language processing (if two concepts have 
-similar descriptions then they should be similar) and others (ontology-based) 
-that also exploit the semantic information (hierarchy, number and type of 
-relations) to establish a potential mapping (if two concepts share similar 
-properties and similar super classes then these concepts should be similar). 
-Apart from that there are also machine learning techniques to deal with these 
-mismatches in descriptions using statistical approaches.
-In recent times, this situation has been widely studied and applied to the field 
-of linking entities in the Linked Open Data realm. Although there is no way of 
-creating a mapping with a 100\% of confidence (without human validation) a 
-mapping with a certain percentage can be enough (in the case of using these 
-techniques as previous step of a reasoning process this situation should be 
-carefully managed to avoid the inference of incorrect facts).
+% \section{Evaluation}
+
+
+
+
+% 
+% 
+
+% 
+% 
+
+% 
+% 
 
 
 \section{Mismatches in Corporate Names}
+These inconsistencies result from~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727}:
+\begin{itemize}
+ \item Non-acceptable variations, including non-valid names, or incorrect
+variant forms. The reason behind such variations would essentially be
+errors, misspelled words and inaccurate translations of foreign terms.
 
-\subsection{Modeling Organizational Structures}
-The broad objective of modeling organizational structures is to promote this information using semantic technologies and the LOD approach. To get this objective 
-the Organizations Ontology~\footnote{\url{http://www.epimorphics.com/public/vocabulary/org.html}} represents a first step to model organizations but 
-some issues should be addressed to spread the scope of this specification: 1) Structure; 2) Human resources; 3) Corporate image; 4) Id; 5) Name; 
-6) Purposes and intentions; 7) Cataloging products, services and activities; 8) Multilingual and multicultural problems; 9) Inter/Intra relationships or 
-10) Activity Tracking and Financial transactions (e.g XBRL could be used). Nevertheless we have used this ontology to initially address the objectives of this work because 
-it is core ontology for organizational structures (see Fig\footnote{Source: http://www.epimorphics.com/public/vocabulary/diagram.png}.~\ref{fig:org}), 
-aimed at supporting linked-data publishing of organizational information across a number of domains. It is also designed 
-to allow domain-specific extensions to add classification of organizations and roles, 
-as well as extensions to support neighboring information such as organizational activities. 
-This ontology partially fits to the aim of modeling organizations in a standard and reusable way 
-with semantic technologies. 
+\item Acceptable variations, which would be valid names, or correct variant
+forms. Here the most frequent causes are permuted word order or distinct
+syntactic formats of the same name, the splitting of words, acronyms, full
+vs. abbreviated address, transliteration differences, multilingual character 
+of information (US, UK or AUS English), the inclusion or exclusion of geoinformation, 
+inclusion or not of the main suborganization or subsidaries. Overall, these variations are 
+interchangeable in specific contexts without leading to a change in meaning.
+\end{itemize}
 
 
-\section{The CORFU approach}
 
-\section{Experimentation and Evaluation}
+% 
+% \subsection{Modeling Organizational Structures}
+% The broad objective of modeling organizational structures is to promote this information using semantic technologies and the LOD approach. To get this objective 
+% the Organizations Ontology~\footnote{\url{http://www.epimorphics.com/public/vocabulary/org.html}} represents a first step to model organizations but 
+% some issues should be addressed to spread the scope of this specification: 1) Structure; 2) Human resources; 3) Corporate image; 4) Id; 5) Name; 
+% 6) Purposes and intentions; 7) Cataloging products, services and activities; 8) Multilingual and multicultural problems; 9) Inter/Intra relationships or 
+% 10) Activity Tracking and Financial transactions (e.g XBRL could be used). Nevertheless we have used this ontology to initially address the objectives of this work because 
+% it is core ontology for organizational structures (see Fig\footnote{Source: http://www.epimorphics.com/public/vocabulary/diagram.png}.~\ref{fig:org}), 
+% aimed at supporting linked-data publishing of organizational information across a number of domains. It is also designed 
+% to allow domain-specific extensions to add classification of organizations and roles, 
+% as well as extensions to support neighboring information such as organizational activities. 
+% This ontology partially fits to the aim of modeling organizations in a standard and reusable way 
+% with semantic technologies. 
+% 
+% 
+ \section{The CORFU approach}
+ 
+The technique to generate a unique name before performing the reconciliation process is a stepwise method, see 1, in which each step performs a filter over 
+the string literal trying to remove all unnecessary words in the name to finally use an iterative process of string comparison and grouping to generate a unique 
+and relevant name for the input dataset. This process has been implemented using the NLTK library and other external Python APIs such as fuzzywuzzy or a spell 
+checker based on the well-known Peter Norvig speller. After this initial process of unifying names a second step to reconcile names can be easily done reusing 
+resources in OpenCorporates, DBPedia, Linkedin Companies or Google Places. Although a naïve implementation is already available it is considered an 
+extension and ongoing work that is out of the scope of this report.  
+% 
+\section{Evaluation}
 
-In order to validate the approach outlined in this summary the dataset of 
-supplier names in Australia in the period 2005-2012 containing 430188 full names 
-and 77526 unique names has been selected. Initially the traditional 
-reconciliation process using Google Refine and OpenCorporates generated an 8\% of 
-links but most of them were incorrect or not grouped by the same resource. After 
-applying the above-mentioned stepwise method the initial set 77526 names were 
-grouped in 40278 distinct names (51\% of potential right links to OpenCoporates). 
+\subsection{Research design}
+% Since this recommender engine is designed to be used by professionals 
+% in the journalism domain rather than regular users the purpose of this study 
+% is to compare a set of news suggested by the recommendation engine with the 
+% expected results of a panel of experts. Thus, the objective is 
+% to asses if recommendations provided by Wesomender can fulfill 
+% the expectations and requirements of professionals in this sector. 
+% 
+\subsection{Sample}
+In order to validate the approach outlined in this summary the dataset of supplier names in Australia in the period 2005-2012 containing $430188$ full names 
+and $77526$ unique names has been selected. Initially the traditional reconciliation process using 
+Google Refine and OpenCorporates generated an 8\% of links but most of them were 
+incorrect or not grouped by the same resource. After applying the above-mentioned s
+tepwise method the initial set $77526$ names were grouped in $40278$ 
+distinct names (51\% of potential right links to OpenCoporates). 
 Furthermore these unified names were reviewed by hand and in the specific case 
-of the first one hundred companies in the Forbes list a 100\% of correct names 
-can be now ensured.
+of the first one hundred companies in the Forbes list a 100\% of correct names can be now ensured.
+ 
+\subsection{Results and Discussion}
 The main conclusion of this works lies in the design of a technique to prepare 
-raw organization names in a specific context, e.g. Australia supplier names, 
+raw organization names in a specific context, e.g. Australia supplier names,  
 before performing a reconciliation process. Although the percentage of potential 
 right links to existing datasets has been dramatically improved it is clear that 
 human-validation is also required to ensure the correct unification of names. 
@@ -294,300 +403,303 @@ application of this technique enables the comparison of rewarded contracts to
 different companies and can help to improve the transparency in public 
 administrations.
 
-
 \section{Conclusions and Future Work}
 
-\section{Acknowledgements}
+% % Now the information about organizations is considered to be a key factor for the transparency 
+% % and the improvement of corporate image of companies. In that sense public administrations are 
+% % very interested in the publication of their data following the LOD approach (e.g. using RDFa) and the Organizations Ontology 
+% % (it was original motivated by a need to publish information relating to government organizational 
+% % structure as part of the data.gov.uk initiative) is a first step to reach this broad objective. That is why a 
+% % specification to model organizations can change the current approach to discover, activity track and search organizations 
+% % in a specific domain. For instance in the e-Procurement sector an organization can be tracked 
+% % making possible the extraction of statistics about their public contracts (type, region, etc.). 
+% % In this document a review of existing ontologies for organizations is presented and an application of the Organizations Ontology 
+% % is also outlined to make the profile of an organization that wants to tender in the e-procurement sector.
+% %  This document is considered to be the first step to work in a common specification for modeling and exploiting
+% % information about organizations in the new realm of Linked Data. Regarding the future work, the results of this study are intended to be
+% % exploited by a commercial service like Eurolert.net~\cite{web20} and we are also interested in reporting the 
+% % results to \textit{The Internal Market and Services Directorate General (DG MARKT) of the European Commision},  
+% % \textit{The Information Society and Media Directorate General (DG INFSO) of the European Commision}, 
+% % the LOD and OGD initiatives among others.
+% 
+
 
 % 
-% \section{Introduction}
-% An organization is considered to be a set of constraints on the activities performed by agents.  
-% This approach was presented in~\cite{Weber1978} who viewed the process of bureaucratization as a shift 
-% from management. Previously, Mintzberg provided an analysis of organization structure 
-% distinguishing among five basic parts of an organization and five distinct organization configurations. 
-% This vision put together some mechanisms to achieve coordination with the objective of modeling goals, 
-% business processes and rules, authority, positions and communication. In this context, some works 
-% are emerged~\cite{Fox95anorganisation} trying to create ontologies and models that specify the realm of organizations but 
-% different problems are arisen due to some factors: 1) missing pieces to define the status of the organization; 
-% 2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
-% 3) lack of text properties, 4) name mismatches, etc. 
+% \section{Acknowledgements}
 % 
-% Currently the application of semantic technologies and the Linking Open Data approach (hereafter LOD)~\cite{heath11linked} in several fields 
-% like e-Government (e.g. Open Government Data initiative) tries to improve the knowledge about a specific area providing 
-% common data models and formats to share information and data between agents. More specifically, 
-% in the European e-procurement context there is an increasing commitment to boost the use 
-% of electronic communications and transactions processing by government institutions and other public sector organizations 
-% in order to provide added-value services with special focus on SMEs. In that sense modeling organizational structures
-% with these techniques can help to fulfill the requirements of an innovative unified e-procurement pan-European information 
-% system in which the information about organizations (structure, human resources, corporate image, id, address, name, purposes, products and 
-% services, activities with others, etc.) plays a key-role to match (and track) organization intentions (and activities) 
-% with public procurement notices. Putting together these facts the following example partially 
-% motivates this work with the objective of reusing information about organizations.
-% 
-% E.g: \textit{Which public procurement notices are relevant to Dutch companies (only SMEs) that want to tender for
-% contracts announced by local authorities with a total value lower than 170K \euro\mbox{ }to procure
-% ``Construction work for bridges and tunnels, shafts and subways`` and a two year duration in the 
-% Dutch-speaking region of Flanders (Belgium)?}.
-% 
-% Finally, this work aims to apply the aforementioned techniques to model and ease the access 
-% to organization’s information addressing specifically the principles of OGD\footnote{\url{http://resource.org/8\_principles.html}}. Following, 
-% the main contributions are highlighted: 1) extract the public information available about organizations and 
-% unify existing models to provide a common specification; 2) apply semantic web technologies and the LOD approach; 
-% 3) provide access to the information via standard protocols and 4) offer new services that can exploit 
-% this information to trace the evolution and behavior of the organization over time.
-% 
-% \section{Related work}
-% In the case of organizations it is quite a hard search to do because a lot of 
-% ontologies need some notion of Organization to point to. E.g. FOAF is about people but needs to mention the ``Organizations'' 
-% of which a person is a member, Inference Web~\footnote{\url{http://inference-web.org/}} is about distributed 
-% inference but covers trust and provenance which in turn requires a notion of organizations 
-% (that are in a trust relationship). In each of these cases the representation of Organization is minimal. 
-% Following the evaluation made by Dave Reynolds (Epimorphics Ltd) in this web report\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}, several approaches can be found. 
-% Firstly, in previous works there are a number of similar upper ontologies (Proton, Sumo, SmartWeb) that include 
-% some notion of Organization. These models have a lot of other intentions that are not match with 
-% the specific requirement of a small and reusable model to describe organizations 
-% but they should be reviewed. Secondly, if search engines are used to look for the concept of 
-% Organization the next results will be found: Swoogle $3,990$ matches, Falcons gives $15,881$ hits for Organization concept 
-% from $15$ highlighted vocabularies and Google turns up: 1) the ``Organization Ontology 1.0'' written in SHOE, 
-% giving a basic hierarchy of organization, industries and employee roles; 2) an ``Organization Ontology for Enterprise Modelling'' 
-% which is focused on supply chain and 3) ``Enterprise Ontology'', an ontology to represent the activity of
-%  business enterprises expressed in Ontolingua. Jeni Tennison~\footnote{\url{http://www.jenitennison.com/}} has also pointed 
-% to an ontology developed by TSO for the London Gazette RDFa markup: Gazette Organization and Gazette Person. 
-% According to the authors of this survey the following approaches should be reviewed: AKT Portal Ontology,
-% Proton top, Good Relations, FOAF, SIOC, Enterprise Modelling Ontology, Enterprise Ontology, Gazette organization and 
-% person ontologies, Provenance Vocabulary Core Ontology, and other like School of ECS (University of Southampton) or 
-% Academic Institution Internal Structure Ontology (AIISO), vocabularies for describing the internal organizational 
-% structure of an academic institution. This situation implies a tangled environment for describing organizations and supposes
-% a barrier to promote this information to the new Web of Data.
-% 
-% In the scope of LOD and open government data (OGD) there are projects
-% trying to exploit the published information in some domains like 
-% LOTED~\footnote{\url{http://loted.eu:8081/LOTED1Rep/}} (``Linked Open Tenders
-% Electronic Daily'') in the e-procurement sector  where they use the RSS feeds of TED. 
-% UK government\footnote{\url{http://data.gov.uk}} is doing a great effort to
-% promote its information sources using the LOD approach. They have published datasets
-% from different sectors: transport, defense, NUTS geographical
-% information~\footnote{\url{http://nuts.psi.enakting.org/}}, etc. Most of the
-% public administrations in the different countries are also betting for LOD
-% approach to make public their information: Spain (Aporta
-% project~\footnote{\url{http://www.aporta.es/}}),
-% USA\footnote{\url{http://www.data.gov/}}, etc. On the other hand, Product Scheme Classifications (also known as PSCs) 
-% like the CPV (Common Procurement Vocabulary available at RAMON, the Eurostat's metadata server) have been built to solve
-% specific problems of interoperability and communication in e-commerce\cite{Volker02amodeling,Corcho01solvingintegration}. 
-% The aim of a PSC is to be used as a standard \textit{de facto} by different agents for information interchange 
-% in marketplaces~\cite{DBLP:journals/tcci/Alor-HernandezAJPRMBG10}. Any PSC, as well as other classification systems can 
-% be interpreted as: 1) domain-ontologies~\cite{Hepp-possible} or 2) conceptual schemes~\cite{chemaEurovoc2008} comprised 
-% of conceptual resources . Finally, Good Relations is an ontology for the e-commerce developed by 
-% Martin Hepp et. al and now integrated the Yahoo Real Estate portal via RDFa.
-% 
-% In the field of the semantic web technologies and for modeling the domain knowledge 
-% there are several options: RDF, RDF(S), OWL 2 or SKOS among others. 
-% They provide a common format and data model for sharing and linking knowledge organization systems 
-% via the web. This information can be retrieved using SPARQL, 
-% a query language and a protocol to retrieve the information of datasets published via an endpoint. 
-% Currently, there is a working group defining a vocabulary and a set of instructions 
-% that ease the discovery and usage of linked datasets (voID~\footnote{\url{http://vocab.deri.ie/void/guide}}), 
-% the new specification of SPARQL (1.1~\footnote{\url{http://www.w3.org/TR/sparql11-service-description/}}) 
-% enables a method for discovering and vocabulary for describing SPARQL services 
-% made available via an endpoint and Pubby\footnote{\url{http://www4.wiwiss.fu-berlin.de/pubby/}} or 
-% ELDA~\footnote{\url{http://code.google.com/p/elda/}} are implementations of a linked data frontend that provide a 
-% configurable way to access RDF data using simple RESTful URLs that are translated into 
-% queries to a SPARQL endpoint. 
-% 
-% \subsection{Previous Work: Open Corporates}\label{open-corporates}
-% 
-%
-% \section{Modeling Organizational Structures}
-% The broad objective of modeling organizational structures is to promote this information 
-% using semantic technologies and the LOD approach. To get this objective 
-% the aforementioned Organizations Ontology~\footnote{\url{http://www.epimorphics.com/public/vocabulary/org.html}} represents a 
-% first step to model organizations but some issues should be addressed to spread the scope of this specification: 
-% 1) Structure; 2) Human resources; 3) Corporate image; 4) Id; 5) Name; 6) Purposes and intentions; 7) Cataloging products, services and activities;
-%  8) Multilingual and multicultural problems; 9) Inter/Intra relationships or 10) Activity Tracking and Financial transactions 
-% (e.g XBRL could be used). Nevertheless we have used this ontology to initially address the objectives of this work because 
-% it is core ontology for organizational structures (see Fig\footnote{Source: http://www.epimorphics.com/public/vocabulary/diagram.png}.~\ref{fig:org}), 
-% aimed at supporting linked-data publishing of organizational information across a number of domains. It is also designed 
-% to allow domain-specific extensions to add classification of organizations and roles, 
-% as well as extensions to support neighboring information such as organizational activities. 
-% This ontology partially fits to the aim of modeling organizations in a standard and reusable way 
-% with semantic technologies. 
-% 
-% \begin{figure}[h]
-%  \centering
-% %    \includegraphics[width=10cm]{images/org}
-%     \caption{Organizations Ontology. Overview.}
-%  \label{fig:org}
-% \end{figure}
-% 
-% In order to accomplish with the contributions of this work we should define:
-% \begin{itemize}
-%  \item the process of extracting (and structuring) the public information available about organizations. In this case, we have developed
-% a system\footnote{We have discarded the use of Google Refine and similar tools due to the huge amount of data to be processed.} 
-% that takes the organizations~\footnote{\url{ftp://ftp.ted.europa.eu/META-XML/}} in CSV format available at TED 
-%  ($\sim$ 320K) and transforms this information (ID, address, contact person and CPV codes or purposes inferred by the previous public 
-% contracts awarded) to RDF according to the Organizations Ontology, the principles of LOD~\cite{heath11linked} paying special 
-% attention to the URL design and SKOS to deal with multilingual issues. After that all generated triples are stored 
-% in the triple store OpenLink Virtuoso~\footnote{\url{http://virtuoso.openlinksw.com/}} (providing a SPARQL endpoint). 
-% \item the access to the published information via Pubby. This linked data frontend is used to access generated triples but we have also developed a gateway that translates, on demand, the data of an ``OpenCorporates
-% Organization'' (see Sect.\ref{open-corporates}) to our system unifying the access to the information through Pubby without replication of information.
-% \item the exploitation of this information. Currently it is mainly made by two services: 1) an enhanced matchmaking service to search public procurement notices and
-% 2) a simple organization activity track service in the e-procurement sector.
-% \end{itemize}
-% 
-% \section{Use Case: Matchmaking and Tracking Organizations in the E-procurement sector}
-% In the e-Procurement information domain, one of the targeted services~\cite{metteg2011} to be improved is the 
-% ``search of public procurement notices according to a profile''. In the context of searching, 
-% matchmaking refers to the procedure of retrieving a relevant list of results that matches with the 
-% intentions of an organization that wants to tender in a specific activity sector. Other interesting service 
-% on e-Procurement is the extraction of statistics to generate reports about the history of 
-% some place, organization or contracting authority that can be exploited through temporal series, 
-% weighted aggregation operators or statistical inference, specifically predictive inference. 
-% 
-% Let be $E$ an organization that wants to tender in a public procurement process, 
-% the representation using N3, this information is provided the process of extracting (and structuring) 
-% the public information available about organizations, is presented in Figure~\ref{figure:org}:
-% 
-% \begin{figure}[p]
-% \begin{center}
-% \begin{lstlisting}[language=SPARQL]
-%  <http://mydutchcompany.com/> a v:VCard ;
-%      v:fn "Dutch Company Inc." ;
-%      v:org [   v:organisation-name "Dutch Company Inc." ;
-%              v:organisation-unit "Corporate Division" ] ;
-%      v:adr [ rdf:type v:Work ;
-%              v:country-name "Netherlands" ;
-%              v:locality "Amsterdam" ;
-%              v:postal-code "1016 XJ" ;
-%              v:street-address "Lijnbaansgracht 215" ] ;
-%      v:geo [ v:latitude "52.36764" ;
-%              v:longitude "4.87934" ] ;
-%      v:tel [ rdf:type v:Fax, v:Work ;
-%              rdf:value " +31 (10) 400 48 00"] ; 
-%      v:email <mailto:company@mydutchcompany> ;
-%      v:logo <http://mydutchcompany.com/logo.png> .
-% 
-% <http://purl.org/weso/units/euro> a muo:UnitOfMeasurement;
-%     muo:measuresQuality <http://purl.org/weso/physicalQuality/Money>.
-%     muo:altSymbol "\eur" ;
-%     muo:prefSymbol "\eur" .
-% 
-% <http://purl.org/weso/ppn/noticeValue>  a muo:QualityValue;
-%     muo:numericalValue "170.000";
-%     muo:inTime "2011-01-12" ;
-%     muo:measuredIn <http://purl.org/weso/units/euro>.
-% 
-% <http://purl.org/weso/units/year> a muo:UnitOfMeasurement;
-%     muo:measuresQuality <http://purl.org/weso/physicalQuality/Time>.
-%     muo:altSymbol "year" ;
-% muo:prefSymbol year" .
-% 
-% <http://purl.org/weso/ppn/noticeDuration>  a muo:QualityValue;
-%     muo:numericalValue "2";
-%     muo:inTime "2011-01-12" ;
-%     muo:measuredIn <http://purl.org/weso/units/year>.
-% 
-% <http://purl.org/weso/organizations#dutchOrganization> a org:FormalOrganization;
-%     org:purpose cpv:45221000;
-%     org:purpose cpv:45221113 ; 
-%     org:purpose  <http://purl.org/weso/ppn/noticeValue> ; 
-%     org:purpose  <http://purl.org/weso/ppn/noticeDuration> ; 
-%     org:purpose <http://sws.geonames.org/50.85_43.49/ > ;
-%     skosxl:prefLabel "Dutch organization" ;
-%     org:classification <http://purl.org/organizations#SME>;
-%     org:hasSite <http://mydutchcompany.com/> ;
-%     org:siteAddress <http://mydutchcompany.com/> ;
-%     ... 
-% \end{lstlisting}
-% \caption{Information about an organization in N3.}
-% \label{figure:org}
-% \end{center}
-% \end{figure}
-% 
-% Following the input SPARQL query of the motivating example including the profile of an organization, a CPV code, a NUTS region 
-% (only coordinates) and some numeric values for total value and duration is presented, see Fig.~\ref{figure:simple}.
-% 
-% \begin{figure}[!h]
-% \begin{center}
-% \begin{lstlisting}[language=SPARQL]
-% SELECT * WHERE{
-%   ?notice rdf:type ppn:PublicProcurementNotice .
-%   ?notice dct:identifier ?id .
-%   ?notice dct:description ?description .
-%   ?notice ppn:hasStatus ppn:Active .
-%   ?notice org:classification <http://purl.org/organizations#SME> .
-%   ?notice wgs84_pos:lat ?lat.
-%   ?notice wgs84_pos:lon ?long .
-%   ?notice ppn:totalValue ?totalValue.
-%   ?amount muo:measuredIn <http://purl.org/weso/units/euro> .
-%   ?notice ppn:duration ?duration.
-%   ?duration muo:measuredIn <http://purl.org/weso/units/year> .
-%  FILTER ( 
-%  ((?notice ppn:hasCPVcode cpv:45221000))
-%  and (?lat == "50.85") and (?long == "43.49")
-%  and (?totalValue <= 170,000^xsd:double) and (?duration <= 2) )}
-% \end{lstlisting}
-% \caption{Simple SPARQL query according to Organization profile.}
-% \label{figure:simple}
-% \end{center}
-% \end{figure}
-% 
-% After the process of query expansion a new SPARQL query\footnote{The URI prefixes of this example come from the ``Prefix.cc'' service. 
-% Muo and ppn (namespaces for ``Units of measurement ontology`` and ``Public Procurement Notices'') prefixes are also added to do a more human-readable example.} is built, 
-% see Fig.~\ref{figure:expanded}. The process of expansion, using techniques like Spreading Activation, algorithms in the Apache Mahout library or others like~\cite{citeulike:9135863}, 
-% selects new CPV codes (45221100-``Construction work for bridges'', 45221110-``Bridge construction work'', 45221111-``Road bridge construction work'', 45221113-``Footbridge construction work''), 
-% new NUTS codes (spreading the geographical scope) and establish a range for the numeric
-% variables according to the historical information available at the database. 
-% \begin{figure}[!h] 
-% \begin{center}
-% \begin{lstlisting}[language=SPARQL]
-% SELECT * WHERE{
-%   ...
-%   ?notice nuts:containedBy ?place .
-% FILTER (  ( (?notice ppn:hasCPVcode cpv:45221000) or 
-% 	    (?notice ppn:hasCPVcode cpv:45221110) or
-% 	    (?notice ppn:hasCPVcode cpv:45221111)...)
-% 	  ( (?place nuts:containedBy nuts:NUTS-NL326 ) or 
-% 	    (?place nuts:containedBy nuts:NUTS-1025) or 
-% 	    (?place nuts:containedBy nuts:NUTS-B3) or
-% 	    (?place nuts:containedBy nuts:NUTS-BE2) or ...) 
-% 	and (?duration > 2 and ?duration <= 3) 
-% 	and (?totalValue > 130,000^xsd:double 
-% 	     and ?totalValue <= 200,000^xsd:double))}
-% \end{lstlisting}
-% \caption{Expanded SPARQL query.}
-% \label{figure:expanded}
-% \end{center}
-% \end{figure}
-% 
-% The relevance of this example lies on the demonstration that the information about organizations
-% is a key-factor to provide enhanced services in different domains. In this case the e-procurement
-% sector has been selected due to the ongoing research of the \#SKIP\# project. A public demo is also available
-% at \#SKIP\#~\footnote{\url{\#SKIP\#}} and the data can be easily retrieved querying the SPARQL endpoint of
-% the organizations dataset. Further implementations are supposed to exploit this data in order to provide more advanced
-% statistics service, identify organizations across the web (resolving name mismatches) and to track corporate
-% activities in different sectors.
-% \section{Conclusions and Future Work}
-% Now the information about organizations is considered to be a key factor for the transparency 
-% and the improvement of corporate image of companies. In that sense public administrations are 
-% very interested in the publication of their data following the LOD approach (e.g. using RDFa) and the Organizations Ontology 
-% (it was original motivated by a need to publish information relating to government organizational 
-% structure as part of the data.gov.uk initiative) is a first step to reach this broad objective. That is why a 
-% specification to model organizations can change the current approach to discover, activity track and search organizations 
-% in a specific domain. For instance in the e-Procurement sector an organization can be tracked 
-% making possible the extraction of statistics about their public contracts (type, region, etc.). 
-% In this document a review of existing ontologies for organizations is presented and an application of the Organizations Ontology 
-% is also outlined to make the profile of an organization that wants to tender in the e-procurement sector.
-%  This document is considered to be the first step to work in a common specification for modeling and exploiting
-% information about organizations in the new realm of Linked Data. Regarding the future work, the results of this study are intended to be
-% exploited by a commercial service like Eurolert.net~\cite{web20} and we are also interested in reporting the 
-% results to \textit{The Internal Market and Services Directorate General (DG MARKT) of the European Commision},  
-% \textit{The Information Society and Media Directorate General (DG INFSO) of the European Commision}, 
-% the LOD and OGD initiatives among others.
+% % 
+% % \section{Introduction}
+% % An organization is considered to be a set of constraints on the activities performed by agents.  
+% % This approach was presented in~\cite{Weber1978} who viewed the process of bureaucratization as a shift 
+% % from management. Previously, Mintzberg provided an analysis of organization structure 
+% % distinguishing among five basic parts of an organization and five distinct organization configurations. 
+% % This vision put together some mechanisms to achieve coordination with the objective of modeling goals, 
+% % business processes and rules, authority, positions and communication. In this context, some works 
+% % are emerged~\cite{Fox95anorganisation} trying to create ontologies and models that specify the realm of organizations but 
+% % different problems are arisen due to some factors: 1) missing pieces to define the status of the organization; 
+% % 2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
+% % 3) lack of text properties, 4) name mismatches, etc. 
+% % 
+% % Currently the application of semantic technologies and the Linking Open Data approach (hereafter LOD)~\cite{heath11linked} in several fields 
+% % like e-Government (e.g. Open Government Data initiative) tries to improve the knowledge about a specific area providing 
+% % common data models and formats to share information and data between agents. More specifically, 
+% % in the European e-procurement context there is an increasing commitment to boost the use 
+% % of electronic communications and transactions processing by government institutions and other public sector organizations 
+% % in order to provide added-value services with special focus on SMEs. In that sense modeling organizational structures
+% % with these techniques can help to fulfill the requirements of an innovative unified e-procurement pan-European information 
+% % system in which the information about organizations (structure, human resources, corporate image, id, address, name, purposes, products and 
+% % services, activities with others, etc.) plays a key-role to match (and track) organization intentions (and activities) 
+% % with public procurement notices. Putting together these facts the following example partially 
+% % motivates this work with the objective of reusing information about organizations.
+% % 
+% % E.g: \textit{Which public procurement notices are relevant to Dutch companies (only SMEs) that want to tender for
+% % contracts announced by local authorities with a total value lower than 170K \euro\mbox{ }to procure
+% % ``Construction work for bridges and tunnels, shafts and subways`` and a two year duration in the 
+% % Dutch-speaking region of Flanders (Belgium)?}.
+% % 
+% % Finally, this work aims to apply the aforementioned techniques to model and ease the access 
+% % to organization’s information addressing specifically the principles of OGD\footnote{\url{http://resource.org/8\_principles.html}}. Following, 
+% % the main contributions are highlighted: 1) extract the public information available about organizations and 
+% % unify existing models to provide a common specification; 2) apply semantic web technologies and the LOD approach; 
+% % 3) provide access to the information via standard protocols and 4) offer new services that can exploit 
+% % this information to trace the evolution and behavior of the organization over time.
+% % 
+% % \section{Related work}
+% % In the case of organizations it is quite a hard search to do because a lot of 
+% % ontologies need some notion of Organization to point to. E.g. FOAF is about people but needs to mention the ``Organizations'' 
+% % of which a person is a member, Inference Web~\footnote{\url{http://inference-web.org/}} is about distributed 
+% % inference but covers trust and provenance which in turn requires a notion of organizations 
+% % (that are in a trust relationship). In each of these cases the representation of Organization is minimal. 
+% % Following the evaluation made by Dave Reynolds (Epimorphics Ltd) in this web report\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}, several approaches can be found. 
+% % Firstly, in previous works there are a number of similar upper ontologies (Proton, Sumo, SmartWeb) that include 
+% % some notion of Organization. These models have a lot of other intentions that are not match with 
+% % the specific requirement of a small and reusable model to describe organizations 
+% % but they should be reviewed. Secondly, if search engines are used to look for the concept of 
+% % Organization the next results will be found: Swoogle $3,990$ matches, Falcons gives $15,881$ hits for Organization concept 
+% % from $15$ highlighted vocabularies and Google turns up: 1) the ``Organization Ontology 1.0'' written in SHOE, 
+% % giving a basic hierarchy of organization, industries and employee roles; 2) an ``Organization Ontology for Enterprise Modelling'' 
+% % which is focused on supply chain and 3) ``Enterprise Ontology'', an ontology to represent the activity of
+% %  business enterprises expressed in Ontolingua. Jeni Tennison~\footnote{\url{http://www.jenitennison.com/}} has also pointed 
+% % to an ontology developed by TSO for the London Gazette RDFa markup: Gazette Organization and Gazette Person. 
+% % According to the authors of this survey the following approaches should be reviewed: AKT Portal Ontology,
+% % Proton top, Good Relations, FOAF, SIOC, Enterprise Modelling Ontology, Enterprise Ontology, Gazette organization and 
+% % person ontologies, Provenance Vocabulary Core Ontology, and other like School of ECS (University of Southampton) or 
+% % Academic Institution Internal Structure Ontology (AIISO), vocabularies for describing the internal organizational 
+% % structure of an academic institution. This situation implies a tangled environment for describing organizations and supposes
+% % a barrier to promote this information to the new Web of Data.
+% % 
+% % In the scope of LOD and open government data (OGD) there are projects
+% % trying to exploit the published information in some domains like 
+% % LOTED~\footnote{\url{http://loted.eu:8081/LOTED1Rep/}} (``Linked Open Tenders
+% % Electronic Daily'') in the e-procurement sector  where they use the RSS feeds of TED. 
+% % UK government\footnote{\url{http://data.gov.uk}} is doing a great effort to
+% % promote its information sources using the LOD approach. They have published datasets
+% % from different sectors: transport, defense, NUTS geographical
+% % information~\footnote{\url{http://nuts.psi.enakting.org/}}, etc. Most of the
+% % public administrations in the different countries are also betting for LOD
+% % approach to make public their information: Spain (Aporta
+% % project~\footnote{\url{http://www.aporta.es/}}),
+% % USA\footnote{\url{http://www.data.gov/}}, etc. On the other hand, Product Scheme Classifications (also known as PSCs) 
+% % like the CPV (Common Procurement Vocabulary available at RAMON, the Eurostat's metadata server) have been built to solve
+% % specific problems of interoperability and communication in e-commerce\cite{Volker02amodeling,Corcho01solvingintegration}. 
+% % The aim of a PSC is to be used as a standard \textit{de facto} by different agents for information interchange 
+% % in marketplaces~\cite{DBLP:journals/tcci/Alor-HernandezAJPRMBG10}. Any PSC, as well as other classification systems can 
+% % be interpreted as: 1) domain-ontologies~\cite{Hepp-possible} or 2) conceptual schemes~\cite{chemaEurovoc2008} comprised 
+% % of conceptual resources . Finally, Good Relations is an ontology for the e-commerce developed by 
+% % Martin Hepp et. al and now integrated the Yahoo Real Estate portal via RDFa.
+% % 
+% % In the field of the semantic web technologies and for modeling the domain knowledge 
+% % there are several options: RDF, RDF(S), OWL 2 or SKOS among others. 
+% % They provide a common format and data model for sharing and linking knowledge organization systems 
+% % via the web. This information can be retrieved using SPARQL, 
+% % a query language and a protocol to retrieve the information of datasets published via an endpoint. 
+% % Currently, there is a working group defining a vocabulary and a set of instructions 
+% % that ease the discovery and usage of linked datasets (voID~\footnote{\url{http://vocab.deri.ie/void/guide}}), 
+% % the new specification of SPARQL (1.1~\footnote{\url{http://www.w3.org/TR/sparql11-service-description/}}) 
+% % enables a method for discovering and vocabulary for describing SPARQL services 
+% % made available via an endpoint and Pubby\footnote{\url{http://www4.wiwiss.fu-berlin.de/pubby/}} or 
+% % ELDA~\footnote{\url{http://code.google.com/p/elda/}} are implementations of a linked data frontend that provide a 
+% % configurable way to access RDF data using simple RESTful URLs that are translated into 
+% % queries to a SPARQL endpoint. 
+% % 
+% % \subsection{Previous Work: Open Corporates}\label{open-corporates}
+% % 
+% %
+% % \section{Modeling Organizational Structures}
+% % The broad objective of modeling organizational structures is to promote this information 
+% % using semantic technologies and the LOD approach. To get this objective 
+% % the aforementioned Organizations Ontology~\footnote{\url{http://www.epimorphics.com/public/vocabulary/org.html}} represents a 
+% % first step to model organizations but some issues should be addressed to spread the scope of this specification: 
+% % 1) Structure; 2) Human resources; 3) Corporate image; 4) Id; 5) Name; 6) Purposes and intentions; 7) Cataloging products, services and activities;
+% %  8) Multilingual and multicultural problems; 9) Inter/Intra relationships or 10) Activity Tracking and Financial transactions 
+% % (e.g XBRL could be used). Nevertheless we have used this ontology to initially address the objectives of this work because 
+% % it is core ontology for organizational structures (see Fig\footnote{Source: http://www.epimorphics.com/public/vocabulary/diagram.png}.~\ref{fig:org}), 
+% % aimed at supporting linked-data publishing of organizational information across a number of domains. It is also designed 
+% % to allow domain-specific extensions to add classification of organizations and roles, 
+% % as well as extensions to support neighboring information such as organizational activities. 
+% % This ontology partially fits to the aim of modeling organizations in a standard and reusable way 
+% % with semantic technologies. 
+% % 
+% % \begin{figure}[h]
+% %  \centering
+% % %    \includegraphics[width=10cm]{images/org}
+% %     \caption{Organizations Ontology. Overview.}
+% %  \label{fig:org}
+% % \end{figure}
+% % 
+% % In order to accomplish with the contributions of this work we should define:
+% % \begin{itemize}
+% %  \item the process of extracting (and structuring) the public information available about organizations. In this case, we have developed
+% % a system\footnote{We have discarded the use of Google Refine and similar tools due to the huge amount of data to be processed.} 
+% % that takes the organizations~\footnote{\url{ftp://ftp.ted.europa.eu/META-XML/}} in CSV format available at TED 
+% %  ($\sim$ 320K) and transforms this information (ID, address, contact person and CPV codes or purposes inferred by the previous public 
+% % contracts awarded) to RDF according to the Organizations Ontology, the principles of LOD~\cite{heath11linked} paying special 
+% % attention to the URL design and SKOS to deal with multilingual issues. After that all generated triples are stored 
+% % in the triple store OpenLink Virtuoso~\footnote{\url{http://virtuoso.openlinksw.com/}} (providing a SPARQL endpoint). 
+% % \item the access to the published information via Pubby. This linked data frontend is used to access generated triples but we have also developed a gateway that translates, on demand, the data of an ``OpenCorporates
+% % Organization'' (see Sect.\ref{open-corporates}) to our system unifying the access to the information through Pubby without replication of information.
+% % \item the exploitation of this information. Currently it is mainly made by two services: 1) an enhanced matchmaking service to search public procurement notices and
+% % 2) a simple organization activity track service in the e-procurement sector.
+% % \end{itemize}
+% % 
+% % \section{Use Case: Matchmaking and Tracking Organizations in the E-procurement sector}
+% % In the e-Procurement information domain, one of the targeted services~\cite{metteg2011} to be improved is the 
+% % ``search of public procurement notices according to a profile''. In the context of searching, 
+% % matchmaking refers to the procedure of retrieving a relevant list of results that matches with the 
+% % intentions of an organization that wants to tender in a specific activity sector. Other interesting service 
+% % on e-Procurement is the extraction of statistics to generate reports about the history of 
+% % some place, organization or contracting authority that can be exploited through temporal series, 
+% % weighted aggregation operators or statistical inference, specifically predictive inference. 
+% % 
+% % Let be $E$ an organization that wants to tender in a public procurement process, 
+% % the representation using N3, this information is provided the process of extracting (and structuring) 
+% % the public information available about organizations, is presented in Figure~\ref{figure:org}:
+% % 
+% % \begin{figure}[p]
+% % \begin{center}
+% % \begin{lstlisting}[language=SPARQL]
+% %  <http://mydutchcompany.com/> a v:VCard ;
+% %      v:fn "Dutch Company Inc." ;
+% %      v:org [   v:organisation-name "Dutch Company Inc." ;
+% %              v:organisation-unit "Corporate Division" ] ;
+% %      v:adr [ rdf:type v:Work ;
+% %              v:country-name "Netherlands" ;
+% %              v:locality "Amsterdam" ;
+% %              v:postal-code "1016 XJ" ;
+% %              v:street-address "Lijnbaansgracht 215" ] ;
+% %      v:geo [ v:latitude "52.36764" ;
+% %              v:longitude "4.87934" ] ;
+% %      v:tel [ rdf:type v:Fax, v:Work ;
+% %              rdf:value " +31 (10) 400 48 00"] ; 
+% %      v:email <mailto:company@mydutchcompany> ;
+% %      v:logo <http://mydutchcompany.com/logo.png> .
+% % 
+% % <http://purl.org/weso/units/euro> a muo:UnitOfMeasurement;
+% %     muo:measuresQuality <http://purl.org/weso/physicalQuality/Money>.
+% %     muo:altSymbol "\eur" ;
+% %     muo:prefSymbol "\eur" .
+% % 
+% % <http://purl.org/weso/ppn/noticeValue>  a muo:QualityValue;
+% %     muo:numericalValue "170.000";
+% %     muo:inTime "2011-01-12" ;
+% %     muo:measuredIn <http://purl.org/weso/units/euro>.
+% % 
+% % <http://purl.org/weso/units/year> a muo:UnitOfMeasurement;
+% %     muo:measuresQuality <http://purl.org/weso/physicalQuality/Time>.
+% %     muo:altSymbol "year" ;
+% % muo:prefSymbol year" .
+% % 
+% % <http://purl.org/weso/ppn/noticeDuration>  a muo:QualityValue;
+% %     muo:numericalValue "2";
+% %     muo:inTime "2011-01-12" ;
+% %     muo:measuredIn <http://purl.org/weso/units/year>.
+% % 
+% % <http://purl.org/weso/organizations#dutchOrganization> a org:FormalOrganization;
+% %     org:purpose cpv:45221000;
+% %     org:purpose cpv:45221113 ; 
+% %     org:purpose  <http://purl.org/weso/ppn/noticeValue> ; 
+% %     org:purpose  <http://purl.org/weso/ppn/noticeDuration> ; 
+% %     org:purpose <http://sws.geonames.org/50.85_43.49/ > ;
+% %     skosxl:prefLabel "Dutch organization" ;
+% %     org:classification <http://purl.org/organizations#SME>;
+% %     org:hasSite <http://mydutchcompany.com/> ;
+% %     org:siteAddress <http://mydutchcompany.com/> ;
+% %     ... 
+% % \end{lstlisting}
+% % \caption{Information about an organization in N3.}
+% % \label{figure:org}
+% % \end{center}
+% % \end{figure}
+% % 
+% % Following the input SPARQL query of the motivating example including the profile of an organization, a CPV code, a NUTS region 
+% % (only coordinates) and some numeric values for total value and duration is presented, see Fig.~\ref{figure:simple}.
+% % 
+% % \begin{figure}[!h]
+% % \begin{center}
+% % \begin{lstlisting}[language=SPARQL]
+% % SELECT * WHERE{
+% %   ?notice rdf:type ppn:PublicProcurementNotice .
+% %   ?notice dct:identifier ?id .
+% %   ?notice dct:description ?description .
+% %   ?notice ppn:hasStatus ppn:Active .
+% %   ?notice org:classification <http://purl.org/organizations#SME> .
+% %   ?notice wgs84_pos:lat ?lat.
+% %   ?notice wgs84_pos:lon ?long .
+% %   ?notice ppn:totalValue ?totalValue.
+% %   ?amount muo:measuredIn <http://purl.org/weso/units/euro> .
+% %   ?notice ppn:duration ?duration.
+% %   ?duration muo:measuredIn <http://purl.org/weso/units/year> .
+% %  FILTER ( 
+% %  ((?notice ppn:hasCPVcode cpv:45221000))
+% %  and (?lat == "50.85") and (?long == "43.49")
+% %  and (?totalValue <= 170,000^xsd:double) and (?duration <= 2) )}
+% % \end{lstlisting}
+% % \caption{Simple SPARQL query according to Organization profile.}
+% % \label{figure:simple}
+% % \end{center}
+% % \end{figure}
+% % 
+% % After the process of query expansion a new SPARQL query\footnote{The URI prefixes of this example come from the ``Prefix.cc'' service. 
+% % Muo and ppn (namespaces for ``Units of measurement ontology`` and ``Public Procurement Notices'') prefixes are also added to do a more human-readable example.} is built, 
+% % see Fig.~\ref{figure:expanded}. The process of expansion, using techniques like Spreading Activation, algorithms in the Apache Mahout library or others like~\cite{citeulike:9135863}, 
+% % selects new CPV codes (45221100-``Construction work for bridges'', 45221110-``Bridge construction work'', 45221111-``Road bridge construction work'', 45221113-``Footbridge construction work''), 
+% % new NUTS codes (spreading the geographical scope) and establish a range for the numeric
+% % variables according to the historical information available at the database. 
+% % \begin{figure}[!h] 
+% % \begin{center}
+% % \begin{lstlisting}[language=SPARQL]
+% % SELECT * WHERE{
+% %   ...
+% %   ?notice nuts:containedBy ?place .
+% % FILTER (  ( (?notice ppn:hasCPVcode cpv:45221000) or 
+% % 	    (?notice ppn:hasCPVcode cpv:45221110) or
+% % 	    (?notice ppn:hasCPVcode cpv:45221111)...)
+% % 	  ( (?place nuts:containedBy nuts:NUTS-NL326 ) or 
+% % 	    (?place nuts:containedBy nuts:NUTS-1025) or 
+% % 	    (?place nuts:containedBy nuts:NUTS-B3) or
+% % 	    (?place nuts:containedBy nuts:NUTS-BE2) or ...) 
+% % 	and (?duration > 2 and ?duration <= 3) 
+% % 	and (?totalValue > 130,000^xsd:double 
+% % 	     and ?totalValue <= 200,000^xsd:double))}
+% % \end{lstlisting}
+% % \caption{Expanded SPARQL query.}
+% % \label{figure:expanded}
+% % \end{center}
+% % \end{figure}
+% % 
+% % The relevance of this example lies on the demonstration that the information about organizations
+% % is a key-factor to provide enhanced services in different domains. In this case the e-procurement
+% % sector has been selected due to the ongoing research of the \#SKIP\# project. A public demo is also available
+% % at \#SKIP\#~\footnote{\url{\#SKIP\#}} and the data can be easily retrieved querying the SPARQL endpoint of
+% % the organizations dataset. Further implementations are supposed to exploit this data in order to provide more advanced
+% % statistics service, identify organizations across the web (resolving name mismatches) and to track corporate
+% % activities in different sectors.
+% % \section{Conclusions and Future Work}
 
 \bibliographystyle{plain}
-%\bibliographystyle{unsrt}
-%\bibliographystyle{acm}
+% %\bibliographystyle{unsrt}
+% %\bibliographystyle{acm}
 \bibliography{references}
-\renewcommand{\bibname}{References}
+% \renewcommand{\bibname}{References}
 \end{document}
 
