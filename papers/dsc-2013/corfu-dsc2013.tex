@@ -91,8 +91,7 @@ the oficial company registry and the process of rewarding contracts implying dif
 naming problems and inconsistenty in data that are spread to next stages preventing future 
 activities such as reporting.
 
-Organization, corporate, company or institution to name a few (hereafter these names will be used 
-to refer to the same entity) naming techniques based on internal identifiers or string literals implies 
+Organization, corporate, company or institution to name a few (hereafter these names will be used imply 
 that the task of grouping contracts by a supplier is not a mere process of searching by the same literal. 
 Technical issues such as hyphenation, use of abbreviations or acronynms an transliteration are 
 common problems that must be addressed in order to provide a final corporate name and have been widely studied in the 
@@ -102,7 +101,15 @@ names in a raw text while in the e-Procurement sector the string literal identif
 known and it is not necessary to extract or recognize a potential name.
 
 
-Currently the application of semantic technologies and the Linking Open Data approach (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
+In the particular case of Australia e-Procurement domain, the supplier name is introduced by typing a string literal without any assistance or 
+auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers}, 
+can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} 
+or context-aware data that is already known when the dataset is processed such as the country. Furthermore it is also well-known that a large company can 
+be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
+should take into account all rewarded contracts regardless the structure of the company.
+
+
+On the other hand the application of semantic technologies and the Linking Open Data approach (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
 in several fields like e-Government (e.g. the Open Government Data initiative) tries to improve the knowledge about a specific area providing 
 common data models and formats to share information and data between agents. More specifically, in the European e-Procurement 
 context~\cite{e-Proc-map-paper} there is an increasing commitment to boost the use of electronic communications and transactions 
@@ -116,20 +123,11 @@ around the world and it can be considered a perfect candidate to perform the rec
 target resource to obtain an unique identifier. Nevertheless the issue of unifying supplier names as a human would do 
 faces new  problems that have been tackled in other research works~\cite{Galvez2006} to extract statistics of performance in bibliographic databases. 
 The main objective is not just a mere reconciliation process to link to existing resource but to create a unique name or link. For instance in the case 
-of the ongoing example the string literals ``Oracle'' and ``Oracle University'' could be respectively aligned 
-to the entity $<$Oracle$>$ and $<$Oracle\_University$>$ but the problem of grouping by a unique (\textit{Big}) name 
-or resource still remains. 
+of the ongoing example the string literals ``Oracle'' and ``Oracle University'' could be respectively aligned to the entity $<$Oracle$>$ and $<$Oracle\_University$>$ but 
+the problem of grouping by a unique (\textit{Big}) name or resource still remains. 
 
-In the particular case of Australia, the supplier name is introduced by typing a string literal without any assistance or 
-auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers}, 
-can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and 
-acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} or context-aware data that is 
-already known when the dataset is processed such as the country. Furthermore it is also well-known that a large company can 
-be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
-should take into account all rewarded contracts regardless the structure of the company. That is why a context-aware 
-method based on NLP techniques combined with semantics has been designed, customized and implemented trying 
+That is why a context-aware method based on NLP techniques combined with semantics has been designed, customized and implemented trying 
 to exploit the naming convention of a specific dataset.
-
 
 The remainder of this paper is structured as follows. Section 2 a literature review is presented. Afterwards next section outlines main mismatches in corporate names. Section 4 presents 
 the CORFU approach to unify corporate names. The evaluation section exposes and discusses the experimentation carried out to test the presented approach using as a dataset the rewarded 
@@ -153,11 +151,11 @@ and some open issues are also presented as future work.
   Accenture  Australia Holding P/L & \\
   Accenture Australia Holdings P/Ltd & \\
   Accenture Australia Holdings Pty & \\
-  Accenture Australia Holdings Pty Lt  & \\
+  Accenture Australia Holdings Pty Lt  & \\  
+  Accenture Australia Limited & \\
   \ldots  & \\
-  Accenture Australia Limited & \\ \hline
-  Accenture Australia Ltd & \multirow{3}{*}{Microsoft} \\
-  Microsoft Australia & \\ 
+  Accenture Australia Ltd & \\ \hline
+  Microsoft Australia &  \multirow{3}{*}{Microsoft} \\
   Microsoft Australia Pty Ltd & \\
   \ldots  & \\
   Microsoft Enterprise Services & \\ \hline
@@ -194,25 +192,6 @@ and some open issues are also presented as future work.
 \end{table} 
 
 
-
-% The aim of this paper is to present the application of a common model to describe the information about organizations in a standard way 
-% using the Linked Data approach. Several models and ontologies have been provided in order 
-% to formalize the data, structure and behavior of organizations. Nevertheless these tries have not 
-% fully accepted due to some factors: 1) missing pieces to define the status of the organization; 
-% 2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
-% 3) lack of text properties, etc. These divergences imply a set of incomplete approaches to formalize 
-% data and information about organizations. Taking into account the current trends of applying 
-% semantic web technologies and linked data to formalize, aggregate and share domain specific information, 
-% a new model for organizations taking advantage of these initiatives is required in order to overcome existing barriers 
-% and exploit the corporate information in a standard way. This proposal is especially relevant in 
-% some senses to: 1) unify existing models to provide a common specification; 2) apply semantic web technologies and 
-% the Linked Data approach to enrich and publish the relevant corporate information; 3) 
-% provide access to the information via standard protocols and 4) offer new services that can exploit this 
-% information to trace the evolution and behavior of the organization over time. Finally, 
-% this work is interesting to improve the clarity and transparency of some scenarios in which 
-% organizations play a key role like e-procurement, e-health or financial transactions.
-
-
 \section{Related Work}
 The literature review of this review covers the following areas:
 \begin{itemize}
@@ -243,11 +222,13 @@ The literature review of this review covers the following areas:
 
  On the other hand the use of semantics is also being applied to model organizational structures. In this case the notion 
  of corporate is presented in several vocabularies and ontologies as Dave Reynolds (Epimorphics Ltd) reports~\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}. 
- Currently the main effort is focused in the designed of the Organizations Vocabulary (a W3C note) and 
- the Organizations (a semantic asset research effort from the Joint Research Center Europe) in which the structure and 
- relationships of companies are being modelled but some problems are emerging due to some factors: 
- 1) missing pieces to define the status of the organization; 2) tangled parts to specify the structure (concepts and relations) 
- between the elements of the organization; 3) lack of text properties and, in our research study, 4) name and address mismatches. 
+ Currently the main effort is focused in the designed of the Organizations Vocabulary (a W3C Working Draft) in which the structure and 
+ relationships of companies are being modelled but some problems are emerging due to some factors: 1) missing pieces to define the status of the organization; 
+ 2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
+ 3) lack of text properties and, in our research study, 4) name and address mismatches. This proposal is especially relevant in some senses to: 
+ 1) unify existing models to provide a common specification; 2) apply semantic web technologies and the Linked Data approach to enrich 
+ and publish the relevant corporate information; 3) provide access to the information via standard protocols 
+ and 4) offer new services that can exploit this information to trace the evolution and behavior of the organization over time.
 
  
  \item Corporate Databases. Figure~\ref{figure:open} shows an example of an organization (in N3 format) using ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}}. 
@@ -295,18 +276,9 @@ The literature review of this review covers the following areas:
 \end{itemize}
 
 
-
-
-
-
-
-\subsection{Entity Reconciliation}
-
-
-
-
 \section{Mismatches in Corporate Names}
-These inconsistencies result from~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727}:
+According to~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} some name variations or mismatches can be found:
+
 \begin{itemize}
  \item Non-acceptable variations, including non-valid names, or incorrect
 variant forms. The reason behind such variations would essentially be
