@@ -216,7 +216,7 @@ and some open issues are also presented as future work.
 \section{Related Work}
 The literature review of this review covers the following areas:
 \begin{itemize}
- \item Natural Language Processing and Computational Linguistics. In these research areas common works. dealing with the aforementioned data hetereogenities 
+ \item Natural Language Processing and Computational Linguistics. In these research areas common works dealing with the aforementioned data hetereogenities 
    such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
   in the lexical, syntactic and semantic level can be found. These approaches can be applied to solve general problems and usuarlly follow a 
   traditional approach of text normalization, lexical analysis, pos-tagging word according to a grammar and semantic analysis to filter or 
@@ -241,31 +241,14 @@ The literature review of this review covers the following areas:
  enough for most of user-based services such as visualization. However, in case of using these techniques as previous step of a reasoning or 
  a formal verification process this ambiguity can lead to infer incorrect facts and must be avoided without a previous human validation. 
 
- On the other hand as the next natural step in semantics ..
-In the case of organizations it is quite a hard search to do because a lot of ontologies need some notion of 
-Organization to point to. For instance the Friend Of A Friend vocabulary is about people 
-but needs to mention the ``Organizations'' of which a person is a member, 
-Inference Web~\footnote{\url{http://inference-web.org/}} is about distributed inference but covers trust and provenance 
-which in turn requires a notion of organizations (that are in a trust relationship). In each of these cases 
-the representation of the concept $<$Organization$>$ is minimal.  Following the evaluation made by 
-Dave Reynolds (Epimorphics Ltd) in this web report\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}, 
-several approaches can be found. Firstly, in previous works there are a number of similar upper ontologies 
-(Proton, Sumo, SmartWeb) that include some notion of Organization. These models have a lot of other intentions that 
-do not match with the specific requirement of a small and reusable model to describe organizations. 
-Secondly, if search engines are used to look for the concept of $<$Organization$>$ the next results will 
-be found: Swoogle $3,990$ matches, Falcons gives $15,881$ hits for Organization concept from $15$ highlighted vocabularies 
-and Google turns up: 1) the ``Organization Ontology 1.0'' written in SHOE,  giving a basic hierarchy of 
-organization, industries and employee roles; 2) an ``Organization Ontology for Enterprise Modelling'' 
-which is focused on supply chain and 3) ``Enterprise Ontology'', an ontology to represent the activity of
-business enterprises expressed in Ontolingua. Jeni Tennison~\footnote{\url{http://www.jenitennison.com/}} has also pointed 
-to an ontology developed by TSO for the London Gazette RDFa markup: Gazette Organization and Gazette Person. 
-According to the authors of this survey the following approaches should be reviewed: AKT Portal Ontology, 
-Proton top, Good Relations, FOAF, SIOC, Enterprise Modelling Ontology, Enterprise Ontology, Gazette organization and 
-person ontologies, Provenance Vocabulary Core Ontology, and other like School of ECS (University of Southampton) or 
-Academic Institution Internal Structure Ontology (AIISO), vocabularies for describing the internal organizational 
-structure of an academic institution. This situation implies a tangled environment for describing organizations and supposes
-a barrier to promote this information to the new Web of Data.
- 
+ On the other hand the use of semantics is also being applied to model organizational structures. In this case the notion 
+ of corporate is presented in several vocabularies and ontologies as Dave Reynolds (Epimorphics Ltd) reports~\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}. 
+ Currently the main effort is focused in the designed of the Organizations Vocabulary (a W3C note) and 
+ the Organizations (a semantic asset research effort from the Joint Research Center Europe) in which the structure and 
+ relationships of companies are being modelled but some problems are emerging due to some factors: 
+ 1) missing pieces to define the status of the organization; 2) tangled parts to specify the structure (concepts and relations) 
+ between the elements of the organization; 3) lack of text properties and, in our research study, 4) name and address mismatches. 
+
  
  \item Corporate Databases. Figure~\ref{figure:open} shows an example of an organization (in N3 format) using ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}}. 
  This information is potentially relevant to this work due to the large database that Open Corporates provides ($54,080,317$ of companies in May 2012) 
@@ -311,28 +294,9 @@ a barrier to promote this information to the new Web of Data.
  
 \end{itemize}
 
- 
-
-
-Supervised-techniques
-e-proc Eu
-
-
-name entity disambiguation
 
 
 
-On the other hand an organization, corporate, company, etc. (hereafter these names 
-will be used to refer to the same entity) is considered to be a set 
-of constraints on the activities performed by agents~\cite{Weber1978}. Previously, 
-Mintzberg provided an analysis of organization structure distinguishing among 
-five basic parts of an organization and five distinct organization configurations. This vision put 
-together some mechanisms to achieve coordination with the objective of modeling goals, 
-business processes and rules, authority, positions and communication. In this context, some works 
-have emerged~\cite{Fox95anorganisation} trying to create ontologies and models that specify the realm of 
-organizations but different problems are arisen due to some factors: 1) missing pieces to define the status of the organization; 
-2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
-3) lack of text properties, 4) name mismatches, etc. 
 
 
 
