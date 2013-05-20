@@ -120,7 +120,6 @@ of the ongoing example the string literals ``Oracle'' and ``Oracle University'' 
 to the entity $<$Oracle$>$ and $<$Oracle\_University$>$ but the problem of grouping by a unique (\textit{Big}) name 
 or resource still remains. 
 
-
 In the particular case of Australia, the supplier name is introduced by typing a string literal without any assistance or 
 auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers}, 
 can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and 
@@ -130,6 +129,13 @@ be divided into several divisions or departments but from a statistical point of
 should take into account all rewarded contracts regardless the structure of the company. That is why a context-aware 
 method based on NLP techniques combined with semantics has been designed, customized and implemented trying 
 to exploit the naming convention of a specific dataset.
+
+
+The remainder of this paper is structured as follows. Section 2 a literature review is presented. Afterwards next section outlines main mismatches in corporate names. Section 4 presents 
+the CORFU approach to unify corporate names. The evaluation section exposes and discusses the experimentation carried out to test the presented approach using as a dataset the rewarded 
+contracts of Australia in the period 2005-2012. Finally conclusions summarizes the main outcomes of this work 
+and some open issues are also presented as future work.
+
 
 
 \begin{table}[!htb]
@@ -187,15 +193,6 @@ to exploit the naming convention of a specific dataset.
   \end{center}
 \end{table} 
 
-The remainder of this paper is structured as follows. Section 2 
-a literature review is presented. Afterwards next section outlines 
-main mismatches in corporate names. Section 4 presents 
-the CORFU approach to unify corporate names. The evaluation 
-section exposes and discusses the experimentation carried out 
-to test the presented approach using as a dataset the rewarded 
-contracts of Australia in the period 2005-2012. Finally conclusions 
-and future work are outlined.
-
 
 
 % The aim of this paper is to present the application of a common model to describe the information about organizations in a standard way 
@@ -217,8 +214,34 @@ and future work are outlined.
 
 
 \section{Related Work}
-The 
+The literature review of this review covers the following areas:
+\begin{itemize}
+ \item Natural Language Processing and Computational Linguistics. In these research areas common works. dealing with the aforementioned data hetereogenities 
+   such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
+  in the lexical, syntactic and semantic level can be found. These approaches can be applied to solve general problems and usuarlly follow a 
+  traditional approach of text normalization, lexical analysis, pos-tagging word according to a grammar and semantic analysis to filter or 
+  provide some kind of service such as information/knowledge extraction, reporting, sentiment analysis or opinion mining. 
+  Well-stablished APIs such as NLTK for Python, Lingpipe for Java, WEKA (a data mining library with NLP capabilities), the Apache Lucene and Sorl 
+  search engines  provide the proper building blocks to build natural-language based applications. Recent times have seen how the analysis 
+  of social networks such as Twitter~\cite{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747}, the extraction of 
+  clinical terms~\cite{Wang:2009:ARN:1667884.1667888} for electronic health records, the creation of bibliometrics~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} or 
+  the idenfication of gene names~\cite{Krauthammer:2004:TIB:1053007.1053018,Galvez2012} to name a few have tackled the problem of entity recognition and extraction from raw sources. 
+  Other supervised techniques~\cite{Bohn:2006:PHD} have also be used to train data mining-based algorithms with the aim of creation 
+  classifiers.
  
+ \item Semantic Web. More specifically in the LOD initiative the use of entity reconciliation techniques to uniquely identify resources 
+ is being currently explored. Thus an entity reconciliation pocess can be briefly defined as the method for looking and mapping two different 
+ concepts or entities under a certain threshold. There are a lot of  works presenting solutions about concept mapping, entity reconciliation, etc. 
+ most of them are focused on the previous NLP techniques~\cite{conf/www/MaaliCP11,Serimi} (if two concepts have similar literal descriptions then they should be similar) 
+ and others (ontology-based) that also exploit the semantic information (hierarchy, number and type of relations) to establish a potential mapping 
+ (if two concepts share similar properties and similar super classes then these concepts should be similar). Apart from that 
+ there are also machine learning techniques to deal with these mismatches in descriptions using statistical approaches. Recent times, 
+ this process has been widely studied and applied to the field of linking entities in the LOD realm. Although there is no way of automatically 
+ creating a mapping with a 100\% of confidence (without human validation) a mapping under a certain percentage of confidence can be 
+ enough for most of user-based services such as visualization. However, in case of using these techniques as previous step of a reasoning or 
+ a formal verification process this ambiguity can lead to infer incorrect facts and must be avoided without a previous human validation. 
+
+ On the other hand as the next natural step in semantics ..
 In the case of organizations it is quite a hard search to do because a lot of ontologies need some notion of 
 Organization to point to. For instance the Friend Of A Friend vocabulary is about people 
 but needs to mention the ``Organizations'' of which a person is a member, 
@@ -242,53 +265,14 @@ person ontologies, Provenance Vocabulary Core Ontology, and other like School of
 Academic Institution Internal Structure Ontology (AIISO), vocabularies for describing the internal organizational 
 structure of an academic institution. This situation implies a tangled environment for describing organizations and supposes
 a barrier to promote this information to the new Web of Data.
+ 
+ 
+ \item Corporate Databases. Figure~\ref{figure:open} shows an example of an organization (in N3 format) using ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}}. 
+ This information is potentially relevant to this work due to the large database that Open Corporates provides ($54,080,317$ of companies in May 2012) 
+ with high-valuable information like the company ID. These data follow a mixed approach between Open and the LOD approach but a formal 
+ model describing the organizations is missing. That is why the use of a common ontology could improve the information sharing and 
+ the exploitation of the information in a standard way generating new value-added services of five stars like activity tracking. 
 
-Supervised-techniques~\cite{Bohn:2006:PHD}, twitter~\cite{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747}
-e-proc Eu
-
-ER LOD~\cite{conf/www/MaaliCP11,Serimi}
-
-name entity disambiguation
-
-clinical notes~\cite{Wang:2009:ARN:1667884.1667888}
-
-On the other hand an organization, corporate, company, etc. (hereafter these names 
-will be used to refer to the same entity) is considered to be a set 
-of constraints on the activities performed by agents~\cite{Weber1978}. Previously, 
-Mintzberg provided an analysis of organization structure distinguishing among 
-five basic parts of an organization and five distinct organization configurations. This vision put 
-together some mechanisms to achieve coordination with the objective of modeling goals, 
-business processes and rules, authority, positions and communication. In this context, some works 
-have emerged~\cite{Fox95anorganisation} trying to create ontologies and models that specify the realm of 
-organizations but different problems are arisen due to some factors: 1) missing pieces to define the status of the organization; 
-2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
-3) lack of text properties, 4) name mismatches, etc. 
-
-
-
-\subsection{Entity Reconciliation}
-This process can be briefly defined as the method for looking and mapping two different concepts or entities under a certain threshold. 
-There are a lot of  works presenting solutions about concept mapping, entity reconciliation, etc. 
-most of them are focused on NLP techniques (if two concepts have similar descriptions 
-then they should be similar) and others (ontology-based) that also exploit 
-the semantic information (hierarchy, number and type of relations) to establish a 
-potential mapping (if two concepts share similar properties and similar super classes then these 
-concepts should be similar). Apart from that there are also machine learning techniques to deal with these 
-mismatches in descriptions using statistical approaches. In recent times, this situation has been widely studied and applied to the field 
-of linking entities in the Linked Open Data realm. Although there is no way of creating a mapping with a 100\% of confidence 
-(without human validation) a  mapping with a certain percentage of confidence can be enough 
-(in the case of using these techniques as previous step of a reasoning process this situation should be 
-carefully managed in order to avoid the inference of incorrect facts). 
-
-
-\subsection{Existing Corporate Databases}
-In Figure~\ref{figure:open}, an example of an organization (in N3 format) using ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}}, 
-Open Corporates, is presented. This information is potentially relevant to this work due to the large database 
-that Open Corporates provides ($54,080,317$ of companies in May 2012) with high-valuable information like the company ID. 
-These data follow a mixed approach between Open and the LOD approach but a formal model describing the organizations is missing. 
-That is why the use of a common ontology could improve the information sharing and the exploitation of the information in a standard way generating new value-added services 
-of five stars like activity tracking. 
-% 
 \begin{figure}[!h]
 \begin{center}
 \begin{lstlisting}[language=SPARQL]
@@ -323,6 +307,39 @@ of five stars like activity tracking.
 \label{figure:open}
 \end{center}
 \end{figure}
+ 
+ 
+\end{itemize}
+
+ 
+
+
+Supervised-techniques
+e-proc Eu
+
+
+name entity disambiguation
+
+
+
+On the other hand an organization, corporate, company, etc. (hereafter these names 
+will be used to refer to the same entity) is considered to be a set 
+of constraints on the activities performed by agents~\cite{Weber1978}. Previously, 
+Mintzberg provided an analysis of organization structure distinguishing among 
+five basic parts of an organization and five distinct organization configurations. This vision put 
+together some mechanisms to achieve coordination with the objective of modeling goals, 
+business processes and rules, authority, positions and communication. In this context, some works 
+have emerged~\cite{Fox95anorganisation} trying to create ontologies and models that specify the realm of 
+organizations but different problems are arisen due to some factors: 1) missing pieces to define the status of the organization; 
+2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
+3) lack of text properties, 4) name mismatches, etc. 
+
+
+
+\subsection{Entity Reconciliation}
+
+
+
 
 \section{Mismatches in Corporate Names}
 These inconsistencies result from~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727}:
