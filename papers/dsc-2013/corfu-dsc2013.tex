@@ -9,7 +9,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{multirow}
 
-
+\usepackage{url}
 \usepackage{rotating}
 
 %%%Math
@@ -26,6 +26,7 @@
 \usepackage{listings}
 
 \usepackage{color}
+\usepackage{textcomp}
 
 \definecolor{darkred}{rgb}{0.5, 0, 0}
 \definecolor{violet}{rgb}{1, 0, 1}
@@ -68,7 +69,7 @@ quality is the next major step in the pubic sector. More specifically in the e-P
 vast amount of valuable data that is already available via the Internet protocols and formats and can be used 
 for the creation of new added-value services. Neverthless the simple extraction of statistics or creation of reports 
 can imply extra tasks with regards to clean, prepare and reconcile data. 
-From a transparency point of view one of the most interesting services lies in tracking rewarded contracts (type and supplier). 
+From a transparency point of view one of the most interesting services lies in tracking rewarded contracts (type, location, and supplier). 
 Depending on the capabilities of the public organization this kind of basic report can turn into a 
 complex task due to a lack of standardization in supplier names or the use of different descriptors for the type of contract. That is why 
 this paper presents a stepwise method based on natural language processing and semantics to deal with the hetereogenities in corporate names. 
@@ -85,32 +86,44 @@ context the extraction of statistics on how many contracts have been
 rewarded to the same company is a relevant indicator to evaluate the transparency 
 of the whole process. Although companies that want to tender for a public contract must be 
 oficially registered and have an unique identification number, the truth is 
-that most of rewarded contracts the supplier is only identified by a name or a string literal typed 
+that in most of rewarded contracts the supplier is only identified by a name or a string literal typed 
 by a civil-servant. In this sense there is not usually a connection between 
 the oficial company registry and the process of rewarding contracts implying different 
 naming problems and inconsistenty in data that are spread to next stages preventing future 
 activities such as reporting.
 
-Organization, corporate, company or institution to name a few (hereafter these names will be used imply 
-that the task of grouping contracts by a supplier is not a mere process of searching by the same literal. 
-Technical issues such as hyphenation, use of abbreviations or acronynms an transliteration are 
-common problems that must be addressed in order to provide a final corporate name and have been widely studied in the 
-field of Name Entity Recognition~\cite{citeulike:1657521} (NER) or name entity disambiguation~\cite{Sarmento:2009:AWN:1602022.1602085,Klein:2003:NER:1119176.1119204}. 
-Neverthless the problem that is being tackled in these approaches lies in the identification of organization 
-names in a raw text while in the e-Procurement sector the string literal identifying a supplier is already 
-known and it is not necessary to extract or recognize a potential name.
+In the case of the type of contract and location, there are already standardized~\cite{DBLP:journals/ijseke/AlvarezLSASL12} product 
+scheme classifications such as the Common Procurement Vocabulary (2003 and 2008), the Combined Nomenclature (2012), 
+the Central Product Classificationby by the European Union, the International Standard Industrial Classification of 
+All Economic Activities (Rev. 4) by the United Nations or the North American Industry Classification System (2007 and 2012) 
+by the Government of United States among others that are used with different objectives such as statistics, tagging or 
+information retrieval. Geolocated information can be also found in different common datasets and nomenclatures such as 
+the Nomenclature of territorial units for statistics in the European Union, the Geonames dataset, the GeoLinkedData 
+initiative or the traditional list of countries and ISO-codes.
 
+However organization, corporate, company or institution names (hereafter these names will be used to refer to 
+the same entity) and structure is not yet standardized at global scope and only some classification of economic activities or 
+company identifiers can be found. Thus the simple task of grouping contracts by a supplier is not a mere process of 
+searching by the same literal. Technical issues such as hyphenation, use of abbreviations or acronynms an transliteration are common p
+roblems that must be addressed in order to provide a final corporate name and have been widely studied in the field of 
+Name Entity Recognition~\cite{citeulike:1657521} (NER) or name entity disambiguation~\cite{Sarmento:2009:AWN:1602022.1602085,Klein:2003:NER:1119176.1119204}. 
+Neverthless the problem that is being tackled in these approaches lies in the identification of organization names in 
+a raw text while in the e-Procurement sector the string literal identifying a supplier is already known.
 
-In the particular case of Australia e-Procurement domain, the supplier name is introduced by typing a string literal without any assistance or 
+In the particular case of the Australian e-Procurement domain, the supplier name is introduced by typing a string literal without any assistance or 
 auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers}, 
 can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} 
-or context-aware data that is already known when the dataset is processed such as the country. Furthermore it is also well-known that a large company can 
-be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
+or context-aware data that is already known when the dataset is processed, e.g. country or year. Furthermore it is also well-known 
+that a large company can be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
 should take into account all rewarded contracts regardless the structure of the company.
 
 
-On the other hand the application of semantic technologies and the Linking Open Data approach (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
-in several fields like e-Government (e.g. the Open Government Data initiative) tries to improve the knowledge about a specific area providing 
+% In the specific case of company names there is an open database, OpenCorporates, that has collected more than $52$ million of names 
+% around the world and it can be considered a perfect candidate to perform the reconciliation process between a string literal and a 
+% target resource to obtain an unique identifier. N
+
+On the other hand the application of semantic technologies and the Linking Open Data initiative (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
+in several fields like e-Government (e.g. the Open Government Data effort) tries to improve the knowledge about a specific area providing 
 common data models and formats to share information and data between agents. More specifically, in the European e-Procurement 
 context~\cite{e-Proc-map-paper} there is an increasing commitment to boost the use of electronic communications and transactions 
 processing by government institutions and other public sector organizations in order to provide added-value services with special focus on SMEs. 
@@ -118,16 +131,13 @@ More specifically the LOD initiative seeks for creating a public data realm in w
 unique identification or resources through URIs can become real. Thus entity reconciliation techniques~\cite{Serimi,conf/www/MaaliCP11} 
 coming from the ontology mapping and alignment areas or algorithms based on Natural Language Processing (hereafter NLP) have been 
 designed to link similar resources already available in different vocabularies, datasets or databases such as DBPedia or Freebase. 
-In the specific case of company names there is an open database, OpenCorporates, that has collected more than $52$ million of names 
-around the world and it can be considered a perfect candidate to perform the reconciliation process between a string literal and a 
-target resource to obtain an unique identifier. Nevertheless the issue of unifying supplier names as a human would do 
-faces new  problems that have been tackled in other research works~\cite{Galvez2006} to extract statistics of performance in bibliographic databases. 
-The main objective is not just a mere reconciliation process to link to existing resource but to create a unique name or link. For instance in the case 
-of the ongoing example the string literals ``Oracle'' and ``Oracle University'' could be respectively aligned to the entity $<$Oracle$>$ and $<$Oracle\_University$>$ but 
-the problem of grouping by a unique (\textit{Big}) name or resource still remains. 
-
-That is why a context-aware method based on NLP techniques combined with semantics has been designed, customized and implemented trying 
-to exploit the naming convention of a specific dataset.
+Nevertheless the issue of unifying supplier names as a human would do faces new problems that have been tackled in 
+other research works~\cite{Galvez2006} to extract statistics of performance in bibliographic databases. The main objective is not just a 
+mere reconciliation process to link to existing resources but to create a unique name or link ($n$ string literals $\to$ $1$ company $\to$ $1$ URI). 
+For instance in the case of the ongoing example the string literals ``Oracle'' and ``Oracle University'' could be respectively aligned to the entity $<$Oracle\_Corporation$>$ and $<$Oracle\_University$>$ but 
+the problem of grouping by a unique (\textit{Big}) name, identifier or resource still remains. That is why a context-aware method based on NLP 
+techniques combined with semantics has been designed, customized and implemented trying to exploit the naming convention of a specific dataset with the aim 
+of grouping $n$ string literals $\to$ $1$ company and, thus, easing the next natural process of entity reconciliation.
 
 The remainder of this paper is structured as follows. Section 2 a literature review is presented. Afterwards next section outlines main mismatches in corporate names. Section 4 presents 
 the CORFU approach to unify corporate names. The evaluation section exposes and discusses the experimentation carried out to test the presented approach using as a dataset the rewarded 
@@ -139,50 +149,50 @@ and some open issues are also presented as future work.
 \begin{table}[!htb]
 \renewcommand{\arraystretch}{1.3}
 \begin{center}
-\begin{tabular}{|l|l|}
+\begin{tabular}{|p{7cm}|p{7cm}|}
 \hline
-  \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name}\\  \hline
-  Accenture & \multirow{12}{*}{Accenture} \\
-  ACCENTURE & \\ 
-  Accenture Aust Holdings & \\  
-  Accenture Aust Holdings Pty Ltd & \\
-  Accenture Australia & \\
-  ACCENTURE AUSTRALIA & \\
-  Accenture  Australia Holding P/L & \\
-  Accenture Australia Holdings P/Ltd & \\
-  Accenture Australia Holdings Pty & \\
-  Accenture Australia Holdings Pty Lt  & \\  
-  Accenture Australia Limited & \\
+  \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name and URI}  \\  \hline
+  ``Accenture'' & \multirow{12}{*}{``Accenture''} \\
+  ``ACCENTURE'' & \multirow{12}{*}{\url{http://live.dbpedia.org/resource/Accenture}} \\ 
+  ``Accenture Aust Holdings'' & \\  
+  ``Accenture Aust Holdings Pty Ltd'' & \\
+  ``Accenture Australia'' & \\
+  ``ACCENTURE AUSTRALIA'' & \\
+  ``Accenture  Australia Holding P/L'' & \\
+  ``Accenture Australia Holdings P/Ltd'' & \\
+  ``Accenture Australia Holdings Pty'' & \\
+  ``Accenture Australia Holdings Pty Lt''  & \\  
+  ``Accenture Australia Limited'' & \\
   \ldots  & \\
-  Accenture Australia Ltd & \\ \hline
-  Microsoft Australia &  \multirow{3}{*}{Microsoft} \\
-  Microsoft Australia Pty Ltd & \\
+  ``Accenture Australia Ltd'' & \\ \hline
+  ``Microsoft Australia'' & \multirow{3}{*}{``Microsoft''} \\
+  ``Microsoft Australia Pty Ltd'' & \multirow{3}{*}{\url{http://live.dbpedia.org/resource/Microsoft}} \\
   \ldots  & \\
-  Microsoft Enterprise Services & \\ \hline
-  Oracle (Corp) Aust Pty Ltd  & \multirow{14}{*}{Oracle} \\
-  Oracle Corp (Aust) Pty Ltd  & \\
-  Oracle Corp Aust Pty Ltd & \\
-  ORACLE CORP AUST PTY LTD & \\
-  Oracle Corp. Australia & \\
-  ORACLE CORP AUSTRALIA P/L & \\
-  Oracle Corp. Australia Pty.Ltd. & \\
-  ORACLE CORP AUSTRALIA PTY LTD & \\
-  Oracle Corpoartion (Aust) Pty Ltd & \\
-  Oracle Corporate Aust Pty Ltd & \\
-  Oracle Corporation & \\
-  Oracle Risk Consultants & \\
-  ORACLE SYSTEMS (AUSTRALIA) PTY LTD & \\
+  ``Microsoft Enterprise Services'' & \\ \hline
+  ``Oracle (Corp) Aust Pty Ltd''  & \multirow{14}{*}{``Oracle''} \\
+  ``Oracle Corp (Aust) Pty Ltd''  & \multirow{14}{*}{\url{http://live.dbpedia.org/resource/Oracle_Corporation}} \\
+  ``Oracle Corp Aust Pty Ltd'' & \\
+  ``ORACLE CORP AUST PTY LTD'' & \\
+  ``Oracle Corp. Australia'' & \\
+  ``ORACLE CORP AUSTRALIA P/L'' & \\
+  ``Oracle Corp. Australia Pty.Ltd.'' & \\
+  ``ORACLE CORP AUSTRALIA PTY LTD'' & \\
+  ``Oracle Corpoartion (Aust) Pty Ltd'' & \\
+  ``Oracle Corporate Aust Pty Ltd'' & \\
+  ``Oracle Corporation'' & \\
+  ``Oracle Risk Consultants'' & \\
+  ``ORACLE SYSTEMS (AUSTRALIA) PTY LTD'' & \\
   \ldots  & \\
-  Oracle University  & \\ \hline
-  PRICEWATERHOUSECOOPERS(PWC)  & \multirow{8}{*}{PricewaterhouseCoopers} \\
-  PricewaterhouseCoopers Securities Ltd & \\
-  PriceWaterhouseCoopers Securities Ltd & \\
-  PRICEWATERHOUSE COOPERS SECURITIES LTD & \\
-  PricewaterhouseCoopers Services LLP & \\
-  Pricewaterhousecoopers Services Pty Ltd & \\
-  PriceWaterhouseCoopers (T/A: PriceWaterhouseCoopers Legal) & \\
+  ``Oracle University''  & \\ \hline
+  ``PRICEWATERHOUSECOOPERS(PWC)''  & \multirow{8}{*}{``PricewaterhouseCoopers''} \\
+  ``PricewaterhouseCoopers Securities Ltd''& \multirow{8}{*}{\url{http://dbpedia.org/resource/PricewaterhouseCoopers}} \\
+  ``PriceWaterhouseCoopers Securities Ltd'' & \\
+  ``PRICEWATERHOUSE COOPERS SECURITIES LTD'' & \\
+  ``PricewaterhouseCoopers Services LLP'' & \\
+  ``Pricewaterhousecoopers Services Pty Ltd'' & \\
+  ``PriceWaterhouseCoopers (T/A: PriceWaterhouseCoopers Legal)'' & \\
   \ldots  & \\
-  Pricewaterhouse (PWC) & \\ \hline
+  ``Pricewaterhouse (PWC)'' & \\ \hline
   \ldots & \ldots \\
   \hline
   \end{tabular}
@@ -197,46 +207,57 @@ The literature review of this review covers the following areas:
 \begin{itemize}
  \item Natural Language Processing and Computational Linguistics. In these research areas common works dealing with the aforementioned data hetereogenities 
    such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
-  in the lexical, syntactic and semantic level can be found. These approaches can be applied to solve general problems and usuarlly follow a 
+  in the lexical, syntactic and semantic levels can be found. These approaches can be applied to solve general problems and usually follow a 
   traditional approach of text normalization, lexical analysis, pos-tagging word according to a grammar and semantic analysis to filter or 
   provide some kind of service such as information/knowledge extraction, reporting, sentiment analysis or opinion mining. 
-  Well-stablished APIs such as NLTK~\cite{LoperBird02} for Python, Lingpipe~\cite{Lingpipe}, OpenNLP~\cite{OpenNLP} or Gate~\cite{Gate} for Java, WEKA~\cite{read12:_scalab,} 
-  (a data mining library with NLP capabilities), the Apache Lucene and Solr~\cite{rafa2011apache} search engines provide the proper building blocks to build natural-language based applications. Recent times have seen how the analysis 
-  of social networks such as Twitter~\cite{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747}, the extraction of 
+  Well-stablished APIs such as NLTK~\cite{LoperBird02} for Python, Lingpipe~\cite{Lingpipe}, OpenNLP~\cite{OpenNLP} or Gate~\cite{Gate} for Java, WEKA~\cite{read12:_scalab} 
+  (a data mining library with NLP capabilities), the Apache Lucene and Solr~\cite{rafa2011apache} search engines provide the proper building blocks to build natural-language based applications. 
+  Recent times have seen how the analysis of social networks such as Twitter~\cite{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747}, the extraction of 
   clinical terms~\cite{Wang:2009:ARN:1667884.1667888} for electronic health records, the creation of bibliometrics~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} or 
   the idenfication of gene names~\cite{Krauthammer:2004:TIB:1053007.1053018,Galvez2012} to name a few have tackled the problem of entity recognition and extraction from raw sources. 
-  Other supervised techniques~\cite{Bohn:2006:PHD} have also be used to train data mining-based algorithms with the aim of creation 
-  classifiers.
+  Other supervised techniques~\cite{Bohn:2006:PHD} have also be used to train data mining-based algorithms with the aim of creation classifiers.
  
- \item Semantic Web. More specifically in the LOD initiative the use of entity reconciliation techniques to uniquely identify resources 
- is being currently explored. Thus an entity reconciliation pocess can be briefly defined as the method for looking and mapping two different 
+ \item Semantic Web. More specifically in the LOD initiative~\cite{Berners-Lee-2006} the use of entity reconciliation techniques to uniquely identify resources 
+ is being currently explored. Thus an entity reconciliation pocess can be briefly defined as the method for looking and mapping~\cite{DBLP:conf/semweb/IseleJB10,DBLP:conf/icwe/IseleJB12} two different 
  concepts or entities under a certain threshold. There are a lot of  works presenting solutions about concept mapping, entity reconciliation, etc. 
  most of them are focused on the previous NLP techniques~\cite{conf/www/MaaliCP11,Serimi} (if two concepts have similar literal descriptions then they should be similar) 
  and others (ontology-based) that also exploit the semantic information (hierarchy, number and type of relations) to establish a potential mapping 
  (if two concepts share similar properties and similar super classes then these concepts should be similar). Apart from that 
  there are also machine learning techniques to deal with these mismatches in descriptions using statistical approaches. Recent times, 
- this process has been widely studied and applied to the field of linking entities in the LOD realm. Although there is no way of automatically 
- creating a mapping with a 100\% of confidence (without human validation) a mapping under a certain percentage of confidence can be 
+ this process has been widely studied and applied to the field of linking entities in the LOD realm, for instance using the DBPedia~\cite{Mendes:2011:DSS:2063518.2063519}. 
+ Although there is no way of automatically creating a mapping with a 100\% of confidence (without human validation) a mapping under a certain percentage of confidence can be 
  enough for most of user-based services such as visualization. However, in case of using these techniques as previous step of a reasoning or 
  a formal verification process this ambiguity can lead to infer incorrect facts and must be avoided without a previous human validation. 
 
  On the other hand the use of semantics is also being applied to model organizational structures. In this case the notion 
  of corporate is presented in several vocabularies and ontologies as Dave Reynolds (Epimorphics Ltd) reports~\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}. 
  Currently the main effort is focused in the designed of the Organizations Vocabulary (a W3C Working Draft) in which the structure and 
- relationships of companies are being modelled but some problems are emerging due to some factors: 1) missing pieces to define the status of the organization; 
- 2) tangled parts to specify the structure (concepts and relations) between the elements of the organization; 
- 3) lack of text properties and, in our research study, 4) name and address mismatches. This proposal is especially relevant in some senses to: 
- 1) unify existing models to provide a common specification; 2) apply semantic web technologies and the Linked Data approach to enrich 
- and publish the relevant corporate information; 3) provide access to the information via standard protocols 
- and 4) offer new services that can exploit this information to trace the evolution and behavior of the organization over time.
+ relationships of companies are being modelled. This proposal is especially relevant in the next aspects:  
+ 1) to unify existing models to provide a common specification; 2) to apply semantic web technologies and the Linked Data approach to enrich 
+ and publish the relevant corporate information; 3) to provide access to the information via standard protocols 
+ and 4)to  offer new services that can exploit this information to trace the evolution and behavior of the organization over time.
 
  
- \item Corporate Databases. Figure~\ref{figure:open} shows an example of an organization (in N3 format) using ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}}. 
- This information is potentially relevant to this work due to the large database that Open Corporates provides ($54,080,317$ of companies in May 2012) 
- with high-valuable information like the company ID. These data follow a mixed approach between Open and the LOD approach but a formal 
- model describing the organizations is missing. That is why the use of a common ontology could improve the information sharing and 
- the exploitation of the information in a standard way generating new value-added services of five stars like activity tracking. 
-
+ \item Corporate Databases. Although corporate information such as identifier, name, economic activity, contact person, address or 
+ financial status is usually publicly available in the official government registries the access to this valuable information can be 
+ tedious due to different formats, query languages, etc. That is why other companies have emerged trying to index and exploit of 
+ this public repositories selling reporting services that contains the aforementioned corporate information. Taking as 
+ an example the Spanish Chambers of Commerce~\footnote{\url{http://www.camerdata.es/php/eng/fichero\_empresas.php}},
+ Empresia.es~\footnote{\url{http://empresia.es}}, Axesor.es~\footnote{\url{http://www.axexor.es}} contain a database of companies and individual 
+ entrepreneurs of Spain. This situation can be translated to the international scope, for instance Forbes keeps a list of 
+ the most representative companies in different sectors. The underlying problem lies in the lack of unique identification, 
+ names standardization and, as a consequence, difficulty of tracking company activity. In order to tackled these problems some 
+ initiatives applying the LOD principles such as the Orgpedia~\footnote{\url{http://tw.rpi.edu/orgpedia/}} in United States or 
+ ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}} have scrapped and published the information 
+ of companies creating a large database containing ($54,080,317$ of companies in May 2012) with high-valuable information like the company 
+ identifier, e.g. Figure~\ref{figure:open} shows an example of an ``OpenCorporates'' organization. 
+ Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
+ as a human would do and the previous section has presented) still remains. Finally public web sites and social networks such as Google 
+ Places, Foursquare, Linkedin Companies, Facebook or Tuenti provide APIs and information managed by the own companies that is supposed 
+ to be specially relevant to enrich existing corporate data once a company is uniquely identified.
+ 
+  
+ 
 \begin{figure}[!h]
 \begin{center}
 \begin{lstlisting}[language=SPARQL]
