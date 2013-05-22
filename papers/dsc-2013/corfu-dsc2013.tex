@@ -421,7 +421,12 @@ built after checking if a word is not a ``most common word'' and exists in the W
 are not completely adequate for corporate names because words change and, therefore, a non-acceptable variant of the name 
 could be included. That is why this stage is marked as optional and must be configured and performed with extreme care.
 
-\item Pos-tagging parts of speech according to a grammar and filtering non-relevant parts of speech. 
+\item Pos-tagging parts of speech according to a grammar and filtering non-relevant parts of speech. The objective 
+of this stage lies in ``classifying words into their parts of speech and labelling them accordingly is known as part-of-speech tagging''~\cite{LoperBird02}. In order 
+to design this task both a lemmatizer based on Wordnet and a grammar for corporate names has been designed, see Figure~\ref{figure:step-4}. 
+Once words are tagged next step consists in filtering those non-relevant categories for corporate names keeping nouns and adjectives, as an example 
+Figure~\ref{figure:step-5} shows how to walk and filter nodes in the parsed tree.
+
 \begin{figure}[!h]
 \begin{center}
 \begin{lstlisting}[language=Python]  
@@ -430,12 +435,12 @@ self.grammar = r"""
   NBAR: {<NN.*|JJ>*<NN.*>}  
   # Nouns and Adjectives, terminated with Nouns
   NP: {<NBAR>}
-      {<NBAR><IN><NBAR>}  # Above, connected with in/of/etc...
+      {<NBAR><IN><NBAR>}  # Above, connected with in/of/...
     """
 self.chunker = nltk.RegexpParser(self.grammar)
 \end{lstlisting}
 \caption{Regular expression based chunker in Python NLTK.}
-\label{figure:step-1}
+\label{figure:step-4}
 \end{center}
 \end{figure}   
   
@@ -443,12 +448,11 @@ self.chunker = nltk.RegexpParser(self.grammar)
 \begin{center}
 \begin{lstlisting}[language=Python]  
 def leaves(self, tree):
-    """Finds NP (nounphrase) leaf nodes of a chunk tree."""
   for subtree in tree.subtrees(filter = lambda t: t.node=='NP'):
     yield subtree.leaves()
 \end{lstlisting}
-\caption{Filtering words by category NP.}
-\label{figure:step-1}
+\caption{Filtering words by the category NP.}
+\label{figure:step-5}
 \end{center}
 \end{figure}      
 
