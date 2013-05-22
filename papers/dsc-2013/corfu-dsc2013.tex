@@ -296,21 +296,6 @@ The literature review of this review covers the following areas:
  
 \end{itemize}
 
-
- 
-% \subsection{Modeling Organizational Structures}
-% The broad objective of modeling organizational structures is to promote this information using semantic technologies and the LOD approach. To get this objective 
-% the Organizations Ontology~\footnote{\url{http://www.epimorphics.com/public/vocabulary/org.html}} represents a first step to model organizations but 
-% some issues should be addressed to spread the scope of this specification: 1) Structure; 2) Human resources; 3) Corporate image; 4) Id; 5) Name; 
-% 6) Purposes and intentions; 7) Cataloging products, services and activities; 8) Multilingual and multicultural problems; 9) Inter/Intra relationships or 
-% 10) Activity Tracking and Financial transactions (e.g XBRL could be used). Nevertheless we have used this ontology to initially address the objectives of this work because 
-% it is core ontology for organizational structures (see Fig\footnote{Source: http://www.epimorphics.com/public/vocabulary/diagram.png}.~\ref{fig:org}), 
-% aimed at supporting linked-data publishing of organizational information across a number of domains. It is also designed 
-% to allow domain-specific extensions to add classification of organizations and roles, 
-% as well as extensions to support neighboring information such as organizational activities. 
-% This ontology partially fits to the aim of modeling organizations in a standard and reusable way 
-% with semantic technologies. 
-% 
 % 
  \section{The CORFU approach}
 According to~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} institutional name variations can be 
@@ -327,27 +312,163 @@ a set $S_1 = \{ x : x \in S \wedge \phi (x)\}$.
 \item A expanded set $S'$ can be defined as a superset of a given set $S$, $S \subseteq S'$.
 \end{itemize}
 
-The CORFU approach is based on the execution of common but customized steps in natural language processing applications:
-\begin{enumerate}
- \item Normalization.
- \item Filtering.
- \item Comparison and Clusterization.
-\end{enumerate}
+The CORFU approach is based on the execution of common but customized steps in natural language processing applications that 
+have been implemented using the Python NLTK API (unless another tool is named) and comprising: 1) text normalization; 2) filtering and 
+3) comparison and clusterization. Furthermore and with the aim of linking the new corporate name $C'_{str}$ to an existing resource in the Web, in this particular case with OpenCorporates and the DBPedia. 
+Thus the name is unified and can accomplish with the principles of the LOD initiative such as unique identification or data enrichment. 
+In order to explain each of the steps performed in the CORFU unifier next tasks have been designed and implemented.
 
 \begin{enumerate}
- \item Filter the expanded set of common stop words in English.
- \item Filter the expanded set of most common words in the dataset.
- \item Filter the set of common acronyms.
- \item Dictionary-based expansion of relevant abbreviations and acronyms.
- \item Spellcheking.
- \item Pos-tagging parts of speech according to a grammar.
- \item Filter un-relevant parts of speech.
- \item Create comparison matrix between potential target names.
- \item Iterate $n$ times until clustering or align with ``the most probably name'' the ongoing-name.
- \item Reconcile the generated corporate name with an existing reconcile service.
+ \item Normalize raw text and remove duplicates. This step is comprised of: 1) remove strange characters and punctuation marks but keeping 
+ those that are part of a word avoiding potential changes in  abbreviations or acronyms; 2) lowercase the raw text (although some semantics can 
+ be lost previous works and empirical tests show that this is the best approach; 3) remove duplicates and 4)lemmatize the corporate name. 
+ The implementation of this step to get the corporate name $C_{str}$ has ben performed using a combination of the aforemention API and 
+ the Unix scripting tools AWK and SED. In this case, Figure~\ref{figure:step-1} presents 
+ two relevant snippets of code for cleaning the name and making a basic a normalization of words. 
+ 
+\begin{figure}[!h]
+\begin{center}
+\begin{lstlisting}[language=Python]        
+rawname = filter(lambda x: x in string.letters or 
+	      x in string.whitespace, line
+...
+def normalize(self, word):
+  word = word.lower()
+  word = self.lemmatizer.lemmatize(word)
+  return word
+\end{lstlisting}
+\caption{Basic normalization of a word using the Python NLTK API.}
+\label{figure:step-1}
+\end{center}
+\end{figure}
+   
+\item Filter the basic set of common stopwords in English. A common practice in NLP relies in the construction 
+of stopwords sets that can filter some non-relevant words in a text. Nevertheless the use of this technique must 
+consider two keypoints: 1) there is a common set of stopwords for any language than can be always used as a filter and 
+2) depending on the context the set of stopwords should change to avoid the filtering of relevant words. In this particular 
+case, a common and minimal set of stopwords in English,  $S_{english}$,  has been used. Thus the normalized corporate name $C_{str}$ is 
+transformed in a new set of words $C^{1}_{str} = \{ c_i : c_i \in C_{str} \wedge c_i \notin S_{english}\}$. Figure~\ref{figure:step-2} presents 
+the function for removing a set of words given a another set words, it can also be applied to other stages that require 
+filtering capabilities.
+
+\begin{figure}[!h]
+\begin{center}
+\begin{lstlisting}[language=Python] 
+from nltk.corpus import stopwords
+self.stop_words_wn = Set(stopwords.words('english'))
+...
+def remove_set(self, set,  name): 
+  token_names= word_tokenize(name)       
+  filtered_token_list = [w for w in  token_names if not w in set ]
+  cleaned_name = " ".join(["".join(filtered_token) 
+    for filtered_token in filtered_token_list])
+  return cleaned_name
+  
+stop_unified_name = self.remove_set(self.stop_words_wn, name)
+\end{lstlisting}
+\caption{Filtering words with the Python NLTK API.}
+\label{figure:step-2}
+\end{center}
+\end{figure}
+
+\item Filter the expanded set of most common words in the dataset. Taking into account 
+the aforementioned step this stage is based on the construction of a customized stopwords 
+set of corporate names that is also expanded with Wordnet (ver. 3.0) synonyms. In order 
+to create this set $S_{corporate}$ two strategies have been followed and applied: 1) create the set 
+of words by hand (accurate but very time-consuming) and 2) extract automatically the set of ``most common words'' from the 
+working dataset and make a hand-validation (less accurate and time-consuming). Figure~\ref{figure:step-3} partially 
+shows these approaches implemented.
+    
+\begin{figure}[!h]
+\begin{center}
+\begin{lstlisting}[language=Python]  
+from nltk.corpus import wordnet as wn
+...
+def create_syns_from_wn(self, word):
+  syns = wn.synsets(word) 
+  lemmas = Set()
+  for syn in syns:
+    lemmas = lemmas | Set([lemma.name for lemma in syn.lemmas] )
+  return lemmas
+
+def expand_list_wn(self,  list):    
+  source = Set(list)
+  expanded_set = Set()
+  for word in source:
+    expanded_set = expanded_set | self.create_syns_from_wn(word)
+return expanded_set |  source
+
+def list_most_used_words(companies, max):
+	words = flatten(map(lambda company: company.rawname.split(), companies))
+	counter = collections.Counter(words)  
+	return [x[0].lower() for x in 
+	  filter ( lambda x: x [1] > max, 
+	 (itertools.islice(counter.most_common(), 0, 1000)))]
+\end{lstlisting}
+\caption{Expanding a list of words with Wordnet syns.}
+\label{figure:step-3}
+\end{center}
+\end{figure}
+
+\item Dictionary-based expansion of common acronyms and filtering. A dictionary of common acronyms in corporate 
+names such as ``PTY'', ``LTD'' or ``PL'' and their variants has been created by hand in order to be able to extract and filter acronyms. 
+
+\item Spellcheking (optional). This stage seeks for providing a method for fixing mispelling errors. It is based on the 
+well-known speller~\cite{NorvigSpelling} of Peter Norvig that uses a train dataset for creating a classifier. Although the accuracy of this 
+algorithm is pretty good for relevant words in corporate names, the empirical and unit tests with a working dataset 
+have demonstrated that mispelled non-relevant words is more efficient and accurate using a stopwords set (this set has been 
+built after checking if a word is not a ``most common word'' and exists in the Wordnet database). Furthermore some spelling corrections 
+are not completely adequate for corporate names because words change and, therefore, a non-acceptable variant of the name 
+could be included. That is why this stage is marked as optional and must be configured and performed with extreme care.
+
+\item Pos-tagging parts of speech according to a grammar and filtering non-relevant parts of speech. 
+\begin{figure}[!h]
+\begin{center}
+\begin{lstlisting}[language=Python]  
+self.lemmatizer = nltk.WordNetLemmatizer()
+self.grammar = r"""
+  NBAR: {<NN.*|JJ>*<NN.*>}  
+  # Nouns and Adjectives, terminated with Nouns
+  NP: {<NBAR>}
+      {<NBAR><IN><NBAR>}  # Above, connected with in/of/etc...
+    """
+self.chunker = nltk.RegexpParser(self.grammar)
+\end{lstlisting}
+\caption{Regular expression based chunker in Python NLTK.}
+\label{figure:step-1}
+\end{center}
+\end{figure}   
+  
+ \begin{figure}[!h]
+\begin{center}
+\begin{lstlisting}[language=Python]  
+def leaves(self, tree):
+    """Finds NP (nounphrase) leaf nodes of a chunk tree."""
+  for subtree in tree.subtrees(filter = lambda t: t.node=='NP'):
+    yield subtree.leaves()
+\end{lstlisting}
+\caption{Filtering words by category NP.}
+\label{figure:step-1}
+\end{center}
+\end{figure}      
+
+\item Create a matrix between potential target names using a string comparison function and 
+iterate $n$ times until clustering or align with ``the most probably/used name'' in the working dataset.
+
+\item Reconcile the generated corporate name with an existing reconcile service.
+
 \end{enumerate}
 
+\subsection{Use Case: Corporate names in the Australian e-Procurement domain }
 % 
+\begin{enumerate}
+ \item FIXME
+ \item  For instance, in the case of 1) the set of customized by hand stopwords contains some words such as ``Advertising'' or ``Ordnance'' (some mispelled words 
+have been included here to avoid false positives in the spelling phase). On the other hand, the first $max$ most used words in the corporate names dataset are initially selected as stopwords, 
+in this particular case and after studying the working dataset, the first $50$ words have been automatically selected containing words such as ``Management'', ``Services'' or ``Associates'' that 
+are very common in corporate names and, therefore, non-relevant.
+\end{enumerate}
+
 \section{Evaluation}
 
 \subsection{Research design}
