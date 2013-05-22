@@ -423,19 +423,18 @@ could be included. That is why this stage is marked as optional and must be conf
 
 \item Pos-tagging parts of speech according to a grammar and filtering non-relevant parts of speech. The objective 
 of this stage lies in ``classifying words into their parts of speech and labelling them accordingly is known as part-of-speech tagging''~\cite{LoperBird02}. In order 
-to design this task both a lemmatizer based on Wordnet and a grammar for corporate names has been designed, see Figure~\ref{figure:step-4}. 
-Once words are tagged next step consists in filtering those non-relevant categories for corporate names keeping nouns and adjectives, as an example 
-Figure~\ref{figure:step-5} shows how to walk and filter nodes in the parsed tree.
+to perform this task both a lemmatizer based on Wordnet and a grammar for corporate names (``NN''-nouns and ``JJ''-adjectives connected with articles and 
+prepositions) have been designed, see Figure~\ref{figure:step-4}. Once words are tagged next step consists in filtering those non-relevant categories 
+for corporate names keeping nouns and adjectives, as an example Figure~\ref{figure:step-5} shows how to walk and filter nodes in the parsed tree.
 
 \begin{figure}[!h]
 \begin{center}
 \begin{lstlisting}[language=Python]  
 self.lemmatizer = nltk.WordNetLemmatizer()
 self.grammar = r"""
-  NBAR: {<NN.*|JJ>*<NN.*>}  
-  # Nouns and Adjectives, terminated with Nouns
+  NBAR: {<NN.*|JJ>*<NN.*>}   
   NP: {<NBAR>}
-      {<NBAR><IN><NBAR>}  # Above, connected with in/of/...
+      {<NBAR><IN><NBAR>} 
     """
 self.chunker = nltk.RegexpParser(self.grammar)
 \end{lstlisting}
@@ -451,13 +450,20 @@ def leaves(self, tree):
   for subtree in tree.subtrees(filter = lambda t: t.node=='NP'):
     yield subtree.leaves()
 \end{lstlisting}
-\caption{Filtering words by the category NP.}
+\caption{Filtering words by the category ``NP'' (noun phrase).}
 \label{figure:step-5}
 \end{center}
 \end{figure}      
 
 \item Create a matrix between potential target names using a string comparison function and 
-iterate $n$ times until clustering or align with ``the most probably/used name'' in the working dataset.
+iterate $n$ times until clustering or align with ``the most probably/used name'' 
+in the working dataset. Since previous steps have cleaned and prepared the raw corporate name 
+it is now necessary to group the corporate names and generate a final unified name. Due to the 
+process can be highly customized a large number of names are now more similar than in 
+the begining. In order to compare between the similarity of a company name with the whole set of company names 
+a matrix $M$ containing in each position $M(i,j)$ a value (0-100) is created. 
+Thus given a company in the position  calculated by comparing with a function the names of 
+companies $i$ and $j$ 
 
 \item Reconcile the generated corporate name with an existing reconcile service.
 
@@ -486,14 +492,17 @@ are very common in corporate names and, therefore, non-relevant.
 \subsection{Sample}
 In order to validate the approach outlined in this summary the dataset of supplier names in Australia in the period 2005-2012 containing $430188$ full names 
 and $77526$ unique names has been selected. Initially the traditional reconciliation process using 
-Google Refine and OpenCorporates generated an 8\% of links but most of them were 
-incorrect or not grouped by the same resource. After applying the above-mentioned s
-tepwise method the initial set $77526$ names were grouped in $40278$ 
-distinct names (51\% of potential right links to OpenCoporates). 
-Furthermore these unified names were reviewed by hand and in the specific case 
-of the first one hundred companies in the Forbes list a 100\% of correct names can be now ensured.
+Google Refine and OpenCorporates generated an $8$\% of links but most of them were 
+incorrect or not grouped by the same resource. After applying the CORFU approach 
+the initial set $77526$ names were grouped in $40278$ distinct names 
+($51$\% of potential right links to OpenCoporates). Furthermore these unified names were manually 
+reviewed by hand and in the specific case of the first one hundred companies in the Forbes 
+list a $100$\% of correct names can be now ensured.
  
 \subsection{Results and Discussion}
+
+
+\section{Conclusions and Future Work}
 The main conclusion of this works lies in the design of a technique to prepare 
 raw organization names in a specific context, e.g. Australia supplier names,  
 before performing a reconciliation process. Although the percentage of potential 
@@ -504,9 +513,6 @@ to deliver a complete and intelligent company unifier. On the other hand, the
 application of this technique enables the comparison of rewarded contracts to 
 different companies and can help to improve the transparency in public 
 administrations.
-
-\section{Conclusions and Future Work}
-
 
 \bibliographystyle{plain}
 % %\bibliographystyle{unsrt}
