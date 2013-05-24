@@ -424,7 +424,7 @@ built with words that are not in the set of ``most common word'' and exist in th
 are not completely adequate for corporate names due to words change and, therefore, a non-acceptable variant of the name 
 could be included. That is why this stage is marked as optional and must be configured and performed with extreme care.
 
-\item Pos-tagging parts of speech according to a grammar and filtering non-relevant parts of speech. The objective 
+\item Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones. The objective 
 of this stage lies in ``classifying words into their parts of speech and labelling them accordingly is known as part-of-speech tagging''~\cite{LoperBird02}. In order 
 to perform this task both a lemmatizer based on Wordnet and a grammar for corporate names (``NN''-nouns and ``JJ''-adjectives connected with articles and 
 prepositions) have been designed, see Figure~\ref{figure:step-4}. Once words are tagged next step consists in filtering non-relevant categories 
@@ -452,9 +452,10 @@ def leaves(self, tree):
 
 \item Cluster corporate names. This task is in charge of grouping names by similarity applying 
 a string comparison function. Thus if the clustering is appied $n$ times any name 
-will be grouped by ``the most probably/used name'' according to threshold generated 
+will be grouped by ``the most probably/used name'' according to a threshold generated 
 by the comparison function. This first version of CORFU has used the WRatio function to 
-compare strings that is available in the Levenshtein Python utils package.
+compare strings (available in the Levenshtein Python package) and a custom clustering 
+implementation.
 
 \item Validate and reconcile the generated corporate name via an existing reconcile service (optional). This last 
 step has been included with the objective of linking the final corporate name with an existing information 
@@ -477,8 +478,30 @@ information of Australia is used to test the CORFU unifier. It is comprised of a
 of more than $400$K supplier names during the period 2004-2012. In order to be able to extract 
 good statistics from this dataset the unification of names must be applied to. That is why 
 the CORFU stepwise method has been customized to deal with the hetereogenities of this large 
-dataset as Table~\ref{config-corfu} shows.
+dataset as Table~\ref{config-corfu} summarizes.
 
+
+\begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|p{1cm}|p{6cm}|p{6cm}|}
+\hline
+  \textbf{Step} & \textbf{Name} & \textbf{Customization}  \\  \hline
+  $1$ & Normalize raw text and remove duplicates & Default \\ \hline
+  $2$ & Filter the basic set of common stopwords in English & Default\\ \hline
+  $3$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
+  $4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations\\ \hline
+  $5$ & Identification of contextual information and filtering & Use of Geonames REST service\\ \hline
+  $6$ & Spellcheking (optional) & Train dataset of $128457$ words \\ \hline
+  $7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & Default \\ \hline
+  $8$ & Cluster corporate names & Default \\ \hline
+  $9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & Python client and Google Refine \\ \hline
+  \hline
+  \end{tabular}
+  \caption{Customization of the CORFU technique for Australian supplier names.}
+  \label{config-corfu}
+  \end{center}
+\end{table} 
 
 \section{Evaluation}
 
