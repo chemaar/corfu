@@ -490,9 +490,9 @@ dataset as Table~\ref{config-corfu} summarizes.
   $1$ & Normalize raw text and remove duplicates & Default \\ \hline
   $2$ & Filter the basic set of common stopwords in English & Default\\ \hline
   $3$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
-  $4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations\\ \hline
+  $4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations (manually) \\ \hline
   $5$ & Identification of contextual information and filtering & Use of Geonames REST service\\ \hline
-  $6$ & Spellcheking (optional) & Train dataset of $128457$ words \\ \hline
+  $6$ & Spellcheking (optional) & Train dataset of $128457$ words provided by Peter Norvig's spellchecker~\cite{NorvigSpelling}. \\ \hline
   $7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & Default \\ \hline
   $8$ & Cluster corporate names & Default \\ \hline
   $9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & Python client and Google Refine \\ \hline
@@ -504,9 +504,8 @@ dataset as Table~\ref{config-corfu} summarizes.
 \end{table} 
 
 \section{Evaluation}
-
 \subsection{Research design}
-Since the CORFU approach has been designed and implemented it is necessary to 
+FIXME: Since the CORFU approach has been designed and implemented it is necessary to 
 establish a method to assess the quality of the results. The steps to carry 
 out this experiment are: 1) Customize the sets of stopwords; 2) Fix the number 
 of the first ``most common words'' to $50$; 3) Execute the algorithm taking 
@@ -574,11 +573,8 @@ links instead of the initial $8$\%. Thus the initial problem of linking $n$ stri
 $1$ company $\to$ $1$ URI has been substantially improved. 
 
 
-
-
-
 \section{Conclusions and Future Work}
-The main conclusion of this works lies in the design of a technique to prepare 
+FIXME: The main conclusion of this works lies in the design of a technique to prepare 
 raw organization names in a specific context, e.g. Australia supplier names,  
 before performing a reconciliation process. Although the percentage of potential 
 right links to existing datasets has been dramatically improved it is clear that 
