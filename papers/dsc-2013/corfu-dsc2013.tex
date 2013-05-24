@@ -28,11 +28,9 @@
 \usepackage{color}
 \usepackage{textcomp}
 
-\definecolor{darkred}{rgb}{0.5, 0, 0}
-\definecolor{violet}{rgb}{1, 0, 1}
-\definecolor{green}{rgb}{0.3, 0.95, 0.3}
-\definecolor{listinggray}{gray}{0.97}
 
+\definecolor{gray}{gray}{0.5}
+\definecolor{green}{rgb}{0,0.5,0}
 
 
 \begin{document}
@@ -117,11 +115,6 @@ or context-aware data that is already known when the dataset is processed, e.g. 
 that a large company can be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
 should take into account all rewarded contracts regardless the structure of the company.
 
-
-% In the specific case of company names there is an open database, OpenCorporates, that has collected more than $52$ million of names 
-% around the world and it can be considered a perfect candidate to perform the reconciliation process between a string literal and a 
-% target resource to obtain an unique identifier. N
-
 On the other hand the application of semantic technologies and the Linking Open Data initiative (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
 in several fields like e-Government (e.g. the Open Government Data effort) tries to improve the knowledge about a specific area providing 
 common data models and formats to share information and data between agents. More specifically, in the European e-Procurement 
@@ -153,7 +146,7 @@ and some open issues are also presented as future work.
 \hline
   \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name and URI}  \\  \hline
   ``Accenture'' & \multirow{12}{*}{``Accenture''} \\
-  ``ACCENTURE'' & \multirow{12}{*}{\url{http://live.dbpedia.org/resource/Accenture}} \\ 
+  ``ACCENTURE'' & \multirow{12}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Accenture}} \\ 
   ``Accenture Aust Holdings'' & \\  
   ``Accenture Aust Holdings Pty Ltd'' & \\
   ``Accenture Australia'' & \\
@@ -166,11 +159,11 @@ and some open issues are also presented as future work.
   \ldots  & \\
   ``Accenture Australia Ltd'' & \\ \hline
   ``Microsoft Australia'' & \multirow{3}{*}{``Microsoft''} \\
-  ``Microsoft Australia Pty Ltd'' & \multirow{3}{*}{\url{http://live.dbpedia.org/resource/Microsoft}} \\
+  ``Microsoft Australia Pty Ltd'' & \multirow{3}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Microsoft}} \\
   \ldots  & \\
   ``Microsoft Enterprise Services'' & \\ \hline
   ``Oracle (Corp) Aust Pty Ltd''  & \multirow{14}{*}{``Oracle''} \\
-  ``Oracle Corp (Aust) Pty Ltd''  & \multirow{14}{*}{\url{http://live.dbpedia.org/resource/Oracle_Corporation}} \\
+  ``Oracle Corp (Aust) Pty Ltd''  & \multirow{14}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Oracle_Corporation}} \\
   ``Oracle Corp Aust Pty Ltd'' & \\
   ``ORACLE CORP AUST PTY LTD'' & \\
   ``Oracle Corp. Australia'' & \\
@@ -185,7 +178,7 @@ and some open issues are also presented as future work.
   \ldots  & \\
   ``Oracle University''  & \\ \hline
   ``PRICEWATERHOUSECOOPERS(PWC)''  & \multirow{8}{*}{``PricewaterhouseCoopers''} \\
-  ``PricewaterhouseCoopers Securities Ltd''& \multirow{8}{*}{\url{http://dbpedia.org/resource/PricewaterhouseCoopers}} \\
+  ``PricewaterhouseCoopers Securities Ltd''& \multirow{8}{*}{\scriptsize\url{http://dbpedia.org/resource/PricewaterhouseCoopers}} \\
   ``PriceWaterhouseCoopers Securities Ltd'' & \\
   ``PRICEWATERHOUSE COOPERS SECURITIES LTD'' & \\
   ``PricewaterhouseCoopers Services LLP'' & \\
@@ -297,32 +290,35 @@ The literature review of this review covers the following areas:
 \end{itemize}
 
 % 
+
+% Following some background and basic definitions are presented: 
+% \begin{itemize}
+%  \item A corporate name, $C_{str}$, is a string literal comprised of a set of concatenated descriptors (words, acronyms or abbreviations among others), $c_i$, 
+% containing different punctuation marks. 
+% \item A simplistic definition of a set filter can be: given a set $S$ and a predicate $\phi$, a filter $f$ is a function that generates 
+% a set $S_1 = \{ x : x \in S \wedge \phi (x)\}$.
+% \item A expanded set $S'$ can be defined as a superset of a given set $S$, $S \subseteq S'$.
+% \end{itemize}
+
+
+
  \section{The CORFU approach}
 According to~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} institutional name variations can be 
 classified in two different groups: 1) Non-acceptable variations (affect to the meaning) due to mispelling or translation errors and 
 2) acceptable variations (do not affect to the meaning) that correspond to different syntax forms such as abbreviations, use of acronyms or contextual 
 information like country, suborganization, etc. In order to address these potential variations the CORFU (Company, ORganization and Firm Unifier) approach 
 seeks for providing a stepwise method to unify corporate names using NLP and semantics based techniques as a previous step to perform 
-an entity reconciliation process. Following some background and basic definitions are presented: 
-\begin{itemize}
- \item A corporate name, $C_{str}$, is a string literal comprised of a set of concatenated descriptors (words, acronyms or abbreviations among others), $c_i$, 
-containing different punctuation marks. 
-\item A simplistic definition of a set filter can be: given a set $S$ and a predicate $\phi$, a filter $f$ is a function that generates 
-a set $S_1 = \{ x : x \in S \wedge \phi (x)\}$.
-\item A expanded set $S'$ can be defined as a superset of a given set $S$, $S \subseteq S'$.
-\end{itemize}
-
-The CORFU approach is based on the execution of common but customized steps in natural language processing applications that 
-have been implemented using the Python NLTK API (unless another tool is named) and comprising: 1) text normalization; 2) filtering and 
-3) comparison and clusterization. Furthermore and with the aim of linking the new corporate name $C'_{str}$ to an existing resource in the Web, in this particular case with OpenCorporates and the DBPedia. 
-Thus the name is unified and can accomplish with the principles of the LOD initiative such as unique identification or data enrichment. 
-In order to explain each of the steps performed in the CORFU unifier next tasks have been designed and implemented.
+an entity reconciliation process. The execution of CORFU comprises several common but customized steps in natural language processing applications such as 
+1) text normalization; 2) filtering; 3) comparison and clusterization and 4) linking to an existing information resource. The CORFU unifier 
+has made intensive use of the Python NLTK API and other packages for querying REST services or string comparison. Finally and 
+due to the fact that the corporate name can change in each step the initial raw name must be stored as well as context information such as dates, acronyms or locations. 
+Thus common contextual information can be added to create the final unified name.
 
 \begin{enumerate}
  \item Normalize raw text and remove duplicates. This step is comprised of: 1) remove strange characters and punctuation marks but keeping 
  those that are part of a word avoiding potential changes in  abbreviations or acronyms; 2) lowercase the raw text (although some semantics can 
- be lost previous works and empirical tests show that this is the best approach; 3) remove duplicates and 4)lemmatize the corporate name. 
- The implementation of this step to get the corporate name $C_{str}$ has ben performed using a combination of the aforemention API and 
+ be lost previous works and empirical tests show that this is the best approach); 3) remove duplicates and 4)lemmatize the corporate name. 
+ The implementation of this step to get the corporate name has ben performed using a combination of the aforementioned API and 
  the Unix scripting tools AWK and SED. In this case, Figure~\ref{figure:step-1} presents 
  two relevant snippets of code for cleaning the name and making a basic a normalization of words. 
  
@@ -330,26 +326,27 @@ In order to explain each of the steps performed in the CORFU unifier next tasks 
 \begin{center}
 \begin{lstlisting}[language=Python]        
 rawname = filter(lambda x: x in string.letters or 
-	      x in string.whitespace, line
+	      x in string.whitespace, line)
 ...
 def normalize(self, word):
   word = word.lower()
   word = self.lemmatizer.lemmatize(word)
   return word
 \end{lstlisting}
-\caption{Basic normalization of a word using the Python NLTK API.}
+\caption{Normalization and data cleansing using the Python NLTK API.}
 \label{figure:step-1}
 \end{center}
 \end{figure}
+
+
    
 \item Filter the basic set of common stopwords in English. A common practice in NLP relies in the construction 
-of stopwords sets that can filter some non-relevant words in a text. Nevertheless the use of this technique must 
+of stopwords sets that can filter some non-relevant words. Nevertheless the use of this technique must 
 consider two keypoints: 1) there is a common set of stopwords for any language than can be always used as a filter and 
-2) depending on the context the set of stopwords should change to avoid the filtering of relevant words. In this particular 
-case, a common and minimal set of stopwords in English,  $S_{english}$,  has been used. Thus the normalized corporate name $C_{str}$ is 
-transformed in a new set of words $C^{1}_{str} = \{ c_i : c_i \in C_{str} \wedge c_i \notin S_{english}\}$. Figure~\ref{figure:step-2} presents 
-the function for removing a set of words given a another set words, it can also be applied to other stages that require 
-filtering capabilities.
+2) depending on the context the set of stopwords should change to avoid filtering relevant words. In this particular 
+case, a common and minimal set of stopwords in English provided by NLTK has been used. Thus the normalized corporate name is 
+transformed in a new set of words. Figure~\ref{figure:step-2} presents the function for removing a set of 
+words given a another set, it can also be applied to other stages that require filtering capabilities.
 
 \begin{figure}[!h]
 \begin{center}
@@ -373,8 +370,8 @@ stop_unified_name = self.remove_set(self.stop_words_wn, name)
 
 \item Filter the expanded set of most common words in the dataset. Taking into account 
 the aforementioned step this stage is based on the construction of a customized stopwords 
-set of corporate names that is also expanded with Wordnet (ver. 3.0) synonyms. In order 
-to create this set $S_{corporate}$ two strategies have been followed and applied: 1) create the set 
+set for corporate names that is also expanded with Wordnet (ver. 3.0) synonyms with the aim of 
+exploiting semantic relationships. In order to create this set two strategies have been followed and applied: 1) create the set 
 of words by hand (accurate but very time-consuming) and 2) extract automatically the set of ``most common words'' from the 
 working dataset and make a hand-validation (less accurate and time-consuming). Figure~\ref{figure:step-3} partially 
 shows these approaches implemented.
@@ -399,33 +396,39 @@ def expand_list_wn(self,  list):
 return expanded_set |  source
 
 def list_most_used_words(companies, max):
-	words = flatten(map(lambda company: company.rawname.split(), companies))
-	counter = collections.Counter(words)  
-	return [x[0].lower() for x in 
-	  filter ( lambda x: x [1] > max, 
-	 (itertools.islice(counter.most_common(), 0, 1000)))]
+  words = flatten(map(lambda company: company.rawname.split(), companies))
+  counter = collections.Counter(words)  
+  return [x[0].lower() for x in 
+  filter ( lambda x: x [1] > max, 
+   (itertools.islice(counter.most_common(), 0, 1000)))]
 \end{lstlisting}
-\caption{Expanding a list of words with Wordnet syns.}
+\caption{Expanding a list of words with Wordnet syns and Counting ``most used words'' in a dataset.}
 \label{figure:step-3}
 \end{center}
 \end{figure}
 
 \item Dictionary-based expansion of common acronyms and filtering. A dictionary of common acronyms in corporate 
-names such as ``PTY'', ``LTD'' or ``PL'' and their variants has been created by hand in order to be able to extract and filter acronyms. 
+names such as ``PTY'', ``LTD'' or ``PL'' and their variants has been created by hand in order 
+to be able to extract and filter acronyms. 
+
+\item Identification of contextual information and filtering. Mainly corporate names can contain nationalities or place names that, in most of 
+cases, only add noise to the real corporate name. In this case, the use of external services such as Geonames, Google Places 
+or Google Maps can ease the identification of these words and their filtering. In order to tackle this situation the REST web service 
+of Geonames has been selected due to its capabilities to align text with locations.
 
 \item Spellcheking (optional). This stage seeks for providing a method for fixing mispelling errors. It is based on the 
 well-known speller~\cite{NorvigSpelling} of Peter Norvig that uses a train dataset for creating a classifier. Although the accuracy of this 
 algorithm is pretty good for relevant words in corporate names, the empirical and unit tests with a working dataset 
 have demonstrated that mispelled non-relevant words is more efficient and accurate using a stopwords set (this set has been 
-built after checking if a word is not a ``most common word'' and exists in the Wordnet database). Furthermore some spelling corrections 
-are not completely adequate for corporate names because words change and, therefore, a non-acceptable variant of the name 
+built with words that are not in the set of ``most common word'' and exist in the Wordnet database). Furthermore some spelling corrections 
+are not completely adequate for corporate names due to words change and, therefore, a non-acceptable variant of the name 
 could be included. That is why this stage is marked as optional and must be configured and performed with extreme care.
 
 \item Pos-tagging parts of speech according to a grammar and filtering non-relevant parts of speech. The objective 
 of this stage lies in ``classifying words into their parts of speech and labelling them accordingly is known as part-of-speech tagging''~\cite{LoperBird02}. In order 
 to perform this task both a lemmatizer based on Wordnet and a grammar for corporate names (``NN''-nouns and ``JJ''-adjectives connected with articles and 
-prepositions) have been designed, see Figure~\ref{figure:step-4}. Once words are tagged next step consists in filtering those non-relevant categories 
-for corporate names keeping nouns and adjectives, as an example Figure~\ref{figure:step-5} shows how to walk and filter nodes in the parsed tree.
+prepositions) have been designed, see Figure~\ref{figure:step-4}. Once words are tagged next step consists in filtering non-relevant categories 
+in corporate names keeping nouns and adjectives, as an example Figure~\ref{figure:step-4} also shows how to walk and filter nodes in the parsed tree.
 
 \begin{figure}[!h]
 \begin{center}
@@ -437,47 +440,45 @@ self.grammar = r"""
       {<NBAR><IN><NBAR>} 
     """
 self.chunker = nltk.RegexpParser(self.grammar)
-\end{lstlisting}
-\caption{Regular expression based chunker in Python NLTK.}
-\label{figure:step-4}
-\end{center}
-\end{figure}   
-  
- \begin{figure}[!h]
-\begin{center}
-\begin{lstlisting}[language=Python]  
+
 def leaves(self, tree):
   for subtree in tree.subtrees(filter = lambda t: t.node=='NP'):
     yield subtree.leaves()
 \end{lstlisting}
-\caption{Filtering words by the category ``NP'' (noun phrase).}
-\label{figure:step-5}
+\caption{Regular expression-based chunker in Python NLTK and Filtering words by the category ``NP'' (noun phrase) .}
+\label{figure:step-4}
 \end{center}
-\end{figure}      
+\end{figure}   
 
-\item Create a matrix between potential target names using a string comparison function and 
-iterate $n$ times until clustering or align with ``the most probably/used name'' 
-in the working dataset. Since previous steps have cleaned and prepared the raw corporate name 
-it is now necessary to group the corporate names and generate a final unified name. Due to the 
-process can be highly customized a large number of names are now more similar than in 
-the begining. In order to compare between the similarity of a company name with the whole set of company names 
-a matrix $M$ containing in each position $M(i,j)$ a value (0-100) is created. 
-Thus given a company in the position  calculated by comparing with a function the names of 
-companies $i$ and $j$ 
+\item Cluster corporate names. This task is in charge of grouping names by similarity applying 
+a string comparison function. Thus if the clustering is appied $n$ times any name 
+will be grouped by ``the most probably/used name'' according to threshold generated 
+by the comparison function. This first version of CORFU has used the WRatio function to 
+compare strings that is available in the Levenshtein Python utils package.
 
-\item Validate and reconcile the generated corporate name via an existing reconcile service.
-
+\item Validate and reconcile the generated corporate name via an existing reconcile service (optional). This last 
+step has been included with the objective of linking the final corporate name with an existing information 
+resource and adding new alternative labels. The OpenCorporates and DBPedia reconciliation services have 
+been used in order to retrieve an URI to new corporate name. As a consequence the CORFU unifier is partially supporting 
+one of the main principles of the LOD initiative such as unique identification.
 \end{enumerate}
-
-\subsection{Use Case: Corporate names in the Australian e-Procurement domain }
 % 
-\begin{enumerate}
- \item FIXME
- \item  For instance, in the case of 1) the set of customized by hand stopwords contains some words such as ``Advertising'' or ``Ordnance'' (some mispelled words 
-have been included here to avoid false positives in the spelling phase). On the other hand, the first $max$ most used words in the corporate names dataset are initially selected as stopwords, 
-in this particular case and after studying the working dataset, the first $50$ words have been automatically selected containing words such as ``Management'', ``Services'' or ``Associates'' that 
-are very common in corporate names and, therefore, non-relevant.
-\end{enumerate}
+%
+\subsection{Use Case: Unifying supplier names in the Australian e-Procurement domain}
+% % 
+As previous sections have introduced there is an increasing interest and commitment 
+in public bodies to create a real transparent public administration. In this sense 
+public administrations are continuously releasing relevant data in different domains 
+such as tourism, health or public procurement with the aim of easing the implementation 
+of new added-value services and improve their efficiency and transparency. In the particular 
+case of public procurement, main and large administrations have published the information 
+with regards to public procurement processes. In this case of study the 
+information of Australia is used to test the CORFU unifier. It is comprised of a dataset 
+of more than $400$K supplier names during the period 2004-2012. In order to be able to extract 
+good statistics from this dataset the unification of names must be applied to. That is why 
+the CORFU stepwise method has been customized to deal with the hetereogenities of this large 
+dataset as Table~\ref{config-corfu} shows.
+
 
 \section{Evaluation}
 
@@ -494,14 +495,6 @@ In particular, this evaluation considers the precision of the algorithm as ``the
 names that have been correctly unified under the same name'' while recall is 
 ``the number of supplier names that have not been correctly classified under the same name''. 
 
-\subsection{Sample}
-In order to validate the CORFU approach the dataset of supplier names in Australia 
-in the period 2004-2012 containing $430188$ full names 
-and $77526$ unique names has been selected. The experiment has been 
-carried out executing the aforementioned steps in the whole dataset 
-to finally generate a dump containing for each supplier the 
-rawname and the unified name. These mappings has been validated 
-by hand to quantify the typical measures of precision and recall. 
 
 \begin{table}[!h]
 \renewcommand{\arraystretch}{1.3}
@@ -517,6 +510,16 @@ by hand to quantify the typical measures of precision and recall.
   \label{tabla:aus-results}
   \end{center}
 \end{table} 
+
+
+\subsection{Sample}
+In order to validate the CORFU approach the dataset of supplier names in Australia 
+in the period 2004-2012 containing $430188$ full names 
+and $77526$ unique names has been selected. The experiment has been 
+carried out executing the aforementioned steps in the whole dataset 
+to finally generate a dump containing for each supplier the 
+rawname and the unified name. These mappings has been validated 
+by hand to quantify the typical measures of precision and recall. 
 
 %awk -F"\t" '{print $2}' supplier-unified-names.csv | sort -n | uniq -c | sort -rnk1
 %awk -F"\t" '{print $1 ";1"}' supplier-unified-names.csv > original-counters.csv
