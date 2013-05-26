@@ -242,14 +242,14 @@ The literature review of this work covers the following areas:
  initiatives applying the LOD principles such as the Orgpedia~\footnote{\url{http://tw.rpi.edu/orgpedia/}} in United States or 
  ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}} have scrapped and published the information 
  of companies creating a large database containing ($54,080,317$ of companies in May 2012) with high-valuable information like the company 
- identifier, e.g. Figure~\ref{figure:open} shows an example of an ``OpenCorporates'' organization. 
- Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
+ identifier, e.g. Figure~\ref{figure:open} shows an example of an ``OpenCorporates'' organization. Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
  as a human would do and the previous section has presented) still remains. Finally public web sites and major social networks such as Google 
  Places, Google Maps, Foursquare, Linkedin Companies, Facebook or Tuenti provide APIs and information managed by the own companies that is supposed 
  to be specially relevant to enrich existing corporate data once a company is uniquely identified.
  
   
- 
+\clearpage
+
 \begin{figure}[!h]
 \begin{center}
 \begin{lstlisting}[language=SPARQL]
@@ -326,6 +326,7 @@ def normalize(self, word):
 
 
    
+
 \item Filter the basic set of common stopwords in English. A common practice in NLP relies in the construction 
 of stopwords sets that can filter some non-relevant words. Nevertheless the use of this technique must 
 consider two keypoints: 1) there is a common set of stopwords for any language than can be often used as a filter and 
@@ -396,6 +397,7 @@ def list_most_used_words(companies, max):
 \item Dictionary-based expansion of common acronyms and filtering. A dictionary of common acronyms in corporate 
 names such as ``PTY'', ``LTD'' or ``PL'' and their variants has been created by hand in order 
 to be able to extract and filter acronyms. 
+
 
 \item Identification of contextual information and filtering. Mainly corporate names can contain nationalities or place names that, in most of 
 cases, only add noise to the real corporate name. In this case, the use of external services such as Geonames, Google Places 
@@ -528,7 +530,7 @@ In order to improve the results for relevant companies, the experiment has also
 been performed and evaluated for the first 100 companies in the Forbes list. In this case, 
 results show a better performance in terms of precision and recall and all these supplier names 
 were unified by a common right name. The explanation of this result 
-can be found due to some of the paramenters of the CORFU technique were 
+can be found due to some of the parameters of the CORFU technique were 
 specially selected for unifying these names because of their relevance in world economic activities.
 
 On the other hand, it is important to emphasize that the last step of linking these names 
@@ -546,7 +548,7 @@ now be shown.
 \begin{table}[!h]
 \renewcommand{\arraystretch}{1.3}
 \begin{center}
-\begin{tabular}{|p{3cm}|p{3cm}|p{2cm}|p{2cm}|l|l|l|}
+\begin{tabular}{|p{2.5cm}|p{2.5cm}|p{2cm}|p{2cm}|l|l|l|}
 \hline
   \textbf{Total number of companies} & \textbf{Unique names}& \textbf{CORFU unified names}& \textbf{\% of unified names} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 score} \\  \hline
    $430188$ & $77526$ & $40277$  &$48\%$ & $0.762$ & $0.311$&$0.237$ \\ \hline   
