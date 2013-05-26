@@ -34,7 +34,7 @@
 
 
 \begin{document}
-\title{A natural language and semantic-based technique to unify corporate names in the e-Procurement sector. The CORFU approach.\thanks{THANKS}}
+\title{A natural language and semantic-based technique to unify corporate names in the e-Procurement sector. The CORFU approach.}
 
 \titlerunning{}
 
@@ -461,8 +461,8 @@ public administrations are continuously releasing relevant data in different dom
 such as tourism, health or public procurement with the aim of easing the implementation 
 of new added-value services and improve their efficiency and transparency. In the particular 
 case of public procurement, main and large administrations have already made publicly available the information 
-with regards to public procurement processes. In this case of study the information of Australia is used to test the CORFU unifier. It is comprised of a dataset 
-of more than $400$K supplier names during the period 2004-2012. In order to be able to extract 
+with regards to public procurement processes. In this case of study the information of Australia is used 
+to test the CORFU unifier. It is comprised of a dataset of more than $400$K supplier names during the period 2004-2012. In order to be able to extract 
 good statistics from this dataset the unification of names must be applied to. That is why 
 the CORFU stepwise method has been customized to deal with the hetereogenities of this large 
 dataset as Table~\ref{config-corfu} summarizes.
@@ -492,14 +492,14 @@ dataset as Table~\ref{config-corfu} summarizes.
 
 \section{Evaluation}
 \subsection{Research design}
-Since the CORFU approach has been designed and implemented it is necessary to 
+Since the CORFU approach has been designed and implemented~\footnote{\url{https://github.com/chemaar/corfu}} it is necessary to 
 establish a method to assess quantitatively the quality of the results.  The steps to carry 
 out this experiment are: 1) Configure the CORFU technique, see Table~\ref{config-corfu};  
 2) Execute the algorithm taking as a parameter the file containing the whole dataset of company names;
 3) Validate (manually) the dump of unified names; 4) Calculate the values of 
 precision and recall. In particular, this evaluation considers the precision of the algorithm as ``the number of supplier 
 names that have been correctly unified under the same name'' while recall is 
-``the number of supplier names that have not been correctly classified under the same name''. 
+``the number of supplier names that have not been correctly classified under a proper name''. 
 
 \subsection{Sample}
 In order to validate the CORFU approach the dataset of supplier names in Australia 
@@ -523,15 +523,18 @@ by hand to quantify the typical measures of precision and recall.
 \subsection{Results and Discussion}
 According to the results presented in Table~\ref{tabla:aus-results}, the precision 
 and recall of the CORFU technique are consider acceptable for the whole dataset 
-due to $37248 (77526-40278)$, a $48\%$ of the supplier names, has been unified with 
-a precision of $0.762$ and recall of $0.237$ (best values must be close to $1$). 
+due to $77526-40278=37248$, a $48\%$ of the supplier names, has been unified with 
+a precision of $0.762$ and recall of $0.311$ (best values must be close to $1$). 
+The precision is good enough but the recall presents a low value because a good few of 
+corporate names were not unified under a proper name due to some relevant 
+words have been filtered.
 
 In order to improve the results for relevant companies, the experiment has also 
 been performed and evaluated for the first 100 companies in the Forbes list. In this case, 
 results show a better performance in terms of precision and recall and all these supplier names 
-were unified by a common right name. The explanation of this result 
-can be found due to some of the parameters of the CORFU technique were 
-specially selected for unifying these names because of their relevance in world economic activities.
+were unified by a common right name. The explanation of this result can be found due 
+to some of the parameters of the CORFU technique were specially selected for unifying 
+these names because of their relevance in world economic activities.
 
 On the other hand, it is important to emphasize that the last step of linking these names 
 with existing web information resources using the reconciliation service of 
@@ -552,7 +555,7 @@ now be shown.
 \hline
   \textbf{Total number of companies} & \textbf{Unique names}& \textbf{CORFU unified names}& \textbf{\% of unified names} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 score} \\  \hline
    $430188$ & $77526$ & $40277$  &$48\%$ & $0.762$ & $0.311$&$0.237$ \\ \hline   
-   $430188$ & $X of 77526$ & $Y$ & $85\%$&  $1$ & $1$ &$1$\\ \hline
+   $430188$ & $X of 77526$ & $Y$ & $85\%$&  $0.963$ & $1$ &$1$\\ \hline
   \hline
   \end{tabular}
   \caption{Results of applying the CORFU approach to the Australian supplier names.}
@@ -563,16 +566,30 @@ now be shown.
 
 
 \section{Conclusions and Future Work}
-FIXME: The main conclusion of this works lies in the design of a technique to prepare 
-raw organization names in a specific context, e.g. Australia supplier names,  
-before performing a reconciliation process. Although the percentage of potential 
-right links to existing datasets has been dramatically improved it is clear that 
-human-validation is also required to ensure the correct unification of names. 
-Other NLP techniques based on n-grams or a classifier will be used in the future 
-to deliver a complete and intelligent company unifier. On the other hand, the 
-application of this technique enables the comparison of rewarded contracts to 
-different companies and can help to improve the transparency in public 
-administrations.
+A technique for unifying corporate names in the e-Procurement sector has been 
+presented as a step towards the unique identification of organizations 
+with the aim of accomplishing one of the most important LOD principles 
+and easing the execution of reconciliation processes. The main conclusion of this work 
+lies in the design of a stepwise method to prepare raw corporate names in a specific 
+context, e.g. Australia supplier names, before performing a reconciliation process. 
+Although the percentage of potential right links to existing datasets has been dramatically 
+improved it is clear that human-validation is also required to ensure the 
+correct unification of names. As a consequence the main application of CORFU 
+can be found when reporting or tracking activity of organizations are required. 
+However this first effort has implied, on the one hand, the validation 
+of the stepwise method and, on the other hand, the creation of a sample dataset 
+that can serve as input for more advanced algorithms based on machine learning 
+techniques such as classifiers. From public administrations point of view 
+this technique also enables a greater transparency providing a simple 
+way to unify corporate names and boosting the comparison of rewarded contracts.
+
+Finally, future actions in this work consist in the extension of the stopwords sets 
+for corporate names, a better acronym detection and expansion algorithm, other techniques to 
+make string comparisons such as $n-grams$ and the creation of a new final step to enhance 
+the current implementation with a classifier that can automatically learn new classes of corporate names. 
+Furthermore the technique must be reported to the international ``Public Spending'' initiative, as supporting tool, 
+to be applied over other datasets to correlate and exploit metadata of public contracts.
+
 
 \bibliographystyle{plain}
 % %\bibliographystyle{unsrt}
