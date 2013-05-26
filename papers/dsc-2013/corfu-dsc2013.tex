@@ -496,17 +496,29 @@ OpenCorporates or DBPedia in Google Refine has the potential of generating $2838
 links ($36.61$\%) instead of the initial $8$\%. Thus the initial problem of linking ($n$ string literals $\to$ 
 $1$ company $\to$ $1$ URI) has been substantially improved. 
 
-Finally, the frequency distribution of supplier and number of appearances is depicted on Figure~\ref{fig:results-graph-3} with the objective of presenting 
-how the cloud of points (appearances) that initially were only one per supplier has 
+Finally, the frequency distribution of supplier and number of appearances is depicted on Figures~\ref{fig:results-graph-3}
+and~\ref{fig:results-graph-4} with the objective of presenting how the cloud of points (appearances) that initially were only one per supplier has 
 emerged due to the unification of names, for instance in the case of ``Oracle'' $75$ apparitions can 
 now be shown.
 
-\begin{figure}[!htb]
+
+\begin{figure}[ht]
+\begin{minipage}[b]{0.45\linewidth}
 \centering
-	\includegraphics[width=8cm]{./imgs/corfu-stats}
-\caption{Graphical view of supplier and number of appearances in the Australian rewarded contracts dataset.}
-\label{fig:results-graph-3}
+	\includegraphics[width=\textwidth]{./imgs/corfu-stats}
+ \caption{Full view of supplier and number of appearances in the sample dataset.}
+ \label{fig:results-graph-3}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+	\includegraphics[width=\textwidth]{./imgs/corfu-forbes-100}
+\caption{The first 100 Forbes companies and number of appearances in the sample dataset. }
+ \label{fig:results-graph-4}
+\end{minipage}
 \end{figure}
+
+
 
 
 \section{Conclusions and Future Work}
