@@ -38,23 +38,19 @@
 
 \titlerunning{}
 
-
-\author{Jose Mar\'{i}a \'{A}lvarez\inst{1} \and Michail Vafolopoulos\inst{2} \and Jos\'{e} Emilio Labra\inst{3}}
-
-
-\authorrunning{Jose Mar\'{i}a Alvarez \and Michail Vafolopoulos \and  Jos\'{e} Emilio Labra}
-
-
-\institute{South East European Research Center, \\ 54622, Thessaloniki, Greece\\
-  \email{{jmalvarez@seerc.org}}\\
-  \and  Multimedia Technology Laboratory, National Technical University of Athens, \\ 15773, Athens, Greece.\\
-    \email{{vafopoulos@medialab.ntua.gr}},
-\and WESO Research Group, Department of Computer Science, University of Oviedo, \\ 33007, Oviedo, Spain.\\
-  \email{{labra@uniovi.es.es}}\\  
-}
-
+\author{Jose Mar\'{i}a Alvarez-Rodr\'{i}guez\inst{1}} 
 
 \authorrunning{Jose Mar\'{i}a Alvarez-Rodr\'{i}guez}
+
+
+\tocauthor{Jose Mar\'{i}a Alvarez}
+
+
+\institute{The South East European Research Center\\   
+  \email{{jmalvarez@seerc.org}},\\
+   WWW home page: \texttt{http://www.seerc.org}, \\
+}
+
 
 \date{}
 
@@ -100,22 +96,21 @@ In the case of the type of contract and location, there are already standardized
 scheme classifications such as the Common Procurement Vocabulary (2003 and 2008), the Combined Nomenclature (2012), 
 the Central Product Classificationby in the European Union, the International Standard Industrial Classification of 
 All Economic Activities (Rev. 4) in the United Nations or the North American Industry Classification System (2007 and 2012) 
-in the Government of United States that are currently used with different objectives such as statistics, tagging or 
+in the Government of United States are currently used with different objectives such as statistics, tagging or 
 information retrieval. Geolocated information can be also found in different common datasets and nomenclatures such as 
 the Nomenclature of territorial units for statistics in the European Union, the Geonames dataset~\footnote{\url{http://www.geonames.org/}}, the GeoLinkedData 
 initiative~\cite{DBLP:conf/dexa/Lopez-PellicerSCZM10} or the traditional list of countries and ISO-codes.
 
 However corporate, organization, firm, company or institution names (hereafter these names will be used to refer to 
 the same entity) and structure is not yet standardized at global scope and only some classifications of economic activities or 
-company identifiers can be found such as the TARIC (On-line customs tariff database ) database. 
-Thus the simple task of grouping contracts by a supplier is not a mere process of searching by the same literal. 
-Technical issues such as hyphenation, use of abbreviations or acronyms an transliteration are common problems that must be addressed in order 
+company identifiers can be found such as the TARIC (On-line customs tariff database ) database. Thus the simple task of grouping contracts by a supplier is not a mere process of 
+searching by the same literal. Technical issues such as hyphenation, use of abbreviations or acronyms an transliteration are common problems that must be addressed in order 
 to provide a final corporate name. Existing works in the field of Name Entity Recognition~\cite{citeulike:1657521} (NER) or 
 name entity disambiguation~\cite{Sarmento:2009:AWN:1602022.1602085,Klein:2003:NER:1119176.1119204} have already addressed these issues. 
 Nevertheless the problem that is being tackled in these approaches lies in the identification of organization names in 
 a raw text while in the e-Procurement sector the string literal identifying a supplier is already known.
 
-In the particular case of the Australian e-Procurement domain, the supplier name seems to be introduced by typing a string literal without any assistance or 
+In the particular case of the Australian e-Procurement domain, the supplier name is introduced by typing a string literal without any assistance or 
 auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers} in the Appendix I, 
 can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} 
 or context-aware data that is already known when the dataset is processed, e.g. country or year. Furthermore it is also well-known 
@@ -127,7 +122,7 @@ in several fields like e-Government (e.g. the Open Government Data effort) tries
 common data models and formats to share information and data between agents. More specifically, in the European e-Procurement 
 context~\cite{e-Proc-map-paper} there is an increasing commitment to boost the use of electronic communications and transactions 
 processing by government institutions and other public sector organizations in order to provide added-value services with special focus on SMEs. 
-More specifically the LOD initiative seeks for creating a public and open data repository in which one the principles of this initiative that lies in the 
+More specifically the LOD initiative seeks for creating a public data realm in which one the principles of this initiative that lies in the 
 unique identification or resources through URIs can become real. Thus entity reconciliation techniques~\cite{Serimi,conf/www/MaaliCP11} 
 coming from the ontology mapping and alignment areas or algorithms based on Natural Language Processing (hereafter NLP) have been 
 designed to link similar resources already available in different vocabularies, datasets or databases such as DBPedia or Freebase. 
@@ -146,7 +141,7 @@ and some open issues are also presented as future work.
 
 
 \section{Related Work}
-According to the previous section, some related work can be found in the areas that this work covers:
+The literature review of this work covers the following areas:
 \begin{itemize}
  \item Natural Language Processing and Computational Linguistics. In these research areas common works dealing with the aforementioned data heterogeneities 
    such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
@@ -168,13 +163,12 @@ According to the previous section, some related work can be found in the areas t
  (if two concepts share similar properties and similar super classes then these concepts should be similar). Apart from that 
  there are also machine learning techniques to deal with these mismatches in descriptions using statistical approaches. Recent times, 
  this process has been widely studied and applied to the field of linking entities in the LOD realm, for instance using the DBPedia~\cite{Mendes:2011:DSS:2063518.2063519}. 
- Although there is no way of automatically creating a mapping with a $100\%$ of confidence (without human validation) a mapping under a certain percentage of confidence can be 
+ Although there is no way of automatically creating a mapping with a 100\% of confidence (without human validation) a mapping under a certain percentage of confidence can be 
  enough for most of user-based services such as visualization. However, in case of using these techniques as previous step of a reasoning or 
  a formal verification process this ambiguity can lead to infer incorrect facts and must be avoided without a previous human validation. 
 
  On the other hand the use of semantics is also being applied to model organizational structures. In this case the notion 
- of \textit{corporate} is presented in several vocabularies and ontologies as Dave Reynolds (Epimorphics Ltd) 
- reports~\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}. 
+ of corporate is presented in several vocabularies and ontologies as Dave Reynolds (Epimorphics Ltd) reports~\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}. 
  Currently the main effort is focused in the designed of the Organizations Vocabulary (a W3C Working Draft) in which the structure and 
  relationships of companies are being modeled. This proposal is especially relevant in the next aspects:  
  1) to unify existing models to provide a common specification; 2) to apply semantic web technologies and the Linked Data approach to enrich 
@@ -194,9 +188,9 @@ According to the previous section, some related work can be found in the areas t
  initiatives applying the LOD principles such as the Orgpedia~\footnote{\url{http://tw.rpi.edu/orgpedia/}} in United States or 
  ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}} have scrapped and published the information 
  of companies creating a large database containing ($54,080,317$ of companies in May 2012) with high-valuable information like the company 
- identifier. Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
+ identifier, e.g. Figure~\ref{figure:open} shows an example of an ``OpenCorporates'' organization. Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
  as a human would do and the previous section has presented) still remains. Finally public web sites and major social networks such as Google 
- Places, Google Maps, Foursquare, Linkedin Companies or Facebook provide APIs and information managed by the own companies that is supposed 
+ Places, Google Maps, Foursquare, Linkedin Companies, Facebook or Tuenti provide APIs and information managed by the own companies that is supposed 
  to be specially relevant to enrich existing corporate data once a company is uniquely identified.
  
   
@@ -240,7 +234,7 @@ According to the previous section, some related work can be found in the areas t
 %  
 \end{itemize}
 
- \section{The CORFU technique}
+ \section{The CORFU approach}
 According to~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} institutional name variations can be 
 classified into two different groups: 1) Non-acceptable variations (affect to the meaning) due to misspelling or translation errors and 
 2) acceptable variations (do not affect to the meaning) that correspond to different syntax forms such as abbreviations, use of acronyms or contextual 
@@ -276,7 +270,8 @@ def normalize(self, word):
 \end{center}
 \end{figure}
 
-  
+
+   
 
 \item Filter the basic set of common stopwords in English. A common practice in NLP relies in the construction 
 of stopwords sets that can filter some non-relevant words. Nevertheless the use of this technique must 
@@ -404,7 +399,7 @@ one of the main principles of the LOD initiative such as unique identification.
 \end{enumerate}
 % 
 %
-\section{Use Case: Unifying supplier names in the Australian e-Procurement domain}
+\subsection{Use Case: Unifying supplier names in the Australian e-Procurement domain}
 % % 
 As previous sections have introduced there is an increasing interest and commitment 
 in public bodies to create a real transparent public administration. In this sense 
@@ -497,6 +492,18 @@ all these supplier names, $299$ in the whole dataset, were unified by a common r
 The explanation of this result can be found due to some of the parameters of the CORFU technique were specially selected for unifying 
 these names because of their relevance in world economic activities.
 
+On the other hand, it is important to emphasize that the last step of linking these names 
+with existing web information resources using the reconciliation service of 
+OpenCorporates or DBPedia in Google Refine has the potential of generating $28383$ right 
+links ($36.61$\%) instead of the initial $8$\%. Thus the initial problem of linking ($n$ string literals $\to$ 
+$1$ company $\to$ $1$ URI) has been substantially improved. 
+
+Finally, the frequency distribution of supplier and number of appearances is depicted on Figures~\ref{fig:results-graph-3}
+and~\ref{fig:results-graph-4} with the objective of presenting how the cloud of points (appearances) that initially were only one per supplier has 
+emerged due to the unification of names, for instance in the case of ``Oracle'' $75$ apparitions can 
+now be shown.
+
+
 \begin{figure}[ht]
 \begin{minipage}[b]{0.45\linewidth}
 \centering
@@ -507,66 +514,13 @@ these names because of their relevance in world economic activities.
 \hspace{0.5cm}
 \begin{minipage}[b]{0.45\linewidth}
 \centering
-  \includegraphics[width=\textwidth]{./imgs/forbes}
- \caption{Bubble Cloud of the first 100 Forbes companies and number of appearances in the sample dataset. }
-% \includegraphics[width=\textwidth]{./imgs/corfu-forbes-100}
-% \caption{The first 100 Forbes companies and number of appearances in the sample dataset. }
+	\includegraphics[width=\textwidth]{./imgs/corfu-forbes-100}
+\caption{The first 100 Forbes companies and number of appearances in the sample dataset. }
  \label{fig:results-graph-4}
 \end{minipage}
 \end{figure}
 
 
-
-On the other hand, it is important to emphasize that the last step of linking these names 
-with existing web information resources using the reconciliation service of 
-OpenCorporates or DBPedia in Google Refine has the potential of generating $28383$ right 
-links ($36.61$\%) instead of the initial $8$\%. Thus the initial problem of linking ($n$ string literals $\to$ 
-$1$ company $\to$ $1$ URI) has been substantially improved. 
-
-Finally, the frequency distribution of supplier and number of appearances is depicted on Figures~\ref{fig:results-graph-3}
-and~\ref{fig:results-graph-4} with the objective of presenting how the cloud of points (appearances) that initially were only one per supplier has 
-emerged due to the unification of names, for instance in the case of ``Oracle'' $75$ apparitions can now be shown. On the other hand and due 
-to the unique identification of supplier names, new RDF instances are generated, see Figure~\ref{fig:results-rdf}, and can be querying via SPARQL to make 
-summary reports of the number of rewarding contracts by company, see Figure~\ref{fig:results-sparql}.
-
-
-\begin{figure}[ht]
-\begin{minipage}[b]{0.45\linewidth}
-\begin{lstlisting}[language=XML]  
-:o1 a org:Organization;
-  skos:prefLabel 
-    ``Microsoft'';
-  skos:altLabel 
-    ``Microsoft Australia'', 
-    ``Microsoft Australia 
-      Pty Ltd'', 
-    ...;
-  skos:closeMatch 
-    dbpedia-res:Microsoft;
-   ...
-.
-\end{lstlisting}
-\caption{Example of a RDF organization instance. }
- \label{fig:results-rdf}
-\end{minipage}
-\hspace{0.5cm}
-\begin{minipage}[b]{0.45\linewidth}
-\begin{lstlisting}[language=SQL]  
-SELECT  str(?label) 
- (COUNT(?org) as ?pCount)
-WHERE{
-  ?ppn :rewarded-to ?org .
-  ?org rdf:type org:Organization.
-  ?org skos:prefLabel ?label.
-  ...
-}
-GROUP BY str(?label) 
-ORDER BY desc(?pCount)
-\end{lstlisting}
-\caption{Example of a SPARQL query for counting supplier names. }
- \label{fig:results-sparql}
-\end{minipage}
-\end{figure}
 
 
 \section{Conclusions and Future Work}
@@ -587,17 +541,12 @@ techniques such as classifiers. From public administrations point of view
 this technique also enables a greater transparency providing a simple 
 way to unify corporate names and boosting the comparison of rewarded contracts.
 
-Finally, further steps in this work consist in the extension of the stopwords sets 
+Finally, future actions in this work consist in the extension of the stopwords sets 
 for corporate names, a better acronym detection and expansion algorithm, other techniques to 
 make string comparisons such as $n-grams$ and the creation of a new final step to enhance 
 the current implementation with a classifier that can automatically learn new classes of corporate names. 
 Furthermore the technique must be reported to the international ``Public Spending'' initiative, as supporting tool, 
 to be applied over other datasets to correlate and exploit metadata of public contracts.
-
-
-\section{Acknowledgements}
-This work is part of the ``PublicSpending.net'' effort carried out in cooperation with Marios Meimaris (FIXME:affiliations), Giannis Xidias,
-Giorgos Vafeiadis and Michalis Klonaras.
 
 
 \bibliographystyle{plain}
