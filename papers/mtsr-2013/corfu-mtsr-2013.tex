@@ -34,12 +34,13 @@
 
 
 \begin{document}
-\title{Towards a stepwise method for unifying and reconciling corporate names in public contracts metadata. The CORFU technique.}
+\title{Towards a stepwise method for unifying and reconciling corporate names in public contracts metadata. The CORFU technique.\thanks{This is the full version of the article including some source 
+code listings and an appendix for a better understanding during the reviews. Nevertheless some listings and figures will be omitted in a final version.} }
 
 \titlerunning{}
 
 
-\author{Jose Mar\'{i}a \'{A}lvarez\inst{1} \and Michail Vafolopoulos\inst{2} \and Jos\'{e} Emilio Labra\inst{3}}
+\author{Jose Mar\'{i}a \'{A}lvarez\inst{1} \and Patricia Ordoñez de Pablos~\inst{2} \and Michail Vafolopoulos\inst{3} \and Jos\'{e} Emilio Labra\inst{4}}
 
 
 \authorrunning{Jose Mar\'{i}a Alvarez \and Michail Vafolopoulos \and  Jos\'{e} Emilio Labra}
@@ -47,6 +48,8 @@
 
 \institute{South East European Research Center, \\ 54622, Thessaloniki, Greece\\
   \email{{jmalvarez@seerc.org}}\\
+   \and  WESO Research Group, Department of Business Administration, University of Oviedo \\ 33007, Oviedo, Spain.\\
+    \email{{patriop@uniovi.es}},\\
   \and  Multimedia Technology Laboratory, National Technical University of Athens, \\ 15773, Athens, Greece.\\
     \email{{vafopoulos@medialab.ntua.gr}},
 \and WESO Research Group, Department of Computer Science, University of Oviedo, \\ 33007, Oviedo, Spain.\\
@@ -146,7 +149,7 @@ and some open issues are also presented as future work.
 
 
 \section{Related Work}
-According to the previous section, some related work can be found in the areas this work covers:
+According to the previous section, some relevant works can be found and grouped by the topics covered in this paper:
 \begin{itemize}
  \item Natural Language Processing and Computational Linguistics. In these research areas common works dealing with the aforementioned data heterogeneities 
    such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
@@ -199,45 +202,6 @@ According to the previous section, some related work can be found in the areas t
  Places, Google Maps, Foursquare, Linkedin Companies or Facebook provide APIs and information managed by the own companies that is supposed 
  to be specially relevant to enrich existing corporate data once a company is uniquely identified.
  
-  
-% \clearpage
-% 
-% \begin{figure}[!h]
-% \begin{center}
-% \begin{lstlisting}[language=SPARQL]
-% ...
-% <http://opencorporates.com/id/companies/us_az/F07503757#id> 
-% 	dct:created "1995-06-01"^^xsd:date;
-% 	a adms:Identifer;
-% 	skos:notation "F07503757";
-% 	adms:schemaAgency "Arizona Corporation Commission".
-% 
-% <http://opencorporates.com/id/companies/us_az/F07503757#ra> 
-% 	a locn:Address;
-% 	locn:fullAddress "% CORPORATION SERVICE COMPANY, 
-% 	2338 W ROYAL PALM RD STE-J, PHOENIX, AZ 85021".
-% 
-% <http://opencorporates.com/id/companies/us_az/F07503757> 
-% 	opencorporates:companyType "CORPORATION";
-% 	opencorporates:legalName "ORACLE SOFTWARE CORPORATION (FN)";
-% 	a <http://s.opencalais.com/1/type/er/Company>,
-% 		legal:LegalEntity;
-% 	rdfs:label "ORACLE SOFTWARE CORPORATION (FN)";
-% 	vCard:adr _:bnode1324364416;
-% 	legal:companyType "CORPORATION";
-% 	legal:legalIdentifier 
-% 	  <http://opencorporates.com/id/companies/us_az/F07503757#id>;
-% 	legal:legalName "ORACLE SOFTWARE CORPORATION (FN)";
-% 	locn:registeredAddress 
-% 	  <http://opencorporates.com/id/companies/us_az/F07503757#ra>.
-% ...
-% \end{lstlisting}
-% \caption{Partial Information in the N3 format about an ``Oracle'' company in ``Open Corporates''.}
-% \label{figure:open}
-% \end{center}
-% \end{figure}
-%  
-%  
 \end{itemize}
 
  \section{The CORFU technique}
@@ -596,8 +560,8 @@ to be applied over other datasets to correlate and exploit metadata of public co
 
 
 \section{Acknowledgements}
-This work is part of the ``PublicSpending.net'' effort carried out in cooperation with Marios Meimaris (FIXME:affiliations), Giannis Xidias,
-Giorgos Vafeiadis and Michalis Klonaras.
+This work is part of the ``PublicSpending.net'' effort carried out in cooperation with 
+Marios Meimaris and Giorgos Vafeiadis (Technical University of Athens), Giannis Xidias (University of the Aegean) and Michalis Klonaras (OTE S.A.).
 
 
 \bibliographystyle{plain}
