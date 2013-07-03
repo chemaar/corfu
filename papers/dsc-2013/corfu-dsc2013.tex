@@ -96,7 +96,7 @@ the Central Product Classificationby in the European Union, the International St
 All Economic Activities (Rev. 4) in the United Nations or the North American Industry Classification System (2007 and 2012) 
 in the Government of United States are currently used with different objectives such as statistics, tagging or 
 information retrieval. Geolocated information can be also found in different common datasets and nomenclatures such as 
-the Nomenclature of territorial units for statistics in the European Union, the Geonames dataset~\footnote{\url{http://www.geonames.org/}}, the GeoLinkedData 
+the Nomenclature of territorial units for statistics in the European Union, the Geonames dataset~\cite{Geonames}, the GeoLinkedData 
 initiative~\cite{DBLP:conf/dexa/Lopez-PellicerSCZM10} or the traditional list of countries and ISO-codes.
 
 However corporate, organization, firm, company or institution names (hereafter these names will be used to refer to 
@@ -109,7 +109,7 @@ Nevertheless the problem that is being tackled in these approaches lies in the i
 a raw text while in the e-Procurement sector the string literal identifying a supplier is already known.
 
 In the particular case of the Australian e-Procurement domain, the supplier name is introduced by typing a string literal without any assistance or 
-auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers} in the Appendix I, 
+auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers}, 
 can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} 
 or context-aware data that is already known when the dataset is processed, e.g. country or year. Furthermore it is also well-known 
 that a large company can be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
@@ -136,6 +136,54 @@ The remainder of this paper is structured as follows. Section 2 a literature rev
 the CORFU approach to unify corporate names. The evaluation section exposes and discusses the experimentation carried out to test the presented approach using as a dataset the rewarded 
 contracts of Australia in the period 2004-2012. Finally conclusions summarizes the main outcomes of this work 
 and some open issues are also presented as future work.
+
+\begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|p{7cm}|p{7cm}|}
+\hline
+  \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name and URI}  \\  \hline
+  ``Accenture'' & \multirow{6}{*}{``Accenture''} \\
+  ``Accenture Aust Holdings'' & \multirow{6}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Accenture}} \\ 
+   ``Accenture Aust Holdings'' & \\  
+   ``Accenture Aust Holdings Pty Ltd'' & \\
+   ``Accenture  Australia Holding P/L'' & \\
+%   ``Accenture Australia Holdings P/Ltd'' & \\
+%   ``Accenture Australia Holdings Pty Lt''  & \\  
+  ``Accenture Australia Limited'' & \\
+  \ldots  & \\
+  ``Accenture Australia Ltd'' & \\ \hline
+  ``Microsoft Australia'' & \multirow{3}{*}{``Microsoft''} \\
+  ``Microsoft Australia Pty Ltd'' & \multirow{3}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Microsoft}} \\
+  \ldots  & \\
+  ``Microsoft Enterprise Services'' & \\ \hline
+  ``Oracle (Corp) Aust Pty Ltd''  & \multirow{10}{*}{``Oracle''} \\
+  ``Oracle Corp (Aust) Pty Ltd''  & \multirow{10}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Oracle_Corporation}} \\
+  ``Oracle Corp Aust Pty Ltd'' & \\
+   ``Oracle Corp. Australia'' & \\
+  ``Oracle Corp. Australia Pty.Ltd.'' & \\
+%   ``Oracle Corpoartion (Aust) Pty Ltd'' & \\
+  ``Oracle Corporate Aust Pty Ltd'' & \\
+  ``Oracle Corporation'' & \\
+  ``Oracle Risk Consultants'' & \\
+  ``ORACLE SYSTEMS (AUSTRALIA) PTY LTD'' & \\
+  \ldots  & \\
+  ``Oracle University''  & \\ \hline
+  ``PRICEWATERHOUSECOOPERS(PWC)''  & \multirow{6}{*}{``PricewaterhouseCoopers''} \\
+  ``PricewaterhouseCoopers Securities Ltd''& \multirow{6}{*}{\scriptsize\url{http://dbpedia.org/resource/PricewaterhouseCoopers}} \\
+  ``PricewaterhouseCoopers Services LLP'' & \\
+  ``Pricewaterhousecoopers Services Pty Ltd'' & \\
+  ``PriceWaterhouseCoopers (T/A: PriceWaterhouseCoopers Legal)'' & \\
+  \ldots  & \\
+  ``Pricewaterhouse (PWC)'' & \\ \hline
+  \ldots & \ldots \\
+  \hline
+  \end{tabular}
+  \caption{Examples of supplier names in the Australian rewarded contracts dataset.}
+  \label{tabla:aus-suppliers}
+  \end{center}
+\end{table} 
+
 
 
 \section{Related Work}
@@ -178,57 +226,17 @@ The literature review of this work covers the following areas:
  financial status is usually publicly available in the official government registries the access to this valuable information can be 
  tedious due to different formats, query languages, etc. That is why other companies have emerged trying to index and exploit 
  these public repositories; selling reporting services that contain an aggregated version of the corporate information. Taking as 
- an example the Spanish realm, the Spanish Chambers of Commerce~\footnote{\url{http://www.camerdata.es/php/eng/fichero\_empresas.php}},
- Empresia.es~\footnote{\url{http://empresia.es}} or Axesor.es~\footnote{\url{http://www.axexor.es}} manage a database of companies and individual 
- entrepreneurs. This situation can be also transpose to the international scope, for instance Forbes keeps a list of 
+ an example the Spanish realm, the Spanish Chambers of Commerce~\cite{CamaraSpain}, Empresia.es~\cite{Empresia} or Axesor.es~\cite{Axexor} manage a database of companies and individual  entrepreneurs. This situation can be also transpose to the international scope, for instance Forbes keeps a list of 
  the most representative companies in different sectors. The underlying problems lies in the lack of unique identification, same company data in more 
  than a source, name standardization, etc. and, as a consequence, difficulty of tracking company activity. In order to tackled these problems some 
- initiatives applying the LOD principles such as the Orgpedia~\footnote{\url{http://tw.rpi.edu/orgpedia/}} in United States or 
- ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}} have scrapped and published the information 
+ initiatives applying the LOD principles such as the Orgpedia~\cite{Orgpedia} in United States or 
+ ``The Open Database Of The Corporate World''~\cite{Opencorporates} have scrapped and published the information 
  of companies creating a large database containing ($54,080,317$ of companies in May 2012) with high-valuable information like the company 
- identifier, e.g. Figure~\ref{figure:open} shows an example of an ``OpenCorporates'' organization. Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
+ identifier. Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
  as a human would do and the previous section has presented) still remains. Finally public web sites and major social networks such as Google 
  Places, Google Maps, Foursquare, Linkedin Companies, Facebook or Tuenti provide APIs and information managed by the own companies that is supposed 
  to be specially relevant to enrich existing corporate data once a company is uniquely identified.
- 
-  
-\clearpage
 
-\begin{figure}[!h]
-\begin{center}
-\begin{lstlisting}[language=SPARQL]
-...
-<http://opencorporates.com/id/companies/us_az/F07503757#id> 
-	dct:created "1995-06-01"^^xsd:date;
-	a adms:Identifer;
-	skos:notation "F07503757";
-	adms:schemaAgency "Arizona Corporation Commission".
-
-<http://opencorporates.com/id/companies/us_az/F07503757#ra> 
-	a locn:Address;
-	locn:fullAddress "% CORPORATION SERVICE COMPANY, 
-	2338 W ROYAL PALM RD STE-J, PHOENIX, AZ 85021".
-
-<http://opencorporates.com/id/companies/us_az/F07503757> 
-	opencorporates:companyType "CORPORATION";
-	opencorporates:legalName "ORACLE SOFTWARE CORPORATION (FN)";
-	a <http://s.opencalais.com/1/type/er/Company>,
-		legal:LegalEntity;
-	rdfs:label "ORACLE SOFTWARE CORPORATION (FN)";
-	vCard:adr _:bnode1324364416;
-	legal:companyType "CORPORATION";
-	legal:legalIdentifier 
-	  <http://opencorporates.com/id/companies/us_az/F07503757#id>;
-	legal:legalName "ORACLE SOFTWARE CORPORATION (FN)";
-	locn:registeredAddress 
-	  <http://opencorporates.com/id/companies/us_az/F07503757#ra>.
-...
-\end{lstlisting}
-\caption{Partial Information in the N3 format about an ``Oracle'' company in ``Open Corporates''.}
-\label{figure:open}
-\end{center}
-\end{figure}
- 
  
 \end{itemize}
 
@@ -249,24 +257,25 @@ Thus common contextual information can be added to create the final unified name
  those that are part of a word avoiding potential changes in  abbreviations or acronyms; 2) lowercase the raw text (although some semantics can 
  be lost previous works and empirical tests show that this is the best approach); 3) remove duplicates and 4) lemmatize the corporate name. 
  The implementation of this step to clean the corporate name has been performed using a combination of the aforementioned API and 
- the Unix scripting tools AWK and SED. In this case, Figure~\ref{figure:step-1} presents 
- two relevant snippets of code for cleaning the name and making a basic word normalization. 
+ the Unix scripting tools AWK and SED. 
+
+%In this case, Figure~\ref{figure:step-1} presents  two relevant snippets of code for cleaning the name and making a basic word normalization. 
  
-\begin{figure}[!h]
-\begin{center}
-\begin{lstlisting}[language=Python]        
-rawname = filter(lambda x: x in string.letters or 
-	      x in string.whitespace, line)
-...
-def normalize(self, word):
-  word = word.lower()
-  word = self.lemmatizer.lemmatize(word)
-  return word
-\end{lstlisting}
-\caption{Normalization and data cleansing using the Python NLTK API.}
-\label{figure:step-1}
-\end{center}
-\end{figure}
+%\begin{figure}[!h]
+%\begin{center}
+%\begin{lstlisting}[language=Python]        
+%rawname = filter(lambda x: x in string.letters or 
+	      %x in string.whitespace, line)
+%...
+%def normalize(self, word):
+%  word = word.lower()
+%  word = self.lemmatizer.lemmatize(word)
+%  return word
+%\end{lstlisting}
+%\caption{Normalization and data cleansing using the Python NLTK API.}
+%\label{figure:step-1}
+%\end{center}
+%\end{figure}
 
 
    
@@ -276,67 +285,68 @@ of stopwords sets that can filter some non-relevant words. Nevertheless the use 
 consider two key-points: 1) there is a common set of stopwords for any language than can be often used as a filter and 
 2) depending on the context the set of stopwords should change to avoid filtering relevant words. In this particular 
 case, a common and minimal set of stopwords in English provided by NLTK has been used. Thus the normalized corporate name is 
-transformed into a new set of words. Figure~\ref{figure:step-2} presents the function for removing a set of 
-words given a another set, it can also be applied to other stages that require filtering capabilities.
+transformed into a new set of words. 
+%Figure~\ref{figure:step-2} presents the function for removing a set of 
+%words given a another set, it can also be applied to other stages that require filtering capabilities.
 
-\begin{figure}[!h]
-\begin{center}
-\begin{lstlisting}[language=Python] 
-from nltk.corpus import stopwords
-self.stop_words_wn = Set(stopwords.words('english'))
-...
-def remove_set(self, set,  name): 
-  token_names= word_tokenize(name)       
-  filtered_token_list = [w for w in  token_names if not w in set ]
-  cleaned_name = " ".join(["".join(filtered_token) 
-    for filtered_token in filtered_token_list])
-  return cleaned_name
-  
-stop_unified_name = self.remove_set(self.stop_words_wn, name)
-\end{lstlisting}
-\caption{Filtering words with the Python NLTK API.}
-\label{figure:step-2}
-\end{center}
-\end{figure}
+%\begin{figure}[!h]
+%\begin{center}
+%\begin{lstlisting}[language=Python] 
+%from nltk.corpus import stopwords
+%self.stop_words_wn = Set(stopwords.words('english'))
+%...
+%def remove_set(self, set,  name): 
+%  token_names= word_tokenize(name)       
+%  filtered_token_list = [w for w in  token_names if not w in set ]
+%  cleaned_name = " ".join(["".join(filtered_token) 
+%    for filtered_token in filtered_token_list])
+%  return cleaned_name
+%  
+%stop_unified_name = self.remove_set(self.stop_words_wn, name)
+%\end{lstlisting}
+%\caption{Filtering words with the Python NLTK API.}
+%\label{figure:step-2}
+%\end{center}
+%\end{figure}
 
 \item Filter the expanded set of most common words in the dataset. Taking into account 
 the aforementioned step this stage is based on the construction of a customized stopwords 
 set for corporate names that is also expanded with Wordnet (ver. 3.0) synonyms with the aim of 
 exploiting semantic relationships. In order to create this set two strategies have been followed and applied: 1) create the set 
 of words by hand (accurate but very time-consuming) and 2) extract automatically the set of ``most common words'' from the 
-working dataset and make a hand-validation (less accurate and time-consuming). Figure~\ref{figure:step-3} partially 
-shows these approaches implemented.
+working dataset and make a hand-validation (less accurate and time-consuming). 
+%Figure~\ref{figure:step-3} partially shows these approaches implemented.
     
-\begin{figure}[!h]
-\begin{center}
-\begin{lstlisting}[language=Python]  
-from nltk.corpus import wordnet as wn
-...
-def create_syns_from_wn(self, word):
-  syns = wn.synsets(word) 
-  lemmas = Set()
-  for syn in syns:
-    lemmas = lemmas | Set([lemma.name for lemma in syn.lemmas] )
-  return lemmas
-
-def expand_list_wn(self,  list):    
-  source = Set(list)
-  expanded_set = Set()
-  for word in source:
-    expanded_set = expanded_set | self.create_syns_from_wn(word)
-return expanded_set |  source
-
-def list_most_used_words(companies, max):
-  words = flatten(map(lambda company: company.rawname.split(), companies))
-  counter = collections.Counter(words)  
-  return [x[0].lower() for x in 
-  filter ( lambda x: x [1] > max, 
-   (itertools.islice(counter.most_common(), 0, 1000)))]
-\end{lstlisting}
-\caption{Expanding a list of words with Wordnet syns and Counting ``most used words'' in a dataset.}
-\label{figure:step-3}
-\end{center}
-\end{figure}
+%\begin{figure}[!h]
+%\begin{center}
+%\begin{lstlisting}[language=Python]  
+%from nltk.corpus import wordnet as wn
+%...
+%def create_syns_from_wn(self, word):
+%  syns = wn.synsets(word) 
+%  lemmas = Set()
+%  for syn in syns:
+%    lemmas = lemmas | Set([lemma.name for lemma in syn.lemmas] )
+%  return lemmas
+%
+%def expand_list_wn(self,  list):    
+%  source = Set(list)
+%  expanded_set = Set()
+%  for word in source:
+%    expanded_set = expanded_set | self.create_syns_from_wn(word)
+%return expanded_set |  source
+%
+%def list_most_used_words(companies, max):
+%  words = flatten(map(lambda company: company.rawname.split(), companies))
+%  counter = collections.Counter(words)  
+%  return [x[0].lower() for x in 
+%  filter ( lambda x: x [1] > max, 
+%   (itertools.islice(counter.most_common(), 0, 1000)))]
+%\end{lstlisting}
+%\caption{Expanding a list of words with Wordnet syns and Counting ``most used words'' in a dataset.}
+%\label{figure:step-3}
+%\end{center}
+%\end{figure}
 
 \item Dictionary-based expansion of common acronyms and filtering. A dictionary of common acronyms in corporate 
 names such as ``PTY'', ``LTD'' or ``PL'' and their variants has been created by hand in order 
@@ -359,25 +369,22 @@ could be accidentally included. That is why this stage is marked as optional and
 \item Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones. The objective 
 of this stage lies in ``classifying words into their parts of speech and labeling them accordingly is known as part-of-speech tagging''~\cite{LoperBird02}. In order 
 to perform this task both a lemmatizer based on Wordnet and a grammar for corporate names (``NN''-nouns and ``JJ''-adjectives connected with articles and 
-prepositions) have been designed, see Figure~\ref{figure:step-4}. Once words are tagged next step consists in filtering non-relevant categories 
-in corporate names keeping nouns and adjectives, as an example Figure~\ref{figure:step-4} also shows how to walk and filter nodes in the parsed tree.
+prepositions) have been designed. Once words are tagged next step consists in filtering non-relevant categories 
+in corporate names keeping nouns and adjectives using a walker function in the generated tree.
+
+%, as an example Figure~\ref{figure:step-4} also shows how to walk and filter nodes in the parsed tree.
 
 \begin{figure}[!h]
 \begin{center}
 \begin{lstlisting}[language=Python]  
-self.lemmatizer = nltk.WordNetLemmatizer()
 self.grammar = r"""
   NBAR: {<NN.*|JJ>*<NN.*>}   
   NP: {<NBAR>}
       {<NBAR><IN><NBAR>} 
     """
 self.chunker = nltk.RegexpParser(self.grammar)
-
-def leaves(self, tree):
-  for subtree in tree.subtrees(filter = lambda t: t.node=='NP'):
-    yield subtree.leaves()
 \end{lstlisting}
-\caption{Regular expression-based chunker in Python NLTK and Filtering words by the category ``NP'' (noun phrase) .}
+\caption{Regular expression-based chunker in Python NLTK .}
 \label{figure:step-4}
 \end{center}
 \end{figure}   
@@ -552,54 +559,7 @@ to be applied over other datasets to correlate and exploit metadata of public co
 % %\bibliographystyle{acm}
 \bibliography{references}
 % \renewcommand{\bibname}{References}
-\newpage
-\section*{Appendix I}
-\begin{table}[!htb]
-\renewcommand{\arraystretch}{1.3}
-\begin{center}
-\begin{tabular}{|p{7cm}|p{7cm}|}
-\hline
-  \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name and URI}  \\  \hline
-  ``Accenture'' & \multirow{6}{*}{``Accenture''} \\
-  ``Accenture Aust Holdings'' & \multirow{6}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Accenture}} \\ 
-   ``Accenture Aust Holdings'' & \\  
-   ``Accenture Aust Holdings Pty Ltd'' & \\
-   ``Accenture  Australia Holding P/L'' & \\
-%   ``Accenture Australia Holdings P/Ltd'' & \\
-%   ``Accenture Australia Holdings Pty Lt''  & \\  
-  ``Accenture Australia Limited'' & \\
-  \ldots  & \\
-  ``Accenture Australia Ltd'' & \\ \hline
-  ``Microsoft Australia'' & \multirow{3}{*}{``Microsoft''} \\
-  ``Microsoft Australia Pty Ltd'' & \multirow{3}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Microsoft}} \\
-  \ldots  & \\
-  ``Microsoft Enterprise Services'' & \\ \hline
-  ``Oracle (Corp) Aust Pty Ltd''  & \multirow{9}{*}{``Oracle''} \\
-  ``Oracle Corp (Aust) Pty Ltd''  & \multirow{9}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Oracle_Corporation}} \\
-  ``Oracle Corp Aust Pty Ltd'' & \\
-%   ``Oracle Corp. Australia'' & \\
-  ``Oracle Corp. Australia Pty.Ltd.'' & \\
-%   ``Oracle Corpoartion (Aust) Pty Ltd'' & \\
-  ``Oracle Corporate Aust Pty Ltd'' & \\
-  ``Oracle Corporation'' & \\
-  ``Oracle Risk Consultants'' & \\
-  ``ORACLE SYSTEMS (AUSTRALIA) PTY LTD'' & \\
-  \ldots  & \\
-  ``Oracle University''  & \\ \hline
-  ``PRICEWATERHOUSECOOPERS(PWC)''  & \multirow{6}{*}{``PricewaterhouseCoopers''} \\
-  ``PricewaterhouseCoopers Securities Ltd''& \multirow{6}{*}{\scriptsize\url{http://dbpedia.org/resource/PricewaterhouseCoopers}} \\
-  ``PricewaterhouseCoopers Services LLP'' & \\
-  ``Pricewaterhousecoopers Services Pty Ltd'' & \\
-  ``PriceWaterhouseCoopers (T/A: PriceWaterhouseCoopers Legal)'' & \\
-  \ldots  & \\
-  ``Pricewaterhouse (PWC)'' & \\ \hline
-  \ldots & \ldots \\
-  \hline
-  \end{tabular}
-  \caption{Examples of supplier names in the Australian rewarded contracts dataset.}
-  \label{tabla:aus-suppliers}
-  \end{center}
-\end{table} 
+
 
 
 \end{document}
