@@ -14,7 +14,7 @@
 
 %%%Math
 \usepackage{latexsym}
-% \usepackage{amsmath}
+\usepackage{amsmath}
 % \usepackage{amssymb}
 % \usepackage{amsthm}
 %\usepackage{eurosans}
@@ -27,6 +27,7 @@
 
 \usepackage{color}
 \usepackage{textcomp}
+\usepackage{bnf}
 
 
 \definecolor{gray}{gray}{0.5}
@@ -229,7 +230,7 @@ The literature review of this work covers the following areas:
  an example the Spanish realm, the Spanish Chambers of Commerce~\cite{CamaraSpain}, Empresia.es~\cite{Empresia} or Axesor.es~\cite{Axexor} manage a database of companies and individual  entrepreneurs. This situation can be also transpose to the international scope, for instance Forbes keeps a list of 
  the most representative companies in different sectors. The underlying problems lies in the lack of unique identification, same company data in more 
  than a source, name standardization, etc. and, as a consequence, difficulty of tracking company activity. In order to tackled these problems some 
- initiatives applying the LOD principles such as the Orgpedia~\cite{Orgpedia} in United States or 
+ initiatives applying the LOD principles such as the Orgpedia~\cite{Orgpedia} and the CrocTail~\cite{croctail} (part of the ``Corporate Research Project'') efforts in United States or 
  ``The Open Database Of The Corporate World''~\cite{Opencorporates} have scrapped and published the information 
  of companies creating a large database containing ($54,080,317$ of companies in May 2012) with high-valuable information like the company 
  identifier. Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
@@ -371,23 +372,21 @@ of this stage lies in ``classifying words into their parts of speech and labelin
 to perform this task both a lemmatizer based on Wordnet and a grammar for corporate names (``NN''-nouns and ``JJ''-adjectives connected with articles and 
 prepositions) have been designed. Once words are tagged next step consists in filtering non-relevant categories 
 in corporate names keeping nouns and adjectives using a walker function in the generated tree.
-
-%, as an example Figure~\ref{figure:step-4} also shows how to walk and filter nodes in the parsed tree.
-
-\begin{figure}[!h]
+\begin{figure}[ht]
 \begin{center}
-\begin{lstlisting}[language=Python]  
-self.grammar = r"""
-  NBAR: {<NN.*|JJ>*<NN.*>}   
-  NP: {<NBAR>}
-      {<NBAR><IN><NBAR>} 
-    """
-self.chunker = nltk.RegexpParser(self.grammar)
-\end{lstlisting}
-\caption{Regular expression-based chunker in Python NLTK .}
-\label{figure:step-4}
+\[
+Corporate Name=
+\begin{cases}
+<NBAR>:<NN.*|JJ>* <NN.*> \\
+<NP>  :{<NBAR>} \\
+<NP>  :{<NBAR><IN><NBAR>} \\
+\end{cases}
+\]
 \end{center}
-\end{figure}   
+\caption{Grammar for regular expression-based chunker in Python NLTK .}
+\label{figure:step-4}
+\end{figure}
+
 
 \item Cluster corporate names. This task is in charge of grouping names by similarity applying 
 a string comparison function. Thus if the clustering is applied $n$ times any name 
