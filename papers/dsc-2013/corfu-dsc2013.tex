@@ -447,10 +447,24 @@ Since the CORFU approach has been designed and implemented~\footnote{\url{https:
 establish a method to assess quantitatively the quality of the results.  The steps to carry 
 out this experiment are: 1) Configure the CORFU technique, see Table~\ref{config-corfu};  
 2) Execute the algorithm taking as a parameter the file containing the whole dataset of company names;
-3) Validate (manually) the dump of unified names; 4) Calculate the values of 
-precision and recall. In particular, this evaluation considers the precision of the algorithm as ``the number of supplier 
-names that have been correctly unified under the same name'' while recall is 
+3) Validate (manually) the dump of unified names; 4) Calculate the measures of 
+precision, see Eq.~\ref{eq-1}, recall, see Eq.~\ref{eq-2}, and the F1 score (the harmonic mean of precision and recall), see Eq.~\ref{eq-3} according to the values of tp (true positive), 
+fp (false positive), tn (true negative) and fn (false negative). In particular, this evaluation considers the precision of the algorithm as ``the number of supplier names that have been correctly unified under the same name'' while recall is 
 ``the number of supplier names that have not been correctly classified under a proper name''. 
+
+\begin{equation}\label{eq-1}
+Precision = \frac{tp}{tp+fp} 
+\end{equation}
+
+
+\begin{equation}\label{eq-2}
+Recall = \frac{tp}{tp+fn}
+\end{equation}
+
+\begin{equation}\label{eq-3}
+F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
+\end{equation}
+
 
 \subsection{Sample}
 In order to validate the CORFU approach the dataset of supplier names in Australia 
