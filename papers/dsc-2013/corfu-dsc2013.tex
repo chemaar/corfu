@@ -310,6 +310,11 @@ transformed into a new set of words.
 %\end{center}
 %\end{figure}
 
+\item Dictionary-based expansion of common acronyms and filtering. A dictionary of common acronyms in corporate 
+names such as ``PTY'', ``LTD'' or ``PL'' and their variants has been created by hand in order 
+to be able to extract and filter acronyms. 
+
+
 \item Filter the expanded set of most common words in the dataset. Taking into account 
 the aforementioned step this stage is based on the construction of a customized stopwords 
 set for corporate names that is also expanded with Wordnet (ver. 3.0) synonyms with the aim of 
@@ -349,9 +354,6 @@ working dataset and make a hand-validation (less accurate and time-consuming).
 %\end{center}
 %\end{figure}
 
-\item Dictionary-based expansion of common acronyms and filtering. A dictionary of common acronyms in corporate 
-names such as ``PTY'', ``LTD'' or ``PL'' and their variants has been created by hand in order 
-to be able to extract and filter acronyms. 
 
 
 \item Identification of contextual information and filtering. Mainly corporate names can contain nationalities or place names that, in most of 
@@ -403,6 +405,33 @@ one of the main principles of the LOD initiative such as unique identification.
 \end{enumerate}
 % 
 %
+
+
+\begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|p{1cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+
+  \textbf{Step} & \textbf{Name} & \textbf{Example}  \\  \hline
+  $0$ & Load corporate names & \begin{itemize} \item  ``Accenture  Australia Holding P/L'' \item  ``Oracle (Corp) Aust Pty Ltd'' \item \end{itemize} \\ \hline
+  $1$ & Normalize raw text and remove duplicates & \begin{itemize} \item  ``Accenture  Australia Holding PL'' \item  ``Oracle Corp Aust Pty Ltd'' \end{itemize} \\ \hline
+  $2$ & Filter the basic set of common stopwords in English & \begin{itemize} \item  ``Accenture  Australia Holding PL'' \item  ``Oracle Corp Aust Pty Ltd'' \end{itemize} \\ \hline  
+  $3$ & Dictionary-based expansion of common acronyms and filtering & \begin{itemize} \item  ``Accenture  Australia Holding Proprietary Company Limited'' \item  ``Oracle Corporation Aust Proprietary Company Limited'' \end{itemize} \\ \hline
+  $4$ & Filter the expanded set of most common words in the dataset & \begin{itemize} \item  ``Accenture  Australia Holding'' \item  ``Oracle Aust'' \end{itemize} \\ \hline
+  $5$ & Identification of contextual information and filtering & \begin{itemize} \item  ``Accenture  Australia Holding'' \item  ``Oracle Aust'' \end{itemize}\\ \hline
+  $6$ & Spell checking (optional) & \begin{itemize}  \item  ``Accenture Holding'' \item  ``Oracle'' \end{itemize} \\ \hline
+  $7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize} \\ \hline
+  $8$ & Cluster corporate names & \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize} \\ \hline
+  $9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & \begin{itemize}  \item  (``Accenture'', dbpedia-res:Accenture) \item  (``Oracle'', dbpedia-res:Oracle\_Corporation) \end{itemize} \\ \hline
+  \hline
+  \end{tabular}
+  \caption{Example step-by-step of the CORFU technique.}
+  \label{tabla:corfu-examples}
+  \end{center}
+\end{table} 
+\clearpage
+
 \subsection{Use Case: Unifying supplier names in the Australian e-Procurement domain}
 % % 
 As previous sections have introduced there is an increasing interest and commitment 
@@ -426,8 +455,8 @@ dataset as Table~\ref{config-corfu} summarizes.
   \textbf{Step} & \textbf{Name} & \textbf{Customization}  \\  \hline
   $1$ & Normalize raw text and remove duplicates & Default \\ \hline
   $2$ & Filter the basic set of common stopwords in English & Default\\ \hline
-  $3$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
-  $4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations (manually) \\ \hline
+  $3$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations (manually) \\ \hline
+  $4$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
   $5$ & Identification of contextual information and filtering & Use of Geonames REST service\\ \hline
   $6$ & Spell checking (optional) & Train dataset of $128457$ words provided by Peter Norvig's spell-checker~\cite{NorvigSpelling}. \\ \hline
   $7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & Default \\ \hline
@@ -447,18 +476,27 @@ establish a method to assess quantitatively the quality of the results.  The ste
 out this experiment are: 1) Configure the CORFU technique, see Table~\ref{config-corfu};  
 2) Execute the algorithm taking as a parameter the file containing the whole dataset of company names;
 3) Validate (manually) the dump of unified names; 4) Calculate the measures of 
-precision, see Eq.~\ref{eq-1}, recall, see Eq.~\ref{eq-2}, and the F1 score (the harmonic mean of precision and recall), see Eq.~\ref{eq-3} according to the values of tp (true positive), 
-fp (false positive), tn (true negative) and fn (false negative). In particular, this evaluation considers the precision of the algorithm as ``the number of supplier names that have been correctly unified under the same name'' while recall is 
-``the number of supplier names that have not been correctly classified under a proper name''. 
+precision, see Eq.~\ref{eq-1}, recall, see Eq.~\ref{eq-2}, and the F1 score (the harmonic mean of precision and recall), see Eq.~\ref{eq-3} according to the values of $tp$ (true positive), 
+$fp$ (false positive), $tn$ (true negative) and $fn$ (false negative). In particular, this evaluation considers the precision of the algorithm as ``the number of supplier names that have been correctly unified under the same name'' while recall is 
+``the number of supplier names that have not been correctly classified under a proper name''.  More specifically, $tp$ is ``the number of corporate names properly unified'', $fp$ is 
+``the number of corporate names wrongly unified'', $tn$ is ``the number of corporate names properly non-unified'' and $fn$ is ``the number of corporate names wrongly non-unified''.
 
+\begin{figure}[ht]
+\begin{minipage}[b]{0.45\linewidth}
+\centering
 \begin{equation}\label{eq-1}
 Precision = \frac{tp}{tp+fp} 
 \end{equation}
-
-
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[b]{0.45\linewidth}
+\centering
 \begin{equation}\label{eq-2}
 Recall = \frac{tp}{tp+fn}
 \end{equation}
+\end{minipage}
+\end{figure}
+
 
 \begin{equation}\label{eq-3}
 F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
@@ -514,9 +552,7 @@ On the other hand, it is important to emphasize that the last step of linking th
 with existing web information resources using the reconciliation service of 
 OpenCorporates or DBPedia in Google Refine has the potential of generating $28383$ right 
 links ($36.61$\%) instead of the initial $8$\%. Thus the initial problem of linking ($n$ string literals $\to$ 
-$1$ company $\to$ $1$ URI) has been substantially improved. 
-
-Finally, the frequency distribution of supplier and number of appearances is depicted on Figures~\ref{fig:results-graph-3}
+$1$ company $\to$ $1$ URI) has been substantially improved. Finally, the frequency distribution of supplier and number of appearances is depicted on Figures~\ref{fig:results-graph-3}
 and~\ref{fig:results-graph-4} with the objective of presenting how the cloud of points (appearances) that initially were only one per supplier has 
 emerged due to the unification of names, for instance in the case of ``Oracle'' $75$ apparitions can 
 now be shown.
