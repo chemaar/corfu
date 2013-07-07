@@ -35,7 +35,7 @@
 
 \begin{document}
 \title{Towards a stepwise method for unifying and reconciling corporate names in public contracts metadata. The CORFU technique.\thanks{This is the full version of the article including some source 
-code listings and an appendix for a better understanding during the reviews. Nevertheless some listings and figures will be omitted in a final version.} }
+code listings, references and an appendix for a better understanding during the reviews. Nevertheless some of them will be omitted in a final version.} }
 
 \titlerunning{}
 
@@ -99,33 +99,28 @@ the official company registry and the process of rewarding contracts implying di
 naming problems and data inconsistencies that are spread to next stages preventing future 
 activities such as reporting.
 
-In the case of the type of contract and location, there are already standardized~\cite{DBLP:journals/ijseke/AlvarezLSASL12,pscsODBook} product 
-scheme classifications such as the Common Procurement Vocabulary (2003 and 2008), the Combined Nomenclature (2012), 
-the Central Product Classificationby in the European Union, the International Standard Industrial Classification of 
-All Economic Activities (Rev. 4) in the United Nations or the North American Industry Classification System (2007 and 2012) 
-in the Government of United States that are currently used with different objectives such as statistics, tagging or 
-information retrieval. Geolocated information can be also found in different common datasets and nomenclatures such as 
-the Nomenclature of territorial units for statistics in the European Union, the Geonames dataset~\footnote{\url{http://www.geonames.org/}}, the GeoLinkedData 
-initiative~\cite{DBLP:conf/dexa/Lopez-PellicerSCZM10} or the traditional list of countries and ISO-codes.
-
-However corporate, organization, firm, company or institution names (hereafter these names will be used to refer to 
+In the case of the type of contract and location, there are already standardized product 
+scheme classifications~\cite{DBLP:journals/ijseke/AlvarezLSASL12,pscsODBook} that are currently used with different objectives 
+such as statistics, tagging or information retrieval. Geolocated information can be also found in different common datasets and nomenclatures such as 
+the Nomenclature of territorial units for statistics in the European Union, the Geonames dataset, the GeoLinkedData 
+initiative or the traditional list of countries and ISO-codes. However corporate, organization, firm, company or institution names (hereafter these names will be used to refer to 
 the same entity) and structure are not yet standardized at global scope and only some classifications of economic activities or 
 company identifiers can be found such as the TARIC (On-line customs tariff database). 
 Thus the simple task of grouping contracts by a supplier is not a mere process of searching by the same literal. 
 Technical issues such as hyphenation, use of abbreviations or acronyms an transliteration are common problems that must be addressed in order 
 to provide a final corporate name. Existing works in the field of Name Entity Recognition~\cite{citeulike:1657521} (NER) or 
-name entity disambiguation~\cite{Sarmento:2009:AWN:1602022.1602085,Klein:2003:NER:1119176.1119204} have already addressed these issues. 
+name entity disambiguation~\cite{Klein:2003:NER:1119176.1119204} have already addressed these issues. 
 Nevertheless the problem that is being tackled in these approaches lies in the identification of organization names in 
 a raw text while in the e-Procurement sector the string literal identifying a supplier is already known.
 
 In the particular case of the Australian e-Procurement domain, the supplier name seems to be introduced by typing a string literal without any assistance or 
 auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers} in the Appendix I, 
-can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} 
+can be found such as misspelling errors~\cite{NorvigSpelling}, name and acronym mismatches~\cite{Yeates99automaticextraction} 
 or context-aware data that is already known when the dataset is processed, e.g. country or year. Furthermore it is also well-known 
 that a large company can be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
 should take into account all rewarded contracts regardless the structure of the company.
 
-On the other hand the application of semantic technologies and the Linking Open Data initiative (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
+On the other hand the application of semantic technologies and the Linking Open Data initiative (hereafter LOD) 
 in several fields like e-Government (e.g. the Open Government Data effort) tries to improve the knowledge about a specific area providing 
 common data models and formats to share information and data between agents. More specifically, in the European e-Procurement 
 context~\cite{e-Proc-map-paper} there is an increasing commitment to boost the use of electronic communications and transactions 
@@ -142,29 +137,23 @@ the problem of grouping by a unique (\textit{Big}) name, identifier or resource 
 techniques combined with semantics has been designed, customized and implemented trying to exploit the naming convention of a specific dataset with the aim 
 of grouping $n$ string literals $\to$ $1$ company and, thus, easing the next natural process of entity reconciliation.
 
-The remainder of this paper is structured as follows. Section 2 a literature review is presented. Afterwards next section outlines main mismatches in corporate names. Section 4 presents 
-the CORFU approach to unify corporate names. The evaluation section exposes and discusses the experimentation carried out to test the presented approach using as a dataset the rewarded 
-contracts of Australia in the period 2004-2012. Finally conclusions summarizes the main outcomes of this work 
-and some open issues are also presented as future work.
-
-
 \section{Related Work}
 According to the previous section, some relevant works can be found and grouped by the topics covered in this paper:
 \begin{itemize}
  \item Natural Language Processing and Computational Linguistics. In these research areas common works dealing with the aforementioned data heterogeneities 
-   such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
+   such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction}, 
   in the lexical, syntactic and semantic levels can be found. These approaches can be applied to solve general problems and usually follow a 
   traditional approach of text normalization, lexical analysis, pos-tagging word according to a grammar and semantic analysis to filter or 
   provide some kind of service such as information/knowledge extraction, reporting, sentiment analysis or opinion mining. 
-  Well-established APIs such as NLTK~\cite{LoperBird02} for Python, Lingpipe~\cite{Lingpipe}, OpenNLP~\cite{OpenNLP} or Gate~\cite{Gate} for Java, WEKA~\cite{read12:_scalab} 
-  (a data mining library with NLP capabilities), the Apache Lucene and Solr~\cite{rafa2011apache} search engines provide the proper building blocks to build natural-language based applications. 
-  Recent times have seen how the analysis of social networks such as Twitter~\cite{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747}, the extraction of 
-  clinical terms~\cite{Wang:2009:ARN:1667884.1667888} for electronic health records, the creation of bibliometrics~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} or 
+  Well-established APIs such as NLTK for Python, Lingpipe, OpenNLP or Gate for Java, WEKA 
+  (a data mining library with NLP capabilities), the Apache Lucene and Solr search engines provide the proper building blocks to build natural-language based applications. 
+  Recent times have seen how the analysis of social networks such as Twitter~\cite{Li:2012:TNE:2348283.2348380}, the extraction of 
+  clinical terms~\cite{Wang:2009:ARN:1667884.1667888} for electronic health records, the creation of bibliometrics~\cite{Galvez2006} or 
   the identification of gene names~\cite{Krauthammer:2004:TIB:1053007.1053018,Galvez2012} to name a few have tackled the problem of entity recognition and extraction from raw sources. 
   Other supervised techniques~\cite{Bohn:2006:PHD} have also be used to train data mining-based algorithms with the aim of creation classifiers.
  
- \item Semantic Web. More specifically in the LOD initiative~\cite{Berners-Lee-2006} the use of entity reconciliation techniques to uniquely identify resources 
- is being currently explored. Thus an entity reconciliation process can be briefly defined as the method for looking and mapping~\cite{DBLP:conf/semweb/IseleJB10,DBLP:conf/icwe/IseleJB12} two different 
+ \item Semantic Web. More specifically in the LOD initiative the use of entity reconciliation techniques to uniquely identify resources 
+ is being currently explored. Thus an entity reconciliation process can be briefly defined as the method for looking and mapping~\cite{DBLP:conf/semweb/IseleJB10} two different 
  concepts or entities under a certain threshold. There are a lot of  works presenting solutions about concept mapping, entity reconciliation, etc. 
  most of them are focused on the previous NLP techniques~\cite{conf/www/MaaliCP11,Serimi} (if two concepts have similar literal descriptions then they should be similar) 
  and others (ontology-based) that also exploit the semantic information (hierarchy, number and type of relations) to establish a potential mapping 
@@ -189,7 +178,7 @@ According to the previous section, some relevant works can be found and grouped 
  financial status is usually publicly available in the official government registries the access to this valuable information can be 
  tedious due to different formats, query languages, etc. That is why other companies have emerged trying to index and exploit 
  these public repositories; selling reporting services that contain an aggregated version of the corporate information. Taking as 
- an example the Spanish realm, the Spanish Chambers of Commerce~\cite{CamaraSpain}, Empresia.es~\cite{Empresia} or Axesor.es~\cite{Axexor} manage a database of companies and individual  entrepreneurs. This situation can be also transpose to the international scope, for instance Forbes keeps a list of 
+ an example the Spanish realm, the Spanish Chambers of Commerce, ``Empresia.es'' or ``Axesor.es'' manage a database of companies and individual  entrepreneurs. This situation can be also transpose to the international scope, for instance Forbes keeps a list of 
  the most representative companies in different sectors. The underlying problems lies in the lack of unique identification, same company data in more 
  than a source, name standardization, etc. and, as a consequence, difficulty of tracking company activity. In order to tackled these problems some 
  initiatives applying the LOD principles such as the Orgpedia~\cite{Orgpedia} and the CrocTail~\cite{croctail} (part of the ``Corporate Research Project'') efforts in United States or 
@@ -531,11 +520,11 @@ the current implementation with a classifier that can automatically learn new cl
 Furthermore the technique must be reported to the Web economics~\cite{vaf2012} domain and the international ``Public Spending''~\cite{vaf2012a} initiative, as supporting tool, 
 to be applied over other datasets to correlate and exploit metadata of public contracts.
 
-
-\section{Acknowledgements}
-This work is part of the ``PublicSpending.net'' effort carried out in cooperation with 
-the research group ``Medialab'' at the National Technical University of Athens, more specifically with 
-Marios Meimaris and Giorgos Vafeiadis, Giannis Xidias and Michalis Klonaras.
+% 
+% \section{Acknowledgements}
+% This work is part of the ``PublicSpending.net'' effort carried out in cooperation with 
+% the research group ``Medialab'' at the National Technical University of Athens, more specifically with 
+% Marios Meimaris and Giorgos Vafeiadis, Giannis Xidias and Michalis Klonaras.
 
 \bibliographystyle{plain}
 % %\bibliographystyle{unsrt}
