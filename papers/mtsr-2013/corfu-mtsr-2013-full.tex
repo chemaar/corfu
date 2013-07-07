@@ -1,0 +1,596 @@
+\documentclass{llncs}
+
+%\usepackage{llncsdoc}
+
+%\usepackage{makeidx}  % allows for indexgeneration
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+
+\usepackage{url}
+\usepackage{rotating}
+
+%%%Math
+\usepackage{latexsym}
+ \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{amsthm}
+%\usepackage{eurosans}
+
+\usepackage{eurosym}
+
+\usepackage{longtable}
+
+\usepackage{listings}
+
+\usepackage{color}
+\usepackage{textcomp}
+
+
+\definecolor{gray}{gray}{0.5}
+\definecolor{green}{rgb}{0,0.5,0}
+
+
+\begin{document}
+\title{Towards a stepwise method for unifying and reconciling corporate names in public contracts metadata. The CORFU technique.\thanks{This is the full version of the article including some source 
+code listings and an appendix for a better understanding during the reviews. Nevertheless some listings and figures will be omitted in a final version.} }
+
+\titlerunning{}
+
+
+\author{Jose Mar\'{i}a \'{A}lvarez\inst{1} \and Patricia Ordoñez de Pablos~\inst{2} \and Michail Vafolopoulos\inst{3} \and Jos\'{e} Emilio Labra\inst{4}}
+
+
+\authorrunning{Jose Mar\'{i}a Alvarez \and Michail Vafolopoulos \and  Jos\'{e} Emilio Labra}
+
+
+\institute{South East European Research Center, \\ 54622, Thessaloniki, Greece\\
+  \email{{jmalvarez@seerc.org}}\\
+   \and  WESO Research Group, Department of Business Administration, University of Oviedo \\ 33007, Oviedo, Spain.\\
+    \email{{patriop@uniovi.es}},\\
+  \and  Multimedia Technology Laboratory, National Technical University of Athens, \\ 15773, Athens, Greece.\\
+    \email{{vafopoulos@medialab.ntua.gr}}
+\and WESO Research Group, Department of Computer Science, University of Oviedo, \\ 33007, Oviedo, Spain.\\
+  \email{{labra@uniovi.es.es}}\\  
+}
+
+
+\authorrunning{Jose Mar\'{i}a Alvarez-Rodr\'{i}guez}
+
+\date{}
+
+\maketitle
+
+\renewcommand{\labelitemi}{$\bullet$}
+
+\begin{abstract}
+The present paper introduces a technique to deal with coporate names heterogeneities in the context of public 
+procurement metadata. Public bodies are currently facing a big challenge trying to improve both the 
+performance and the transparency of administrative processes. The e-Government and Open Linked Data initiatives have 
+emerged as efforts to tackle existing interoperability and integration issues among ICT-based systems 
+but the creation of a real transparent environment requires much more than the simple 
+publication of data and information in specific open formats; data and information quality is the next major step in the pubic sector. 
+More specifically in the e-Procurement domain there is a vast amount of valuable metadata that is already available 
+via the Internet protocols and formats and can be used for the creation of new added-value services. Nevertheless the simple 
+extraction of statistics or creation of reports can imply extra tasks with regards to clean, prepare and reconcile data. On the other 
+hand, transparency has become a major objective in public administractions and, in the case of public procurement, 
+one of the most interesting services lies in tracking rewarded contracts (mainly type, location, and supplier). Although 
+it seems a basic kind of reporting service the truth is that its generation can turn into a complex task due to a 
+lack of standardization in supplier names or the use of different descriptors for the type of contract. In this paper, 
+a stepwise method based on natural language processing and semantics to address the unfication of corporate names 
+is defined and implemented. Moreover a research study to evaluate the precision and recall of the proposed technique, 
+using as use case the public dataset of rewarded public contracts in Australia during the period 2004-2012, is also presented. 
+Finally some discussion, conclusions and future work are also outlined.
+\end{abstract}
+
+\section{Introduction}
+Public bodies are continuously publishing procurement opportunities in which 
+valuable metadata is available. Depending on the stage of the process new data arises such 
+as the supplier name that has been rewarded with the public contract. In this 
+context the extraction of statistics on how many contracts have been 
+rewarded to the same company is a relevant indicator to evaluate the transparency 
+of the whole process. Although companies that want to tender for a public contract must be 
+officially registered and have an unique identification number, the truth is 
+that in most of rewarded contracts the supplier is only identified by a name or a string literal typed 
+by a civil-servant. In this sense there is not usually a connection between 
+the official company registry and the process of rewarding contracts implying different 
+naming problems and data inconsistencies that are spread to next stages preventing future 
+activities such as reporting.
+
+In the case of the type of contract and location, there are already standardized~\cite{DBLP:journals/ijseke/AlvarezLSASL12,pscsODBook} product 
+scheme classifications such as the Common Procurement Vocabulary (2003 and 2008), the Combined Nomenclature (2012), 
+the Central Product Classificationby in the European Union, the International Standard Industrial Classification of 
+All Economic Activities (Rev. 4) in the United Nations or the North American Industry Classification System (2007 and 2012) 
+in the Government of United States that are currently used with different objectives such as statistics, tagging or 
+information retrieval. Geolocated information can be also found in different common datasets and nomenclatures such as 
+the Nomenclature of territorial units for statistics in the European Union, the Geonames dataset~\footnote{\url{http://www.geonames.org/}}, the GeoLinkedData 
+initiative~\cite{DBLP:conf/dexa/Lopez-PellicerSCZM10} or the traditional list of countries and ISO-codes.
+
+However corporate, organization, firm, company or institution names (hereafter these names will be used to refer to 
+the same entity) and structure are not yet standardized at global scope and only some classifications of economic activities or 
+company identifiers can be found such as the TARIC (On-line customs tariff database). 
+Thus the simple task of grouping contracts by a supplier is not a mere process of searching by the same literal. 
+Technical issues such as hyphenation, use of abbreviations or acronyms an transliteration are common problems that must be addressed in order 
+to provide a final corporate name. Existing works in the field of Name Entity Recognition~\cite{citeulike:1657521} (NER) or 
+name entity disambiguation~\cite{Sarmento:2009:AWN:1602022.1602085,Klein:2003:NER:1119176.1119204} have already addressed these issues. 
+Nevertheless the problem that is being tackled in these approaches lies in the identification of organization names in 
+a raw text while in the e-Procurement sector the string literal identifying a supplier is already known.
+
+In the particular case of the Australian e-Procurement domain, the supplier name seems to be introduced by typing a string literal without any assistance or 
+auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers} in the Appendix I, 
+can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} 
+or context-aware data that is already known when the dataset is processed, e.g. country or year. Furthermore it is also well-known 
+that a large company can be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
+should take into account all rewarded contracts regardless the structure of the company.
+
+On the other hand the application of semantic technologies and the Linking Open Data initiative (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
+in several fields like e-Government (e.g. the Open Government Data effort) tries to improve the knowledge about a specific area providing 
+common data models and formats to share information and data between agents. More specifically, in the European e-Procurement 
+context~\cite{e-Proc-map-paper} there is an increasing commitment to boost the use of electronic communications and transactions 
+processing by government institutions and other public sector organizations in order to provide added-value services~\cite{orgsODBook} 
+with special focus on SMEs. More specifically the LOD initiative seeks for creating a public and open data repository in which one the principles of this initiative that lies in the 
+unique identification or resources through URIs can become real. Thus entity reconciliation techniques~\cite{Serimi,conf/www/MaaliCP11} 
+coming from the ontology mapping and alignment areas or algorithms based on Natural Language Processing (hereafter NLP) have been 
+designed to link similar resources already available in different vocabularies, datasets or databases such as DBPedia or Freebase. 
+Nevertheless the issue of unifying supplier names as a human would do faces new problems that have been tackled in 
+other research works~\cite{Galvez2006} to efficiently extract statistics of performance in bibliographic databases. The main objective is not just a 
+mere reconciliation process to link to existing resources but to create a unique name or link ($n$ string literals $\to$ $1$ company $\to$ $1$ URI). 
+For instance in the case of the ongoing example the string literals ``Oracle'' and ``Oracle University'' could be respectively aligned to the entity $<$Oracle\_Corporation$>$ and $<$Oracle\_University$>$ but 
+the problem of grouping by a unique (\textit{Big}) name, identifier or resource still remains. That is why a context-aware method based on NLP 
+techniques combined with semantics has been designed, customized and implemented trying to exploit the naming convention of a specific dataset with the aim 
+of grouping $n$ string literals $\to$ $1$ company and, thus, easing the next natural process of entity reconciliation.
+
+The remainder of this paper is structured as follows. Section 2 a literature review is presented. Afterwards next section outlines main mismatches in corporate names. Section 4 presents 
+the CORFU approach to unify corporate names. The evaluation section exposes and discusses the experimentation carried out to test the presented approach using as a dataset the rewarded 
+contracts of Australia in the period 2004-2012. Finally conclusions summarizes the main outcomes of this work 
+and some open issues are also presented as future work.
+
+
+\section{Related Work}
+According to the previous section, some relevant works can be found and grouped by the topics covered in this paper:
+\begin{itemize}
+ \item Natural Language Processing and Computational Linguistics. In these research areas common works dealing with the aforementioned data heterogeneities 
+   such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
+  in the lexical, syntactic and semantic levels can be found. These approaches can be applied to solve general problems and usually follow a 
+  traditional approach of text normalization, lexical analysis, pos-tagging word according to a grammar and semantic analysis to filter or 
+  provide some kind of service such as information/knowledge extraction, reporting, sentiment analysis or opinion mining. 
+  Well-established APIs such as NLTK~\cite{LoperBird02} for Python, Lingpipe~\cite{Lingpipe}, OpenNLP~\cite{OpenNLP} or Gate~\cite{Gate} for Java, WEKA~\cite{read12:_scalab} 
+  (a data mining library with NLP capabilities), the Apache Lucene and Solr~\cite{rafa2011apache} search engines provide the proper building blocks to build natural-language based applications. 
+  Recent times have seen how the analysis of social networks such as Twitter~\cite{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747}, the extraction of 
+  clinical terms~\cite{Wang:2009:ARN:1667884.1667888} for electronic health records, the creation of bibliometrics~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} or 
+  the identification of gene names~\cite{Krauthammer:2004:TIB:1053007.1053018,Galvez2012} to name a few have tackled the problem of entity recognition and extraction from raw sources. 
+  Other supervised techniques~\cite{Bohn:2006:PHD} have also be used to train data mining-based algorithms with the aim of creation classifiers.
+ 
+ \item Semantic Web. More specifically in the LOD initiative~\cite{Berners-Lee-2006} the use of entity reconciliation techniques to uniquely identify resources 
+ is being currently explored. Thus an entity reconciliation process can be briefly defined as the method for looking and mapping~\cite{DBLP:conf/semweb/IseleJB10,DBLP:conf/icwe/IseleJB12} two different 
+ concepts or entities under a certain threshold. There are a lot of  works presenting solutions about concept mapping, entity reconciliation, etc. 
+ most of them are focused on the previous NLP techniques~\cite{conf/www/MaaliCP11,Serimi} (if two concepts have similar literal descriptions then they should be similar) 
+ and others (ontology-based) that also exploit the semantic information (hierarchy, number and type of relations) to establish a potential mapping 
+ (if two concepts share similar properties and similar super classes then these concepts should be similar). Apart from that 
+ there are also machine learning techniques to deal with these mismatches in descriptions using statistical approaches. Recent times, 
+ this process has been widely studied and applied to the field of linking entities in the LOD realm, for instance using the DBPedia~\cite{Mendes:2011:DSS:2063518.2063519}. 
+ Although there is no way of automatically creating a mapping with a $100\%$ of confidence (without human validation) a mapping under a certain percentage of confidence can be 
+ enough for most of user-based services such as visualization. However, in case of using these techniques as previous step of a reasoning or 
+ a formal verification process this ambiguity can lead to infer incorrect facts and must be avoided without a previous human validation. 
+
+ On the other hand the use of semantics is also being applied to model organizational structures. In this case the notion 
+ of \textit{corporate} is presented in several vocabularies and ontologies as Dave Reynolds (Epimorphics Ltd) 
+ reports~\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}. 
+ Currently the main effort is focused in the designed of the Organizations Vocabulary (a W3C Working Draft) in which the structure and 
+ relationships of companies are being modeled. This proposal is especially relevant in the next aspects:  
+ 1) to unify existing models to provide a common specification; 2) to apply semantic web technologies and the Linked Data approach to enrich 
+ and publish the relevant corporate information; 3) to provide access to the information via standard protocols 
+ and 4)to  offer new services that can exploit this information to trace the evolution and behavior of the organization over time.
+
+ 
+ \item Corporate Databases. Although corporate information such as identifier, name, economic activity, contact person, address or 
+ financial status is usually publicly available in the official government registries the access to this valuable information can be 
+ tedious due to different formats, query languages, etc. That is why other companies have emerged trying to index and exploit 
+ these public repositories; selling reporting services that contain an aggregated version of the corporate information. Taking as 
+ an example the Spanish realm, the Spanish Chambers of Commerce~\cite{CamaraSpain}, Empresia.es~\cite{Empresia} or Axesor.es~\cite{Axexor} manage a database of companies and individual  entrepreneurs. This situation can be also transpose to the international scope, for instance Forbes keeps a list of 
+ the most representative companies in different sectors. The underlying problems lies in the lack of unique identification, same company data in more 
+ than a source, name standardization, etc. and, as a consequence, difficulty of tracking company activity. In order to tackled these problems some 
+ initiatives applying the LOD principles such as the Orgpedia~\cite{Orgpedia} and the CrocTail~\cite{croctail} (part of the ``Corporate Research Project'') efforts in United States or 
+ ``The Open Database Of The Corporate World''~\cite{Opencorporates} have scrapped and published the information 
+ of companies creating a large database containing ($54,080,317$ of companies in May 2012) with high-valuable information like the company 
+ identifier. Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
+ as a human would do and the previous section has presented) still remains. Finally public web sites and major social networks such as Google 
+ Places, Google Maps, Foursquare, Linkedin Companies, Facebook or Tuenti provide APIs and information managed by the own companies that is supposed 
+ to be specially relevant to enrich existing corporate data once a company is uniquely identified.
+ 
+\end{itemize}
+
+\section{The CORFU approach}
+According to~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} institutional name variations can be 
+classified into two different groups: 1) Non-acceptable variations (affect to the meaning) due to misspelling or translation errors and 
+2) acceptable variations (do not affect to the meaning) that correspond to different syntax forms such as abbreviations, use of acronyms or contextual 
+information like country, sub-organization, etc. In order to address these potential variations the CORFU (Company, ORganization and Firm name Unifier) approach 
+seeks for providing a stepwise method to unify corporate names using NLP and semantics based techniques as a previous step to perform 
+an entity reconciliation process. The execution of CORFU comprises several common but customized steps in natural language processing applications such as 
+1) text normalization; 2) filtering; 3) comparison and clusterization and 4) linking to an existing information resource. The CORFU unifier 
+make an intensive use of the Python NLTK API and other packages for querying REST services or string comparison. Finally and 
+due to the fact that the corporate name can change in each step the initial raw name must be saved as well as contextual information such as dates, acronyms or locations. 
+Thus common contextual information can be added to create the final unified name.
+
+
+
+\begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|p{1cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+
+  \textbf{Step} & \textbf{Name} & \textbf{Example}  \\  \hline
+  $0$ & Load corporate names & \begin{itemize} \item  ``Accenture  Australia Holding P/L'' \item  ``Oracle (Corp) Aust Pty Ltd''  \end{itemize} \\ \hline
+  $1$ & Normalize raw text and remove duplicates & \begin{itemize} \item  ``Accenture  Australia Holding PL'' \item  ``Oracle Corp Aust Pty Ltd'' \end{itemize} \\ \hline
+  $2$ & Filter the basic set of common stopwords in English & \begin{itemize} \item  ``Accenture  Australia Holding PL'' \item  ``Oracle Corp Aust Pty Ltd'' \end{itemize} \\ \hline  
+  $3$ & Dictionary-based expansion of common acronyms and filtering & \begin{itemize} \item  ``Accenture  Australia Holding Proprietary Company Limited'' \item  ``Oracle Corporation Aust Proprietary Company Limited'' \end{itemize} \\ \hline
+  $4$ & Filter the expanded set of most common words in the dataset & \begin{itemize} \item  ``Accenture  Australia Holding'' \item  ``Oracle Aust'' \end{itemize} \\ \hline
+  $5$ & Identification of contextual information and filtering & \begin{itemize} \item  ``Accenture  Australia Holding'' \item  ``Oracle Aust'' \end{itemize}\\ \hline
+  $6$ & Spell checking (optional) & \begin{itemize}  \item  ``Accenture Holding'' \item  ``Oracle'' \end{itemize} \\ \hline
+  $7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize} \\ \hline
+  $8$ & Cluster corporate names & \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize} \\ \hline
+  $9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & \begin{itemize}  \item  (``Accenture'', dbpedia-res:Accenture) \item  (``Oracle'', dbpedia-res:Oracle\_Corporation) \end{itemize} \\ \hline
+  \hline
+  \end{tabular}
+  \caption{Example step-by-step of the CORFU technique.}
+  \label{tabla:corfu-examples}
+  \end{center}
+\end{table} 
+
+\begin{enumerate}
+ \item Normalize raw text and remove duplicates. This step is comprised of: 1) remove strange characters and punctuation marks but keeping 
+ those that are part of a word avoiding potential changes in  abbreviations or acronyms; 2) lowercase the raw text (although some semantics can 
+ be lost previous works and empirical tests show that this is the best approach); 3) remove duplicates and 4) lemmatize the corporate name. 
+ The implementation of this step to clean the corporate name has been performed using a combination of the aforementioned API and 
+ the Unix scripting tools AWK and SED. 
+
+\item Filter the basic set of common stopwords in English. A common practice in NLP relies in the construction 
+of stopwords sets that can filter some non-relevant words. Nevertheless the use of this technique must 
+consider two key-points: 1) there is a common set of stopwords for any language than can be often used as a filter and 
+2) depending on the context the set of stopwords should change to avoid filtering relevant words. In this particular 
+case, a common and minimal set of stopwords in English provided by NLTK has been used. Thus the normalized corporate name is 
+transformed into a new set of words. 
+
+\item Dictionary-based expansion of common acronyms and filtering. A dictionary of common acronyms in corporate 
+names such as ``PTY'', ``LTD'' or ``PL'' and their variants has been created by hand in order 
+to be able to extract and filter acronyms. 
+
+
+\item Filter the expanded set of most common words in the dataset. Taking into account 
+the aforementioned step this stage is based on the construction of a customized stopwords 
+set for corporate names that is also expanded with Wordnet (ver. 3.0) synonyms with the aim of 
+exploiting semantic relationships. In order to create this set two strategies have been followed and applied: 1) create the set 
+of words by hand (accurate but very time-consuming) and 2) extract automatically the set of ``most common words'' from the 
+working dataset and make a hand-validation (less accurate and time-consuming). 
+
+
+\item Identification of contextual information and filtering. Mainly corporate names can contain nationalities or place names that, in most of 
+cases, only add noise to the real corporate name. In this case, the use of external services such as Geonames, Google Places 
+or Google Maps can ease the identification of these words and their filtering. In order to tackle this situation the REST web service 
+of Geonames has been selected due to its capabilities to align text with locations.
+
+\item Spell checking (optional). This stage seeks for providing a method for fixing misspelling errors. It is based on the 
+well-known speller~\cite{NorvigSpelling} of Peter Norvig that uses a train dataset for creating a classifier. Although the accuracy of this 
+algorithm is pretty good for relevant words in corporate names, the empirical and unit tests with a working dataset 
+have demonstrated that misspelled non-relevant words is more efficient and accurate using a stopwords set/dictionary (this set has been 
+built with words that are not in the set of ``most common words'', step 2, and exist in the Wordnet database). Furthermore some spelling corrections 
+are not completely adequate for corporate names due to words could change and, therefore, a non-acceptable variant of the name 
+could be accidentally included. That is why this stage is marked as optional and must be configured and performed with extreme care.
+
+\item Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones. The objective 
+of this stage lies in ``classifying words into their parts of speech and labeling them accordingly is known as part-of-speech tagging''~\cite{LoperBird02}. In order 
+to perform this task both a lemmatizer based on Wordnet and a grammar for corporate names (``NN''-nouns and ``JJ''-adjectives connected with articles and 
+prepositions) have been designed. Once words are tagged next step consists in filtering non-relevant categories 
+in corporate names keeping nouns and adjectives using a walker function in the generated tree.
+\begin{figure}[ht]
+\begin{center}
+\[
+Corporate Name=
+\begin{cases}
+<NBAR>:<NN.*|JJ>* <NN.*> \\
+<NP>  :{<NBAR>} \\
+<NP>  :{<NBAR><IN><NBAR>} \\
+\end{cases}
+\]
+\end{center}
+\caption{Grammar for regular expression-based chunker in Python NLTK .}
+\label{figure:step-4}
+\end{figure}
+
+
+\item Cluster corporate names. This task is in charge of grouping names by similarity applying 
+a string comparison function. Thus if the clustering is applied $n$ times any name 
+will be grouped by ``the most probably/used name'' according to a threshold generated 
+by the comparison function. This first version of CORFU has used the WRatio function to 
+compare strings (available in the Levenshtein Python package) and a custom clustering 
+implementation.
+
+\clearpage
+
+\item Validate and reconcile the generated corporate name via an existing reconcile service (optional). This last 
+step has been included with the objective of linking the final corporate name with an existing information 
+resource and adding new alternative labels. The OpenCorporates and DBPedia reconciliation services have 
+been used in order to retrieve an URI to new corporate name. As a consequence the CORFU unifier is partially supporting 
+one of the main principles of the LOD initiative such as unique identification.
+\end{enumerate}
+% 
+%
+
+
+%
+\section{Use Case: Unifying supplier names in the Australian e-Procurement domain}
+% % 
+As previous sections have introduced there is an increasing interest and commitment 
+in public bodies to create a real transparent public administration. In this sense 
+public administrations are continuously releasing relevant data in different domains 
+such as tourism, health or public procurement with the aim of easing the implementation 
+of new added-value services and improve their efficiency and transparency. In the particular 
+case of public procurement, main and large administrations have already made publicly available the information 
+with regards to public procurement processes. In this case of study the information of Australia is used 
+to test the CORFU unifier. It is comprised of a dataset of more than $400$K supplier names during the period 2004-2012. In order to be able to extract 
+good statistics from this dataset the unification of names must be applied to. That is why 
+the CORFU stepwise method has been customized to deal with the heterogeneities of this large 
+dataset as Table~\ref{config-corfu} summarizes.
+
+\begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|p{1cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+  \textbf{Step} & \textbf{Name} & \textbf{Customization}  \\  \hline
+  $1$ & Normalize raw text and remove duplicates & Default \\ \hline
+  $2$ & Filter the basic set of common stopwords in English & Default\\ \hline
+  $3$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
+  $4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations (manually) \\ \hline
+  $5$ & Identification of contextual information and filtering & Use of Geonames REST service\\ \hline
+  $6$ & Spell checking (optional) & Train dataset of $128457$ words provided by Peter Norvig's spell-checker~\cite{NorvigSpelling}. \\ \hline
+  $7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & Default \\ \hline
+  $8$ & Cluster corporate names & Default \\ \hline
+  $9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & Python client and Google Refine \\ \hline
+  \hline
+  \end{tabular}
+  \caption{Customization of the CORFU technique for Australian supplier names.}
+  \label{config-corfu}
+  \end{center}
+\end{table} 
+
+
+\section{Evaluation}
+\subsection{Research design}
+Since the CORFU approach has been designed and implemented~\footnote{\url{https://github.com/chemaar/corfu}} it is necessary to 
+establish a method to assess quantitatively the quality of the results.  The steps to carry 
+out this experiment are: 1) Configure the CORFU technique, see Table~\ref{config-corfu};  
+2) Execute the algorithm taking as a parameter the file containing the whole dataset of company names;
+3) Validate (manually) the dump of unified names; 4) Calculate the measures of 
+precision, see Eq.~\ref{eq-1}, recall, see Eq.~\ref{eq-2}, and the F1 score (the harmonic mean of precision and recall), see Eq.~\ref{eq-3} according to the values of $tp$ (true positive), 
+$fp$ (false positive), $tn$ (true negative) and $fn$ (false negative). In particular, this evaluation considers the precision of the algorithm as ``the number of supplier names that have been correctly unified under the same name'' while recall is 
+``the number of supplier names that have not been correctly classified under a proper name''.  More specifically, $tp$ is ``the number of corporate names properly unified'', $fp$ is 
+``the number of corporate names wrongly unified'', $tn$ is ``the number of corporate names properly non-unified'' and $fn$ is ``the number of corporate names wrongly non-unified''.
+
+\begin{figure}[ht]
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+\begin{equation}\label{eq-1}
+Precision = \frac{tp}{tp+fp} 
+\end{equation}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+\begin{equation}\label{eq-2}
+Recall = \frac{tp}{tp+fn}
+\end{equation}
+\end{minipage}
+\end{figure}
+
+
+\begin{equation}\label{eq-3}
+F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
+\end{equation}
+
+
+\subsection{Sample}
+In order to validate the CORFU approach the dataset of supplier names in Australia 
+in the period 2004-2012 containing $430188$ full names 
+and $77526$ unique names has been selected. The experiment has been 
+carried out executing the aforementioned steps in the whole dataset 
+to finally generate a dump containing for each supplier the 
+raw name and the unified name. These mappings has been validated 
+by hand to quantify the typical measures of precision and recall. 
+
+%awk -F"\t" '{print $2}' supplier-unified-names.csv | sort -n | uniq -c | sort -rnk1
+%awk -F"\t" '{print $1 ";1"}' supplier-unified-names.csv > original-counters.csv
+
+\subsection{Results and Discussion}
+
+\begin{table}[!h]
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|p{2.5cm}|p{2cm}|p{1.5cm}|p{1.8cm}|l|l|l|}
+\hline
+  \textbf{Total number of companies} & \textbf{Unique names}& \textbf{CORFU unified names}& \textbf{\% of unified names} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 score} \\  \hline
+   $430188$ & $77526$ & $40277$  &$48\%$ & $0.762$ & $0.311$&$0.441$ \\ \hline   
+   $430188$ & $299$ in $77526$ & $68$ & $100\%$&  $0.926$ & $0.926$ &$0.926$\\ \hline
+  \hline
+  \end{tabular}
+  \caption{Results of applying the CORFU approach to the Australian supplier names.}
+  \label{tabla:aus-results}
+  \end{center}
+\end{table} 
+
+
+According to the results presented in Table~\ref{tabla:aus-results}, the precision 
+and recall of the CORFU technique are consider acceptable for the whole dataset 
+due to $77526-40278=37248$, a $48\%$ of the supplier names, has been unified with 
+a precision of $0.762$ and a recall of $0.311$ (best values must be close to $1$). 
+The precision is pretty enough but the recall presents a low value because some 
+corporate names were not unified under a proper name; some of the filters must therefore 
+be improved in terms of accuracy.
+
+In order to improve the results for relevant companies, the experiment has also 
+been performed and evaluated for the first 100 companies in the Forbes list, actually $68$ companies were 
+found in the dataset. In this case, results show a better performance in terms of precision, $0.926$, and recall,$0.926$, and 
+all these supplier names, $299$ in the whole dataset, were unified by a common correct name. 
+The explanation of this result can be found due to some of the parameters of the CORFU technique were specially selected for unifying 
+these names because of their relevance in world economic activities.
+
+\begin{figure}[ht]
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+	\includegraphics[width=\textwidth]{./imgs/corfu-stats}
+ \caption{Full view of supplier and number of appearances in the sample dataset.}
+ \label{fig:results-graph-3}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+  \includegraphics[width=\textwidth]{./imgs/forbes}
+ \caption{Bubble Cloud of the first 100 Forbes companies and number of appearances in the sample dataset. }
+% \includegraphics[width=\textwidth]{./imgs/corfu-forbes-100}
+% \caption{The first 100 Forbes companies and number of appearances in the sample dataset. }
+ \label{fig:results-graph-4}
+\end{minipage}
+\end{figure}
+
+
+On the other hand, it is important to emphasize that the last step of linking these names 
+with existing web information resources using the reconciliation service of OpenCorporates or DBPedia in Google Refine can generate 
+$37248*0.762=28383$ correct links ($36.61$\%) instead of the initial $8$\%. Thus the initial problem of linking ($n$ string literals $\to$ 
+$1$ company $\to$ $1$ URI) has been substantially improved. Finally, the frequency distribution of supplier and number of appearances is depicted on Figures~\ref{fig:results-graph-3}
+and~\ref{fig:results-graph-4} with the objective of presenting how the cloud of points (appearances) that initially were only one per supplier has 
+emerged due to the unification of names, for instance in the case of ``Oracle'' $75$ apparitions can now be shown. On the other hand and due 
+to the unique identification of supplier names, new RDF instances are generated, see Figure~\ref{fig:results-rdf}, and can be querying via SPARQL to make 
+summary reports of the number of rewarding contracts by company, see Figure~\ref{fig:results-sparql}.
+
+
+\begin{figure}[ht]
+\begin{minipage}[b]{0.45\linewidth}
+\begin{lstlisting}[language=XML]  
+:o1 a org:Organization;
+  skos:prefLabel 
+    ``Oracle'';
+  skos:altLabel 
+    ``Oracle Corporation'', 
+    ``Oracle (Corp) 
+      Aust Pty Ltd'', 
+    ...;
+  skos:closeMatch 
+    dbpedia-res:
+      Oracle_Corporation;
+   ...
+.
+\end{lstlisting}
+\caption{Partial example of a RDF organization instance. }
+ \label{fig:results-rdf}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[b]{0.45\linewidth}
+\begin{lstlisting}[language=SQL]  
+SELECT  str(?label) 
+ (COUNT(?org) as ?pCount)
+WHERE{
+  ?ppn :rewarded-to ?org .
+  ?org rdf:type org:Organization.
+  ?org skos:prefLabel ?label.
+  ...
+}
+GROUP BY str(?label) 
+ORDER BY desc(?pCount)
+\end{lstlisting}
+\caption{Example of a SPARQL query for counting supplier names. }
+ \label{fig:results-sparql}
+\end{minipage}
+\end{figure}
+
+
+\section{Conclusions and Future Work}
+A technique for unifying corporate names in the e-Procurement sector has been 
+presented as a step towards the unique identification of organizations 
+with the aim of accomplishing one of the most important LOD principles 
+and easing the execution of reconciliation processes. The main conclusion of this work 
+lies in the design of a stepwise method to prepare raw corporate names in a specific 
+context, e.g. Australia supplier names, before performing a reconciliation process. 
+Although the percentage of potential correct links to existing datasets has been dramatically 
+improved it is clear that human-validation is also required to ensure the 
+correct unification of names. As a consequence the main application of CORFU 
+can be found when reporting or tracking activity of organizations are required. 
+However this first effort has implied, on the one hand, the validation 
+of the stepwise method and, on the other hand, the creation of a sample dataset 
+that can serve as input for more advanced algorithms based on machine learning 
+techniques such as classifiers. From public bodies point of view 
+this technique also enables a greater transparency providing a simple 
+way to unify corporate names and boosting the comparison of rewarded contracts.
+
+Finally, future actions in this work consist in the extension of the stopwords sets 
+for corporate names, a better acronym detection and expansion algorithm, other techniques to 
+make string comparisons and group names such as $n-grams$ or the creation of a new final step to enhance 
+the current implementation with a classifier that can automatically learn new classes of corporate names. 
+Furthermore the technique must be reported to the Web economics~\cite{vaf2012} domain and the international ``Public Spending''~\cite{vaf2012a} initiative, as supporting tool, 
+to be applied over other datasets to correlate and exploit metadata of public contracts.
+
+
+\section{Acknowledgements}
+This work is part of the ``PublicSpending.net'' effort carried out in cooperation with 
+the research group ``Medialab'' at the National Technical University of Athens, more specifically with 
+Marios Meimaris and Giorgos Vafeiadis, Giannis Xidias and Michalis Klonaras.
+
+\bibliographystyle{plain}
+% %\bibliographystyle{unsrt}
+% %\bibliographystyle{acm}
+\bibliography{references}
+% \renewcommand{\bibname}{References}
+\newpage
+\section*{Appendix I}
+\begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|p{7cm}|p{7cm}|}
+\hline
+  \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name and URI}  \\  \hline
+  ``Accenture'' & \multirow{6}{*}{``Accenture''} \\
+  ``Accenture Aust Holdings'' & \multirow{6}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Accenture}} \\ 
+   ``Accenture Aust Holdings'' & \\  
+   ``Accenture Aust Holdings Pty Ltd'' & \\
+   ``Accenture  Australia Holding P/L'' & \\
+%   ``Accenture Australia Holdings P/Ltd'' & \\
+%   ``Accenture Australia Holdings Pty Lt''  & \\  
+  ``Accenture Australia Limited'' & \\
+  \ldots  & \\
+  ``Accenture Australia Ltd'' & \\ \hline
+  ``Microsoft Australia'' & \multirow{3}{*}{``Microsoft''} \\
+  ``Microsoft Australia Pty Ltd'' & \multirow{3}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Microsoft}} \\
+  \ldots  & \\
+  ``Microsoft Enterprise Services'' & \\ \hline
+  ``Oracle (Corp) Aust Pty Ltd''  & \multirow{9}{*}{``Oracle''} \\
+  ``Oracle Corp (Aust) Pty Ltd''  & \multirow{9}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Oracle_Corporation}} \\
+  ``Oracle Corp Aust Pty Ltd'' & \\
+%   ``Oracle Corp. Australia'' & \\
+  ``Oracle Corp. Australia Pty.Ltd.'' & \\
+%   ``Oracle Corpoartion (Aust) Pty Ltd'' & \\
+  ``Oracle Corporate Aust Pty Ltd'' & \\
+  ``Oracle Corporation'' & \\
+  ``Oracle Risk Consultants'' & \\
+  ``ORACLE SYSTEMS (AUSTRALIA) PTY LTD'' & \\
+  \ldots  & \\
+  ``Oracle University''  & \\ \hline
+  ``PRICEWATERHOUSECOOPERS(PWC)''  & \multirow{6}{*}{``PricewaterhouseCoopers''} \\
+  ``PricewaterhouseCoopers Securities Ltd''& \multirow{6}{*}{\scriptsize\url{http://dbpedia.org/resource/PricewaterhouseCoopers}} \\
+  ``PricewaterhouseCoopers Services LLP'' & \\
+  ``Pricewaterhousecoopers Services Pty Ltd'' & \\
+  ``PriceWaterhouseCoopers (T/A: PriceWaterhouseCoopers Legal)'' & \\
+  \ldots  & \\
+  ``Pricewaterhouse (PWC)'' & \\ \hline
+  \ldots & \ldots \\
+  \hline
+  \end{tabular}
+  \caption{Examples of supplier names in the Australian rewarded contracts dataset.}
+  \label{tabla:aus-suppliers}
+  \end{center}
+\end{table} 
+
+
+\end{document}
+
