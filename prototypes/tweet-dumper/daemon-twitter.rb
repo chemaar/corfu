@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'tweetstream'
 
 TweetStream.configure do |config|

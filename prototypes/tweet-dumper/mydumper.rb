@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'tweetstream'
 
 TweetStream.configure do |config|
@@ -27,7 +28,7 @@ def save(status)
          nfile += 1
          tweets = 0
 	 file.close unless file == nil
-	 file = File.open("tweets-"+nfile.to_s(), 'w')
+	 file = File.open("tweets-"+nfile.to_s(),  File::RDWR|File::CREAT, 0644)
 	end
 	rescue IOError => e
 	 #some error occur, dir not writable etc.
@@ -41,20 +42,20 @@ def save(status)
 end
 
 EM.run do
-	infile = File.open("seed-words-expanded.txt", 'r')
+	infile = File.open("mini-seed-words-expanded.txt", 'r')
 	contentsArray=[] 
 	infile.each_line {|line|	
 	    contentsArray.push line.sub('_',' ')
 	  }
         infile.close
 	puts contentsArray
-	file = File.open("tweets-"+nfile.to_s(), 'w')
+	file = File.open("tweets-"+nfile.to_s(),  File::RDWR|File::CREAT, 0644)
 	if file
 	 puts "Open"
 	end
 	TweetStream::Client.new.on_error do |message|
-	  #puts "Error reading stream..."
-	end.track(contentsArray) do |status|
+	  puts "Error reading stream..."
+	end.track('music') do |status|
 	 save("#{status.text}",file)
 	end
 end
