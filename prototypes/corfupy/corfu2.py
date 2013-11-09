@@ -78,6 +78,7 @@ def create_score_matrix(list_queries, list_processed, scorer=fuzz.WRatio):
    return scores
 
 def best_match(s1, limit, scores):
+    #print scores[s1][:limit]
     return scores[s1][:limit]
     
 def create_companies_from_file(filename):
@@ -114,7 +115,8 @@ class Company:
         self.unified_names = [] 
     def __str__(self):
         uf = ", ".join(c.rawname for c in  self.unified_names)
-        return "R: "+self.rawname+" P: "+self.provider+" ("+str(self.confidence)+")"+" U: unified names: ["+uf+"]"
+        print uf
+        return "R: "+str(self.rawname)+"-> ["+uf+"]"
 
 class Unifier2:
   def __init__(self, list_most_used_words = []):
@@ -163,7 +165,7 @@ class Unifier2:
     """Normalises words to lowercase and stems and lemmatizes it."""
     word = word.lower()
     #word = self.stemmer.stem_word(word)
-    word = self.lemmatizer.lemmatize(word)
+    #word = self.lemmatizer.lemmatize(word)
     return word
     
   def acceptable_word(self, word):
@@ -199,29 +201,8 @@ class Unifier2:
     filtered_token_list = [w for w in  token_names if not w in set ]
     cleaned_name = 	" ".join(["".join(filtered_token) for filtered_token in filtered_token_list])
     return cleaned_name
-    
-if __name__ == "__main__":
-   all_unified_names = []
-   set_best_names=Set()
-   companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-min")
-   list_most_used_words = list_most_used_words(companies)
-   unifier = Unifier2(list_most_used_words)
-   for company in companies:        
-        unified_name = unifier.unify(company.rawname)        
-        final_unified_name = titlecase(' '.join(unique_list(unified_name.split())))
-        if final_unified_name:
-            company.unified_names.append(Company(final_unified_name, 1))
-            all_unified_names.append(final_unified_name)
-        else:
-            fuzzy_unified_name = unifier.fuzzy(company.rawname)     
-            if not(fuzzy_unified_name) or len(fuzzy_unified_name) ==0:
-                    company.unified_names.append(Company("Others", 1))    #FIXME: Special case
-            else:
-                final_fuzzy_unified_name = titlecase(' '.join(unique_list(fuzzy_unified_name.split()))) 
-                company.unified_names.append(Company(final_fuzzy_unified_name, 1))
-                all_unified_names.append(final_fuzzy_unified_name)
-   print "End unification..."
 
+def score_companies(companies,  all_unified_names):
 #Calculate the number of unified names [(Oracle, 10)]
    counter = collections.Counter(all_unified_names)  
    most_common = counter.most_common()
@@ -237,25 +218,55 @@ if __name__ == "__main__":
        for unified_name in company.unified_names:            
             company_unified_names.add(unified_name.rawname)            
             new_matches = best_match(unified_name.rawname,2,score_matrix)            
-            for name in [item[0] for item in filter(lambda x:x[1]<100, new_matches)]:
+            for name in [item[0] for item in filter(lambda x:x[1]<100, new_matches)]: #if it is not a perfect match
                 new_unified_names.add(name)            
-       final_unified_names =  new_unified_names - company_unified_names  # FIXME: maybe optional
+       final_unified_names =  company_unified_names -new_unified_names   # FIXME: maybe optional
        for name in final_unified_names:
-                company.unified_names.append(Company(name, 1))
-#    #The company has now a new list of unified names
-#    #How can we select the best a final name?
-#    #The final unified name is the most used in all unified names
-       best_score = 0
-       best_name =  ""       
-       for unified_name in company.unified_names:   
-              if unified_name.rawname in most_common_list:
-                index = most_common_list.index(unified_name.rawname) 
-                current_score = most_common[index][1]
-                if current_score > best_score: #unless others but so far Others is not in the list of all unified names
-                  best_score = current_score
-                  best_name = most_common[index][0]
-       set_best_names.add(best_name)
-       print "Raw "+company.rawname+"->"+best_name
+                company.unified_names.append(Company(name,"Matrix",  1))
+
+def create_all_unified_names(companies, n):
+    all_unified_names=[]
+    return [company.unified_names[n].rawname for company in  companies]
+
+if __name__ == "__main__":
+   set_best_names=Set()
+   companies = create_companies_from_file("/home/chema/projects/corfu/prototypes/data/suppliers-super-min")
+   list_most_used_words = list_most_used_words(companies)
+   unifier = Unifier2(list_most_used_words)
+   for company in companies:        
+        unified_name = unifier.unify(company.rawname)        
+        final_unified_name = titlecase(' '.join(unique_list(unified_name.split())))
+        if final_unified_name:
+            company.unified_names.append(Company(final_unified_name, "NLP", 1))
+        else:
+            fuzzy_unified_name = unifier.fuzzy(company.rawname)     
+            if not(fuzzy_unified_name) or len(fuzzy_unified_name) ==0:
+                    company.unified_names.append(Company("Others", "NLP-Fuzzy", 1))    #FIXME: Special case
+            else:
+                final_fuzzy_unified_name = titlecase(' '.join(unique_list(fuzzy_unified_name.split()))) 
+                company.unified_names.append(Company(final_fuzzy_unified_name, "NLP-Fuzzy", 1))
+   print "End unification..."
 
  
+ #    #The company has now a new list of unified names
+#    #How can we select the best a final name?
+#    #The final unified name is the most used in all unified names
+   score_companies(companies,  create_all_unified_names(companies, 0))
+   score_companies(companies,  create_all_unified_names(companies, 1))
+   score_companies(companies,  create_all_unified_names(companies, 2))
+   for company in companies:
+       print company
+   #
+
+#   best_score = 0
+#   best_name =  ""       
+#   for unified_name in company.unified_names:   
+#      if unified_name.rawname in most_common_list:
+#         index = most_common_list.index(unified_name.rawname) 
+#         current_score = most_common[index][1]
+#         if current_score > best_score: #unless others but so far Others is not in the list of all unified names
+#            best_score = current_score
+#            best_name = most_common[index][0]
+#   
+       
    print str(len(set_best_names))
