@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'tweetstream'
+require 'json'
 
 TweetStream.configure do |config|
   config.consumer_key       = 'CH1c6Cb24PN3yPPmTFA'
@@ -9,39 +10,11 @@ TweetStream.configure do |config|
   config.auth_method        = :oauth
 end
 
-MAX_TWEETS = 10
-tweets = 0
-nfile = 0 
-file = nil
-
-def save(status)
-  begin
-	puts status
-	puts "Before writing"
-	puts file
-	file.puts status
-	puts "After writing"
-	file.flush
-	tweets += 1
-	puts tweets.to_s()
-	if tweets > MAX_TWEETS
-         nfile += 1
-         tweets = 0
-	 file.close unless file == nil
-	 file = File.open("tweets-"+nfile.to_s(),  File::RDWR|File::CREAT, 0644)
-	end
-	rescue IOError => e
-	 #some error occur, dir not writable etc.
-	 puts "Error writing file..."
-	 puts e
-        rescue 
-	 puts "Unknown error writing file..."
-	#ensure
-	# file.close unless file == nil
-  end
-end
 
 EM.run do
+	MAX_TWEETS = 10
+	tweets = 0
+	nfile = 0 
 	infile = File.open("mini-seed-words-expanded.txt", 'r')
 	contentsArray=[] 
 	infile.each_line {|line|	
@@ -54,8 +27,29 @@ EM.run do
 	 puts "Open"
 	end
 	TweetStream::Client.new.on_error do |message|
-	  puts "Error reading stream..."
-	end.track('music') do |status|
-	 save("#{status.text}",file)
+	  puts "Error reading stream: #{message}"
+	end.track(contentsArray) do |status|
+	  begin
+		puts status.text
+		file.puts status.inspect
+		file.flush
+		tweets += 1
+		puts tweets.to_s()
+		if tweets > MAX_TWEETS
+		 nfile += 1
+		 tweets = 0
+		 file.close unless file == nil
+		 file = File.open("tweets-"+nfile.to_s(),  File::RDWR|File::CREAT, 0644)
+		end
+		rescue IOError => e
+		 #some error occur, dir not writable etc.
+		 puts "Error writing file...: #{e}"
+		 puts e
+		rescue 
+		 puts "Unknown error writing file..."
+		#ensure
+		# file.close unless file == nil
+		
+	  end
 	end
 end
