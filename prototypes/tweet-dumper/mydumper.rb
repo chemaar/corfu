@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'tweetstream'
-require 'json'
 
 TweetStream.configure do |config|
   config.consumer_key       = 'CH1c6Cb24PN3yPPmTFA'
@@ -12,10 +11,10 @@ end
 
 
 EM.run do
-	MAX_TWEETS = 10
+	MAX_TWEETS = 10000
 	tweets = 0
 	nfile = 0 
-	infile = File.open("mini-seed-words-expanded.txt", 'r')
+	infile = File.open("seed-words-expanded.txt", 'r')
 	contentsArray=[] 
 	infile.each_line {|line|	
 	    contentsArray.push line.sub('_',' ')
