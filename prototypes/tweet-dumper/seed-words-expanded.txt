@@ -1,19 +1,15 @@
-change_of_location
+poi
 walking
 festal
 bait
 sightseer
 visitor
 rubber-necking
-primed
 hitch
 alien
 toter
-go
 gossip
 duty-free
-Consolidator
-fell
 holidaymaker
 chit-chat
 Waitlist
@@ -22,16 +18,11 @@ agritourism
 claver
 passage
 shack
-tail
 manoeuvre
 give_chase
-exit
 rag
 touristed
-risk
-means
 travel_to
-hire
 spate
 scout
 muckle
@@ -43,25 +34,19 @@ celebrate
 drag
 head_trip
 Escrow accounts
-course
 holiday_resort
 sojourn
 magnet
-book
 jobber
 hike
-release
 time_of_year
-mount
 vision
 view
 Mecca
 charter
-set
 templet
 burst
 tourist visa
-direct
 going on trips
 conniption
 see
@@ -79,11 +64,9 @@ sail
 chitchat
 rainfly
 interpretation centre
-template
 conduct
 boost
 holiday resort
-ken
 check
 aircraft_carrier
 misstep
@@ -147,7 +130,6 @@ trigger
 aviate
 raft
 direction
-gay
 cultural tourism
 going
 company
@@ -159,7 +141,6 @@ train
 locomote
 holiday season
 catch
-hold
 chatter
 pilot
 fly
@@ -188,7 +169,6 @@ bank holiday
 globetrotting
 drawing_card
 cut_through
-tag
 slip
 junket
 drive
@@ -198,8 +178,6 @@ chase
 shoot_the_breeze
 well-travelled
 pathfinder
-goal
-sit
 enquiry
 travel
 breaking
@@ -214,17 +192,13 @@ way_of_life
 duty_tour
 gamble
 voyager
-finish
 keepsake
-mess
 gondoliere
 hazard
 fall_back
 cordial_reception
 passageway
-date
 carrier_wave
-stack
 travel warning
 good_deal
 interrogation
@@ -281,7 +255,6 @@ tourist
 Day tour
 taunt
 get_across
-spell
 fiesta
 touring
 break
@@ -292,22 +265,17 @@ wholesaler
 jet-setter
 breakage
 geographic_expedition
-loss
 peregrination
 stranger
 ecotourism
 feast
 dangerous_undertaking
 tidy_sum
-token
-mode
 pilgrim's_journey
 locomotion
 heritage center
 move_around
-activate
 depend_upon
-deal
 take_the_air
 tripper
 visitor centre
@@ -338,7 +306,6 @@ booking
 tourist trap
 jaunting
 maneuver
-run
 Airsea
 haulage
 devolve_on
@@ -358,7 +325,6 @@ touristry
 globetrotter
 newsboy
 mail_carrier
-turn
 carrier
 airline
 circuit
@@ -366,7 +332,6 @@ paroxysm
 get_behind
 road
 adventure
-feed
 rubberneck
 wad
 great_deal
@@ -387,16 +352,13 @@ trip-up
 span
 razz
 festival
-unknown
 After-departure
 engagement
 traveller
 macula
 set_off
 lonely
-lot
 touristy
-call
 low season
 passel
 lease
@@ -419,7 +381,6 @@ mollify
 wayfarer
 peck
 vacationist
-twit
 tent-fly
 B&B
 bodyguard
@@ -444,9 +405,7 @@ fashion
 inflict
 tantalize
 navigate
-pass
 haunt
-correspond
 hangout
 courier
 manner
@@ -457,7 +416,6 @@ mint
 flock
 ocean_trip
 confab
-turn_on
 hatful
 touch_off
 trip
@@ -468,7 +426,6 @@ Driver-guide
 channelise
 jaunt
 stumbler
-take
 boon
 mickle
 whale watching
@@ -479,7 +436,6 @@ travel_guidebook
 deviation
 draw
 tally
-track
 attractive_feature
 leaving
 chance
@@ -491,17 +447,13 @@ reservation
 sightsee
 cut_across
 postman
-deny
 resort_hotel
 vacationer
 sweeping
 take_a_chance
 holiday village
-cover
-dog
 hang_back
 hiker
-mass
 immune_carrier
 Duty-free
 reserve
