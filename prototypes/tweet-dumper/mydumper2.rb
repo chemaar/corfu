@@ -107,7 +107,6 @@ EM.run do
 		ta.language = results['language']
 		ta.status = status
 		#end process tweet
-		puts ta.to_yaml
 		file.puts ta.to_yaml
 		file.flush
 		tweets += 1
