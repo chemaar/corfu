@@ -8,6 +8,10 @@ require 'alchemy_api'
 class TweetAnalysis
    def initialize(id)
       @id=id
+      @score = 0
+      @polarity="unknown"
+      @language="unknown"
+      @status = nil
    end
 
    def id=(value)
@@ -95,16 +99,22 @@ EM.run do
 		ta = TweetAnalysis.new (status.id)
 		ta.rawtext = status.text
 		results = AlchemyAPI.search(:sentiment_analysis, :text => ta.rawtext)
-		ta.polarity = results['type']
-		ta.score = results['score']
+		unless results.nil? 
+			ta.polarity = results['type']
+			ta.score = results['score']
+		end
 		results = AlchemyAPI.search(:keyword_extraction, :text => ta.rawtext)
 		keywords = Hash.new 
-		results.each do |result|
-			keywords[result['text']] = result['relevance']
+		unless results.nil? 
+			results.each do |result|
+				keywords[result['text']] = result['relevance']
+		end
 		end
 		ta.keywords = keywords
 		results = AlchemyAPI.search(:language_detection, :text => ta.rawtext)
-		ta.language = results['language']
+		unless results.nil? 
+			ta.language = results['language']
+		end
 		ta.status = status
 		#end process tweet
 		file.puts ta.to_yaml
