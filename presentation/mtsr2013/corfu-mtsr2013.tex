@@ -9,7 +9,7 @@
 %\documentclass[xcolor=pst,dvips,handout,notes=show]{beamer}
 
 \input{headers}
-
+\usepackage{multirow}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,29 +37,181 @@
 \section{Introduction}
 
 \frame{
-  \frametitle{The Problem...} 
-}
+  \frametitle{The Problem...What is the ``Big Name''?} 
+  
+\begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\tiny
+\begin{center}
+\begin{tabular}{|p{7cm}|p{2cm}|}
+\hline
+  ``Oracle (Corp) Aust Pty Ltd''  & \multirow{11}{*}{``Oracle''} \\
+ ``Oracle Corp (Aust) Pty Ltd''  &  \\
+  ``Oracle Corp Aust Pty Ltd'' & \\
+  ``Oracle Corp. Australia'' & \\
+  ``Oracle Corp. Australia Pty.Ltd.'' & \\
+  ``Oracle Corpoartion (Aust) Pty Ltd'' & \\
+  ``Oracle Corporate Aust Pty Ltd'' & \\
+  ``Oracle Corporation'' & \\
+  ``Oracle Risk Consultants'' & \\
+  ``ORACLE SYSTEMS (AUSTRALIA) PTY LTD'' & \\
+  ``Oracle University''  & \\ 
+  \ldots  & \\ \hline
+   ``Accenture'' & \multirow{8}{*}{``Accenture''} \\
+  ``Accenture Aust Holdings'' &  \\ 
+   ``Accenture Aust Holdings'' & \\  
+   ``Accenture Aust Holdings Pty Ltd'' & \\
+   ``Accenture  Australia Holding P/L'' & \\
+   ``Accenture Australia Holdings P/Ltd'' & \\
+   ``Accenture Australia Holdings Pty Lt''  & \\  
+  ``Accenture Australia Limited'' & \\
+  \ldots  & \\ \hline
+  \ldots & \ldots \\
+  
+  \hline
+  \end{tabular}
+\end{center}
+\end{table} 
 
+}
 
 \frame{
-  \frametitle{Motivation and Rationale} 
-}
+  \frametitle{Scope}
+  
+  \begin{block}{Public Procurement}<1->
+   \begin{enumerate}
+    \item e-Procurement is a strategic sector (17\% of the GDP in Europe).
+    \item Action Plans 2004 and 2020.
+    \item Projects: E-Certis, Fiscalis 2013, E-Prior, PEPPOL, STORK,etc.
+    \item Other actions: TED, RAMON metadata server, CPV, NUTS, etc.
+    \item Legal Framework.
+    \item Boost participation with special focus on SMEs.s
+   \end{enumerate}
+  \end{block}
 
+   \begin{alertblock}{...but it also requires...}<2->
+   \begin{enumerate}
+    \item Accomplish with Open Data principles.
+    \item Improve transparency of public bodies.
+    \item Track where public money goes.
+    \item \ldots
+   \end{enumerate}
+  \end{alertblock}
+  
+  
+  }
+  
 \frame{
-  \frametitle{Main Contributions} 
-}
+  \frametitle{The Problem...}
+  
+  \begin{block}{How can we track public procurement processes?}<1->
+   \begin{enumerate}
+    \item Data and information is already out there.
+    \item Relevant metadata can be (re)used:
+    \begin{itemize}
+     \item Normalized product scheme classifications such as the CPV 2008 (Common Procurement Vocabulary).
+     \item Territorial units (NUTS).
+     \item Currency.
+    \end{itemize}
+    \item \ldots
+   \end{enumerate}
+  \end{block}
+  
+\begin{alertblock}{...and ``names''?}<2->
+  Both \textbf{Payer} and \textbf{Payee} names are not usually normalized.
+\end{alertblock}
+  
 
+\begin{block}{Normalized and unified names (``Big Name'')...}<3->
+  ...with the aim of tracking both payers and payees.
+\end{block}
+   
+  }
+
+   
+\frame{
+  \frametitle{The Problem...}
+  \begin{block}{Some remarks...}
+   \begin{enumerate}
+    \item It is \textbf{not} a mere problem of reconciling entities (dealing with)...
+    \begin{itemize}
+     \item Misspelling errors.
+     \item Name/acronym mismatches.
+     \item ...
+    \end{itemize}
+    \item ...but to c\textbf{reate a unique name or link }($n$ string literals $\to$ $1$ company $\to$ $1$ URI). 
+    \item E.g.
+    \begin{itemize}
+     \item  ``Oracle'' and ``Oracle University'' could be respectively aligned to the entities $<$Oracle\_Corporation$>$ and $<$Oracle\_University$>$
+     \item ...but the problem of grouping by a unique (\textit{Big}) name, identifier or resource still remains. 
+    \end{itemize}
+   \end{enumerate}
+
+  \end{block}
+
+  }
 
 \section{Related Work}
 
 \frame{
-  \frametitle{Metadata in Public Contracts} 
+  \frametitle{Natural Language Processing and Computational Linguistics.} 
+  \scriptsize
+  \begin{block}{Existing works and APIs to deal with natural language issues}<1->
+  \begin{enumerate}
+ \item Misspelling errors~\cite{NorvigSpelling,StanfordSpelling}.
+ \item Name/acronym mismatches~\cite{Yeates99automaticextraction}.
+ \item APIs such as NLTK for Python, Lingpipe, OpenNLP or Gate for Java and search engines such as Apache Lucene/Solr.
+ \item Extraction of clinical terms~\cite{Wang:2009:ARN:1667884.1667888} for electronic health records.
+ \item Creation of bibliometrics~\cite{Galvez2006} or identification of gene names~\cite{Krauthammer:2004:TIB:1053007.1053018,Galvez2012}.
+ \item \ldots
+ \end{enumerate}
+\end{block}
+
+  
+ \begin{alertblock}{Preliminary evaluation...}<2->
+  \begin{itemize}
+   \item Algorithms to deal with natural language hetereogenietes are already available.
+   \item Existing works are usually focused in some domain (prototypes cannot be easily customized to other domain).
+   \item ...but methodologies and NLP algorithms can be re-applied to new domains.
+  \end{itemize}
+
+ \end{alertblock}
+
+ 
+ 
 }
 
 
 \frame{
-  \frametitle{Reconciling names} 
+  \frametitle{Corporate Information.} 
+  \scriptsize
+  \begin{block}{Corporate Databases}<1->
+  \begin{enumerate}
+ \item Some corporate databases: The Spanish Chambers of Commerce, ``Empresia.es'' or ``Axesor.es'' to name a few (just in Spain).
+ \item The DBPedia and the Orgpedia~\cite{Orgpedia}.
+ \item The CrocTail~\cite{croctail} effort (part of the ``Corporate Research Project'').
+ \item ``The Open Database Of The Corporate World''~\cite{Opencorporates}.
+ \item Forbes, Google Places, Google Maps, Foursquare, Linkedin Companies or Facebook.
+ \item \ldots
+ \end{enumerate}
+\end{block}
+
+  
+ \begin{alertblock}{Preliminary evaluation...}<2->
+  \begin{itemize}
+   \item Corporate information is public but access is restricted or under a fee (valuable metadata)...
+   \item Large databases (``infobesity?'') but...
+   \item ...the problem of mapping ,($n$ string literals $\to$ $1$ company $\to$ $1$ URI) as a human would do, still remains.
+  \end{itemize}
+
+ \end{alertblock}
+
+ 
+ 
 }
+
+
+
 
 \section{The CORFU technique}
 
