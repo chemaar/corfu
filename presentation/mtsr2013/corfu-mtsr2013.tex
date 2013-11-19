@@ -90,14 +90,67 @@
 \section{Evaluation and Discussion}
 
 \frame{
-  \frametitle{Design of the experiment} 
+  \frametitle{Research Design} 
+  
+  \begin{figure}[ht]
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+\begin{equation}\label{eq-1}
+Precision = \frac{tp}{tp+fp} 
+\end{equation}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[b]{0.45\linewidth}
+\centering
+\begin{equation}\label{eq-2}
+Recall = \frac{tp}{tp+fn}
+\end{equation}
+\end{minipage}
+\end{figure}
+
+
+\begin{equation}\label{eq-3}
+F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
+\end{equation}
+
+
+
 }
-
-
 
 \frame{
-  \frametitle{Results} 
-}
+  \frametitle{Results of applying the CORFU approach to the Australian supplier names.} 
+  
+  
+\begin{table}[!h]
+\renewcommand{\arraystretch}{1.3}
+\scriptsize
+\begin{center}
+\begin{tabular}{|p{1.8cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|l|l|l|}
+\hline
+  \textbf{Total number of companies} & \textbf{Unique names}& \textbf{CORFU unified names}& \textbf{\% of unified names} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 score} \\  \hline
+   $430188$ & $77526$ & $40277$  &$48\%$ & $0.762$ & $0.311$&$0.441$ \\ \hline   
+   $430188$ & $299$ in $77526$ & $68$ & $100\%$&  $0.926$ & $0.926$ &$0.926$\\ \hline
+  \hline
+  \end{tabular}
+  %\caption{Results of applying the CORFU approach to the Australian supplier names.}
+  \label{tabla:aus-results}
+  \end{center}
+\end{table} 
+
+\scriptsize
+\begin{exampleblock}{Comments}
+ \begin{itemize}
+  \item A $48\%$ ($77526-40278=37248$) of supplier names have been unified with a precision of $0.762$ and a recall of $0.311$ (best values must be close to $1$).
+  \item The first 100 companies in the Forbes list, actually $68$ companies were found in the dataset with $299$ appearances.
+  \item Results, in this second case, show a better performance: precision, $0.926$, and recall,$0.926$.
+ \end{itemize}
+
+\end{exampleblock}
+
+
+
+  
+  }
 
 
 \frame{
