@@ -76,6 +76,16 @@
 }
 
 \frame{
+  \frametitle{...and if you have 400K corporate names} 
+    \begin{figure}[!htb]
+\centering
+ \includegraphics[width=9cm]{imgs/corfu-init}
+\end{figure}
+  
+  }
+  
+  
+\frame{
   \frametitle{Scope}
   
   \begin{block}{Public Procurement}<1->
@@ -151,6 +161,41 @@
 
   }
 
+     
+\frame{
+  \frametitle{The Public Spending initiative...}
+    
+\begin{columns}[c] % the "c" option specifies center vertical alignment
+\column{.5\textwidth} % column designated by a command
+
+
+\begin{exampleblock}{...a joint effort trying to answer...}
+\scriptsize
+ \begin{enumerate}
+\item Who really gets the public money?
+\item  For what? From whom?
+\item  Can we compare them?
+\item  Is public spending effective?
+\item  \ldots
+\end{enumerate}
+\end{exampleblock}
+
+
+\column{.5\textwidth}
+
+
+\begin{figure}[htb]
+\centering
+	\includegraphics[width=6cm]{imgs/public-budget}
+%\caption{Modelo $5\star$ (W3C).}
+\end{figure}
+
+\end{columns}
+
+Learn more: \url{http://publicspending.net/}
+
+  
+  }
 \section{Related Work}
 
 \frame{
@@ -193,6 +238,7 @@
  \item The CrocTail~\cite{croctail} effort (part of the ``Corporate Research Project'').
  \item ``The Open Database Of The Corporate World''~\cite{Opencorporates}.
  \item Forbes, Google Places, Google Maps, Foursquare, Linkedin Companies or Facebook.
+ \item Simiar initiatives: Openspending.net, LOD2 project e-Procurement, etc.
  \item \ldots
  \end{enumerate}
 \end{block}
@@ -215,11 +261,47 @@
 \section{The CORFU technique}
 
 \frame{
-  \frametitle{Company, ORganization and Firm name Unifier-CORFU} 
+  \frametitle{Company, ORganization and Firm name Unifier-CORFU (I)}
+  
+    \begin{figure}[!htb]
+\centering
+ \includegraphics[width=9cm]{imgs/corfu-flow-1}
+\end{figure}
+
+
+
 }
 
 \frame{
-  \frametitle{Example} 
+  \frametitle{Company, ORganization and Firm name Unifier-CORFU (II)}
+  
+    \begin{figure}[!htb]
+\centering
+ \includegraphics[width=9cm]{imgs/corfu-flow-2}
+\end{figure}
+
+
+
+}
+
+
+
+\frame{
+  \frametitle{Example step by step...}
+  \begin{itemize}
+   \item Scenario: Australian supplier names (400K).
+   \item $1^{st}$ try: use of Google Refine+Open Corporates reconciliation service (just an 8\% of unified names, see Figure below).
+   \item $2^{nd}$ try: design of the \textbf{CORFU} technique using Python NLTK and other third-party APIs for NLP processing.
+  \end{itemize}
+
+  
+\begin{figure}[htb]
+\centering
+	\includegraphics[width=4cm]{imgs/previous-corfu}
+%\caption{Modelo $5\star$ (W3C).}
+\end{figure}
+
+  
 }
 
 \frame{
@@ -243,7 +325,7 @@
   \begin{exampleblock}{Normalize}
    \begin{description}
     \item [Input:] a set of names represented as strings.
-    \item [Process:] This step is comprised of: 
+    \item [Process:] this step is comprised of: 
     \begin{enumerate}
      \item Remove strange characters and punctuation marks but keeping those that are part of a word avoiding potential changes in abbreviations or acronyms;
      \item Lowercase raw text (although some semantics can be lost previous works and empirical tests show that this is the best approach).
@@ -265,7 +347,7 @@
   \begin{alertblock}{Filter}
    \begin{description}
     \item [Input:] a set of normalized corporate names and a set of stopwords.
-    \item [Process:] load set of stopwords (a minimal set of stopwords from the Python NLTK API has been used):
+    \item [Process:] load a set of stopwords (a minimal set of stopwords from the Python NLTK API has been used):
     \begin{itemize}
      \item Including common English stopwords but...
      \item Avoiding to filter relevant words.
@@ -317,7 +399,6 @@
   \begin{alertblock}{Context filtering}
    \begin{description}
     \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names.
-    \item [Process:] 
     \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
     \item [Example:] 
     \begin{itemize} \item  ``Accenture Holding'' \item  ``Oracle'' \end{itemize}
@@ -333,7 +414,7 @@
   \begin{block}{Spell checking}
    \begin{description}
     \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
-    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Output:] the previous set without spelling errors.
     \item [Example:] 
     \begin{itemize} \item  ``Accenture Holding'' \item  ``Oracle'' \end{itemize}
   \end{description}
@@ -348,7 +429,7 @@
   \begin{exampleblock}{Pos-tagging}
    \begin{description}
     \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
-    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Output:] a tree according to a pre-defined grammar for corporate names that only contains nouns.
     \item [Example:] 
     \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize}
   \end{description}
@@ -362,8 +443,8 @@
   \frametitle{Step 8: Cluster corporate names} 
   \begin{alertblock}{Clustering}
    \begin{description}
-    \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
-    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Input:] a set of strings derivated from the aforementioned tree.
+    \item [Output:] a set of clusters for each extracted corporate name.
     \item [Example:] 
     \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize}
   \end{description}
@@ -377,7 +458,7 @@
   \frametitle{Step 9: Validate and reconcile the generated corporate name via an existing reconcile service (optional)} 
   \begin{block}{Validate and reconcile}
    \begin{description}
-    \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Input:] a set of clusters for each extracted corporate name.
     \item [Output:] ($n$ string literals $\to$ $1$ company $\to$ $1$ URI). 
     \item [Example:] 
    \begin{itemize}  \item  (``Accenture'', dbpedia-res:Accenture) \item  (``Oracle'', dbpedia-res:Oracle\_Corporation) \end{itemize}
@@ -392,8 +473,19 @@
 \subsection{Use Case: the Public Spending initiative}
 
 \frame{
-  \frametitle{Overview} 
+  \frametitle{Demo and application...} 
+      
+  \begin{figure}[!htb]
+\centering
+ \includegraphics[width=9cm]{imgs/psnet}
+\end{figure}
+ 
+ 
+ Learn more: \url{http://publicspending.net/}
 }
+
+
+\section{Evaluation and Discussion}
 
 
 \frame{
@@ -426,8 +518,6 @@
 }
 
 
-
-\section{Evaluation and Discussion}
 
 \frame{
   \frametitle{Research Design} 
@@ -497,26 +587,15 @@ F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
  \begin{itemize}
   \item A $48\%$ ($77526-40278=37248$) of supplier names have been unified with a precision of $0.762$ and a recall of $0.311$ (best values must be close to $1$).
   \item The first 100 companies in the Forbes list, actually $68$ companies were found in the dataset with $299$ appearances.
-  \item Results, in this second case, show a better performance: precision, $0.926$, and recall,$0.926$.
- \end{itemize}
+  \item Results~\footnote{Best values must be close to $1$.}, in this second case, show a better performance: precision, $0.926$, and recall, $0.926$.
+   \end{itemize}
 
 \end{exampleblock}
-
-
-
-  
+ 
   }
 
 
-\frame{
-  \frametitle{Graphical view of initial results without applying the CORFU technique...}
-\begin{figure}[htb]
-\centering
-	\includegraphics[width=6cm]{imgs/previous-corfu}
-%\caption{Modelo $5\star$ (W3C).}
-\end{figure}
 
-  }
   
 
   \frame{
