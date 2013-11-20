@@ -468,7 +468,31 @@ Learn more: \url{http://publicspending.net/}
 
 }
 
+\begin{frame}[fragile]
 
+  \frametitle{Representing and querying the corporate information in RDF...} 
+\tiny
+\begin{lstlisting}[language=XML]  
+:o1 a org:Organization;
+  skos:prefLabel ``Oracle'';
+  skos:altLabel  ``Oracle Corporation'',  ``Oracle (Corp)  Aust Pty Ltd'',  ...;
+  skos:closeMatch  dbpedia-res: Oracle_Corporation;
+   ...
+.
+\end{lstlisting}
+
+\begin{lstlisting}[language=SQL]  
+SELECT  str(?label) (COUNT(?org) as ?pCount) WHERE{
+  ?ppn :rewarded-to ?org .
+  ?org rdf:type org:Organization.
+  ?org skos:prefLabel ?label.
+  ...
+}
+GROUP BY str(?label) 
+ORDER BY desc(?pCount)
+\end{lstlisting}
+
+\end{frame}
 
 \subsection{Use Case: the Public Spending initiative}
 
@@ -634,25 +658,66 @@ F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
   
   
 \frame{
-  \frametitle{Advantages} 
+  \frametitle{Discussion} 
+  
+
+  \begin{exampleblock}{Advantages}<1->
+   \begin{enumerate}
+    \item A \textbf{custom} technique for a particular domain.
+    \item Unification works pretty nice.
+    \item It enables the possibility of comparing companies in public procurement.
+   \end{enumerate}
+
+  \end{exampleblock}
+
+
+    \begin{alertblock}{Drawbacks}<2->
+   \begin{enumerate}
+    \item Execution time (~20' for Australian corporate names).
+    \item It is necessary to test with other datasets.
+    \item It requires the use of more advanced data mining techniques for machine learning.
+    \item It should be applied to other domains (Bibliometrics?).
+   \end{enumerate}
+
+  \end{alertblock}
+
+
+
+
+
 }
-
-
-\frame{
-  \frametitle{Restrictions} 
-}
-
-
 
 \section{Conclusions and Future Work}
 
 \frame{
   \frametitle{Conclusions} 
+  \begin{enumerate}
+   \item The public e-Procurement sector is seeking for new methods to: 
+   \begin{itemize}
+    \item ...improve interoperability
+    \item ...boost transparency
+    \item ...or increase participation to name a few.
+   \end{itemize}
+   \item The PublicSpending initiative is addressing some of the challenges in the e-Procurement sector.
+   \item The CORFU technique is a key enabler to ease the comparison of countries, payers, payees, etc.
+   \item It must be technichally improved and extended to cover more datasets and to be ``smarter''.
+  \end{enumerate}
+
 }
 
 
 \frame{
   \frametitle{Future Work} 
+  
+   \begin{enumerate}
+   \item Application to new public procurement datasets.
+   \item Contribute to the e-Procurement sector and the PublicSpending initiative~\cite{vaf2012,vaf2012a}.
+   \item Add more advanced NLP techniques: $n-grams$.
+   \item Add machine learning algorithms to automatically classify new corporate names.
+   \item Improve the execution time (performance).
+   \item ...
+  \end{enumerate}
+  
 }
 
 
@@ -674,6 +739,44 @@ F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
 
 \section{Metadata and Information}
 
+
+\frame{
+  \frametitle{Acknowledgements...} 
+ \scriptsize
+   \begin{table}[!htb]
+  \begin{tabular}{p{3cm} p{7cm}}
+  \begin{figure}[!htb]
+\centering
+
+ \includegraphics[width=2cm]{imgs/michalis}
+\end{figure} & \begin{itemize}
+                \item Dr. Michalis Vafopoulos
+                \item Leader of the Public Spending initiative.
+                \item E-mail: \url{vafo@me.com}
+                \item WWW: \url{http://vafopoulos.org/}
+               \end{itemize} \\ 
+  
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=2cm]{imgs/psnet}
+\end{figure} & The Public Spending team: \begin{itemize}
+                \item Marios Meimaris
+                \item Giannis Xidias
+                \item Giorgos Vafeiadis
+                \item Michalis Klonaras
+                \item Panagiotis Kranidiotis
+                \item Prodromos Tsiavos
+                \item Georgia Lioliou
+                \item WWW: \url{http://publicspending.org/}
+               \end{itemize}
+               
+\end{tabular}
+
+\end{table} 
+
+
+}
+  
 
 \frame{
   \frametitle{Roster...} 
