@@ -154,7 +154,7 @@
 \section{Related Work}
 
 \frame{
-  \frametitle{Natural Language Processing and Computational Linguistics.} 
+  \frametitle{Natural Language Processing, Computational Linguistics and Entity Reconciliation.} 
   \scriptsize
   \begin{block}{Existing works and APIs to deal with natural language issues}<1->
   \begin{enumerate}
@@ -163,7 +163,8 @@
  \item APIs such as NLTK for Python, Lingpipe, OpenNLP or Gate for Java and search engines such as Apache Lucene/Solr.
  \item Extraction of clinical terms~\cite{Wang:2009:ARN:1667884.1667888} for electronic health records.
  \item Creation of bibliometrics~\cite{Galvez2006} or identification of gene names~\cite{Krauthammer:2004:TIB:1053007.1053018,Galvez2012}.
- \item \ldots
+ \item Entity reconciliation processes~\cite{DBLP:conf/semweb/IseleJB10,Serimi} using the DBPedia~\cite{Mendes:2011:DSS:2063518.2063519} or URI comparison~\cite{conf/www/MaaliCP11}.
+ \item Tools such as Google Refine, etc. 
  \end{enumerate}
 \end{block}
 
@@ -205,8 +206,6 @@
   \end{itemize}
 
  \end{alertblock}
-
- 
  
 }
 
@@ -216,7 +215,7 @@
 \section{The CORFU technique}
 
 \frame{
-  \frametitle{Overview} 
+  \frametitle{Company, ORganization and Firm name Unifier-CORFU} 
 }
 
 \frame{
@@ -224,8 +223,170 @@
 }
 
 \frame{
-  \frametitle{Step 1: FIXME} 
+  \frametitle{Step 0: Load corporate names} 
+  \begin{block}{Load}
+   \begin{description}
+    \item [Input:] a list of corporate names as raw text (one per line).
+    \item [Output:] a set of names represented as strings.
+    \item [Example:] 
+    \begin{itemize} \item  ``Accenture  Australia Holding P/L'' \item  ``Oracle (Corp) Aust Pty Ltd''  \end{itemize} 
+   \end{description}
+
+  \end{block}
+
 }
+
+
+
+\frame{
+  \frametitle{Step 1: Normalize raw text and remove duplicates} 
+  \begin{exampleblock}{Normalize}
+   \begin{description}
+    \item [Input:] a set of names represented as strings.
+    \item [Process:] This step is comprised of: 
+    \begin{enumerate}
+     \item Remove strange characters and punctuation marks but keeping those that are part of a word avoiding potential changes in abbreviations or acronyms;
+     \item Lowercase raw text (although some semantics can be lost previous works and empirical tests show that this is the best approach).
+     \item Remove duplicates.
+     \item Lemmatize the corporate name. 
+    \end{enumerate}
+    \item [Output:] a set of normalized corporate names.
+    \item [Example:] 
+    \begin{itemize} \item  ``Accenture  Australia Holding PL'' \item  ``Oracle Corp Aust Pty Ltd'' \end{itemize}
+    
+   \end{description}
+
+  \end{exampleblock}
+
+}
+
+\frame{
+  \frametitle{Step 2: Filter the basic set of common stopwords in English} 
+  \begin{alertblock}{Filter}
+   \begin{description}
+    \item [Input:] a set of normalized corporate names and a set of stopwords.
+    \item [Process:] load set of stopwords (a minimal set of stopwords from the Python NLTK API has been used):
+    \begin{itemize}
+     \item Including common English stopwords but...
+     \item Avoiding to filter relevant words.
+    \end{itemize}
+  
+    \item [Output:] a set of cleaned and normalized corporate names.
+    \item [Example:] 
+   \begin{itemize} \item  ``Accenture  Australia Holding PL'' \item  ``Oracle Corp Aust Pty Ltd'' \end{itemize}
+   \end{description}
+
+  \end{alertblock}
+
+}
+
+
+\frame{
+  \frametitle{Step 3: Dictionary-based expansion of common acronyms and filtering} 
+  \begin{block}{Dictionary-based expansion}
+   \begin{description}
+    \item [Input:]  a set of cleaned and normalized corporate names and a dictionary of acronyms.
+    \item [Process:] load the dictionary of acronyms and expand.
+    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names.
+    \item [Example:] 
+    \begin{itemize} \item  ``Accenture  Australia Holding Proprietary Company Limited'' \item  ``Oracle Corporation Aust Proprietary Company Limited'' \end{itemize}
+   \end{description}
+
+  \end{block}
+
+}
+ 
+
+\frame{
+  \frametitle{Step 4: Filter the expanded set of most common words in the dataset} 
+  \begin{exampleblock}{Filter}
+   \begin{description}
+    \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names.
+    \item [Process:] extract statistics of ``most used words'' in the input dataset, expand those words and filter.
+    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names.
+    \item [Example:] 
+    \begin{itemize} \item  ``Accenture  Australia Holding'' \item  ``Oracle Aust'' \end{itemize}
+  \end{description}
+
+  \end{exampleblock}
+
+}
+
+\frame{
+  \frametitle{Step 5: Identification of contextual information and filtering } 
+  \begin{alertblock}{Context filtering}
+   \begin{description}
+    \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names.
+    \item [Process:] 
+    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Example:] 
+    \begin{itemize} \item  ``Accenture Holding'' \item  ``Oracle'' \end{itemize}
+  \end{description}
+
+  \end{alertblock}
+
+}
+
+
+\frame{
+  \frametitle{Step 6: Spell checking (optional)} 
+  \begin{block}{Spell checking}
+   \begin{description}
+    \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Example:] 
+    \begin{itemize} \item  ``Accenture Holding'' \item  ``Oracle'' \end{itemize}
+  \end{description}
+
+  \end{block}
+
+}
+
+
+\frame{
+  \frametitle{Step 7: Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones } 
+  \begin{exampleblock}{Pos-tagging}
+   \begin{description}
+    \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Example:] 
+    \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize}
+  \end{description}
+
+  \end{exampleblock}
+
+}
+
+
+\frame{
+  \frametitle{Step 8: Cluster corporate names} 
+  \begin{alertblock}{Clustering}
+   \begin{description}
+    \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Output:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Example:] 
+    \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize}
+  \end{description}
+
+  \end{alertblock}
+
+}
+
+
+\frame{
+  \frametitle{Step 9: Validate and reconcile the generated corporate name via an existing reconcile service (optional)} 
+  \begin{block}{Validate and reconcile}
+   \begin{description}
+    \item [Input:] a set of cleaned, normalized and acronym-expanded corporate names without contextual information.
+    \item [Output:] ($n$ string literals $\to$ $1$ company $\to$ $1$ URI). 
+    \item [Example:] 
+   \begin{itemize}  \item  (``Accenture'', dbpedia-res:Accenture) \item  (``Oracle'', dbpedia-res:Oracle\_Corporation) \end{itemize}
+  \end{description}
+
+  \end{block}
+
+}
+
 
 
 \subsection{Use Case: the Public Spending initiative}
@@ -235,10 +396,56 @@
 }
 
 
+\frame{
+  \frametitle{The case of Australian supplier names...} 
+  
+  \begin{table}[!htb]
+\renewcommand{\arraystretch}{1.3}
+\tiny
+\begin{center}
+\begin{tabular}{|l|p{4.5cm}|p{4.5cm}|}
+\hline
+  \textbf{Step} & \textbf{Name} & \textbf{Customization}  \\  \hline
+  $0$ & Load corporate names &  $430188$ full names and $77526$ unique names (period 2004-2012) \\ \hline
+  $1$ & Normalize raw text and remove duplicates & Default \\ \hline
+  $2$ & Filter the basic set of common stopwords in English & Default\\ \hline
+  $3$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
+  $4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations (manually) \\ \hline
+  $5$ & Identification of contextual information and filtering & Use of Geonames REST service\\ \hline
+  $6$ & Spell checking (optional) & Train dataset of $128457$ words provided by Peter Norvig's spell-checker~\cite{NorvigSpelling}. \\ \hline
+  $7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & Default \\ \hline
+  $8$ & Cluster corporate names & Default \\ \hline
+  $9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & Python client and Google Refine \\ \hline
+  \hline
+  \end{tabular}
+   \label{config-corfu}
+  \end{center}
+\end{table} 
+
+
+}
+
+
+
 \section{Evaluation and Discussion}
 
 \frame{
   \frametitle{Research Design} 
+  
+  \begin{enumerate}
+
+   \item Configure and execute the CORFU technique.
+   \item Validate (manually) the dump of unified names and calculate: 
+   \begin{itemize}
+    \item \textbf{Precision}, see Eq.~\ref{eq-1}, is ``the number of supplier names that have been correctly unified under the same name''
+    \item \textbf{Recall} is, see Eq.~\ref{eq-2}, ``the number of supplier names that have not been correctly classified under a proper name'' and \textbf{F1} score, see Eq.~\ref{eq-3}, where...
+    \item \ldots~$tp$ is ``the number of corporate names \textbf{properly unified}''
+    \item \ldots~$fp$ is ``the number of corporate names \textbf{wrongly unified}''
+    \item \ldots~$tn$ is ``the number of corporate names \textbf{properly non-unified}'' and 
+    \item \ldots~$fn$ is ``the number of corporate names \textbf{wrongly non-unified}''.
+   \end{itemize}
+  \end{enumerate}
+
   
   \begin{figure}[ht]
 \begin{minipage}[b]{0.45\linewidth}
