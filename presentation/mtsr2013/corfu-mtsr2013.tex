@@ -119,7 +119,7 @@
     \item Data and information is already out there.
     \item Relevant metadata can be (re)used:
     \begin{itemize}
-     \item Normalized product scheme classifications such as the CPV 2008 (Common Procurement Vocabulary).
+     \item Normalized product scheme classifications such as the CPV 2008 (Common Procurement Vocabulary)~\cite{AlvarezRodrguez2013}.
      \item Territorial units (NUTS).
      \item Currency.
     \end{itemize}
@@ -149,7 +149,7 @@
      \item Name/acronym mismatches.
      \item ...
     \end{itemize}
-    \item ...but to c\textbf{reate a unique name or link }($n$ string literals $\to$ $1$ company $\to$ $1$ URI). 
+    \item ...but to \textbf{create a unique name or link }($n$ string literals $\to$ $1$ company $\to$ $1$ URI). 
     \item E.g.
     \begin{itemize}
      \item  ``Oracle'' and ``Oracle University'' could be respectively aligned to the entities $<$Oracle\_Corporation$>$ and $<$Oracle\_University$>$
@@ -216,7 +216,7 @@ Learn more: \url{http://publicspending.net/}
   
  \begin{alertblock}{Preliminary evaluation...}<2->
   \begin{itemize}
-   \item Algorithms to deal with natural language hetereogenietes are already available.
+   \item Algorithms to deal with natural language heterogeneities are already available.
    \item Existing works are usually focused in some domain (prototypes cannot be easily customized to other domain).
    \item ...but methodologies and NLP algorithms can be re-applied to new domains.
   \end{itemize}
@@ -238,7 +238,7 @@ Learn more: \url{http://publicspending.net/}
  \item The CrocTail~\cite{croctail} effort (part of the ``Corporate Research Project'').
  \item ``The Open Database Of The Corporate World''~\cite{Opencorporates}.
  \item Forbes, Google Places, Google Maps, Foursquare, Linkedin Companies or Facebook.
- \item Simiar initiatives: Openspending.net, LOD2 project e-Procurement, etc.
+ \item Similar initiatives: Openspending.net, LOD2 project e-Procurement, etc.
  \item \ldots
  \end{enumerate}
 \end{block}
@@ -443,7 +443,7 @@ Learn more: \url{http://publicspending.net/}
   \frametitle{Step 8: Cluster corporate names} 
   \begin{alertblock}{Clustering}
    \begin{description}
-    \item [Input:] a set of strings derivated from the aforementioned tree.
+    \item [Input:] a set of strings derivate from the aforementioned tree.
     \item [Output:] a set of clusters for each extracted corporate name.
     \item [Example:] 
     \begin{itemize}  \item  ``Accenture'' \item  ``Oracle'' \end{itemize}
@@ -700,7 +700,8 @@ F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
    \end{itemize}
    \item The PublicSpending initiative is addressing some of the challenges in the e-Procurement sector.
    \item The CORFU technique is a key enabler to ease the comparison of countries, payers, payees, etc.
-   \item It must be technichally improved and extended to cover more datasets and to be ``smarter''.
+   \item ...a technique that helps to take the most of data.
+   \item It must be technically improved and extended to cover more datasets and to be ``smarter''.
   \end{enumerate}
 
 }
@@ -711,6 +712,7 @@ F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
   
    \begin{enumerate}
    \item Application to new public procurement datasets.
+   \item Reuse the Opencorporates reconciliation service (it has been updated).
    \item Contribute to the e-Procurement sector and the PublicSpending initiative~\cite{vaf2012,vaf2012a}.
    \item Add more advanced NLP techniques: $n-grams$.
    \item Add machine learning algorithms to automatically classify new corporate names.
