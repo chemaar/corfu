@@ -65,6 +65,10 @@
 \usepackage{color}
 \usepackage{textcomp}
 
+\usepackage{apalike}
+\biboptions{authoryear,round,colon}
+
+
 
 \definecolor{gray}{gray}{0.5}
 \definecolor{green}{rgb}{0,0.5,0}
@@ -106,7 +110,7 @@
 
 \title{Enabling policy making processes by unifying and reconciling corporate names in public procurement data. The CORFU technique.}
 
-\author[rvt,uc3m]{Jose María Alvarez-Rodríguez\corref{cor1}}
+\author[uc3m]{Jose María Alvarez-Rodríguez\corref{cor1}}
 \address[uc3m]{Carlos III University of Madrid\\ Department of Computer Science \\ Avd. de la Universidad, 30, Leganés \\ Madrid, Spain}
 \ead{josemaria.alvarez@uc3m.es}
 
@@ -150,18 +154,21 @@ one of the most interesting services lies in tracking rewarded contracts (mainly
 it seems a basic kind of reporting service the truth is that its generation can turn into a complex task due to a 
 lack of standardization in supplier names or the use of different descriptors for the type of contract. In this paper, 
 a stepwise method based on natural language processing and semantics to address the unification of corporate names 
-is defined and implemented. Moreover a research study to evaluate the precision and recall of the proposed technique, 
-using as use case the public dataset of rewarded public contracts in Australia during the period 2004-2012, is also presented. 
+is defined and implemented. After that the technique is applied to the "PublicSpending.net" initiative to show how 
+the unification of corporate names is a key activity to provide a visualization service that can serve policy-makers as a tool to 
+detect and prevent new necessities in terms of products or services in a specific area. Furthermore a research study to evaluate the precision and recall of the proposed technique, using as use case the public dataset of rewarded public contracts in Australia during the period 2004-2012, is also presented. 
 Finally some discussion, conclusions and future work are also outlined.
 \end{abstract}
 
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
-
+name disambiguation \sep natural language processing \sep public spending \sep semantics \sep linked data
 %% PACS codes here, in the form: \PACS code \sep code
 
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
+
+68T30  \sep 68T35  \sep 68T50 \sep 68W32 \sep 68U15 \sep 68U35 
 
 \end{keyword}
 
@@ -210,87 +217,84 @@ officially registered and have an unique identification number, the truth is
 that in most of rewarded contracts the supplier is only identified by a name or a string literal typed 
 by a civil-servant. In this sense there is not usually a connection between 
 the official company registry and the process of rewarding contracts implying different 
-naming problems and data inconsistencies that are spread to next stages preventing future 
+naming problems and data inconsistencies that are spread to further stages preventing future 
 activities such as reporting.
 
-In the case of the type of contract and location, there are already standardized~\cite{DBLP:journals/ijseke/AlvarezLSASL12} product 
-scheme classifications such as the Common Procurement Vocabulary (2003 and 2008), the Combined Nomenclature (2012), 
+In the case of the type of contract and location, there are already standardized product 
+scheme classifications~\citep{DBLP:journals/ijseke/AlvarezLSASL12,DBLP:journals/chb/RodriguezGGP14} such as the Common Procurement Vocabulary (2003 and 2008), the Combined Nomenclature (2012), 
 the Central Product Classification by in the European Union, the International Standard Industrial Classification of 
 All Economic Activities (Rev. 4) in the United Nations or the North American Industry Classification System (2007 and 2012) 
 in the Government of United States that are currently used with different objectives such as statistics, tagging or 
 information retrieval. Geolocated information can be also found in different common datasets and nomenclatures such as 
-the Nomenclature of territorial units for statistics in the European Union, the Geonames dataset~\footnote{\url{http://www.geonames.org/}}, the GeoLinkedData 
-initiative~\cite{DBLP:conf/dexa/Lopez-PellicerSCZM10} or the traditional list of countries and ISO-codes.
+the Nomenclature of territorial units for statistics (NUTS) in the European Union, the Geonames dataset~\footnote{\url{http://www.geonames.org/}}, the GeoLinkedData 
+initiative~\citep{DBLP:conf/dexa/Lopez-PellicerSCZM10} or the traditional list of countries and ISO-codes.
 
 However corporate, organization, firm, company or institution names (hereafter these names will be used to refer to 
 the same entity) and structure is not yet standardized at global scope and only some classifications of economic activities or 
-company identifiers can be found such as the TARIC (On-line customs tariff database ) database. 
+company identifiers can be found such as the TARIC database (On-line customs tariff database ). 
 Thus the simple task of grouping contracts by a supplier is not a mere process of searching by the same literal. 
 Technical issues such as hyphenation, use of abbreviations or acronyms an transliteration are common problems that must be addressed in order 
-to provide a final corporate name. Existing works in the field of Name Entity Recognition~\cite{citeulike:1657521} (NER) or 
-name entity disambiguation~\cite{Sarmento:2009:AWN:1602022.1602085,Klein:2003:NER:1119176.1119204} have already addressed these issues. 
+to provide a final corporate name. Existing works in the field of Name Entity Recognition~\citep{citeulike:1657521,Jung:2012:ONE:2169475.2169830} (NER) or 
+name entity disambiguation~\citep{Sarmento:2009:AWN:1602022.1602085,Klein:2003:NER:1119176.1119204,DBLP:dblp_journals/eswa/GarciaASL12} have already addressed these issues. 
 Nevertheless the problem that is being tackled in these approaches lies in the identification of organization names in 
 a raw text while in the e-Procurement sector the string literal identifying a supplier is already known.
 
 In the particular case of the Australian e-Procurement domain, the supplier name seems to be introduced by typing a string literal without any assistance or 
 auto-complete method. Obviously a variety of errors and variants for the same company, see Table~\ref{tabla:aus-suppliers} in the Appendix I, 
-can be found such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling}, name and acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} 
+can be found such as misspelling errors~\citep{NorvigSpelling,StanfordSpelling}, name and acronym mismatches~\citep{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366} 
 or context-aware data that is already known when the dataset is processed, e.g. country or year. Furthermore it is also well-known 
 that a large company can be divided into several divisions or departments but from a statistical point of view grouping data by a supplier name 
 should take into account all rewarded contracts regardless the structure of the company.
 
-On the other hand the application of semantic technologies and the Linking Open Data initiative (hereafter LOD)~\cite{Berners-Lee-2006,Heath_Bizer_2011}  
+On the other hand the application of semantic technologies and the Linking Open Data initiative (hereafter LOD)~\citep{Berners-Lee-2006,Heath_Bizer_2011}  
 in several fields like e-Government (e.g. the Open Government Data effort) tries to improve the knowledge about a specific area providing 
 common data models and formats to share information and data between agents. More specifically, in the European e-Procurement 
-context~\cite{e-Proc-map-paper} there is an increasing commitment to boost the use of electronic communications and transactions 
-processing by government institutions and other public sector organizations in order to provide added-value services with special focus on SMEs. 
+context~\citep{e-Proc-map-paper} there is an increasing commitment to boost the use of electronic communications and transactions 
+processing by government institutions and other public sector organizations in order to provide added-value services with special focus on SMEs (Small and Medium Enterprises). 
 More specifically the LOD initiative seeks for creating a public and open data repository in which one the principles of this initiative that lies in the 
-unique identification or resources through URIs can become real. Thus entity reconciliation techniques~\cite{Serimi,conf/www/MaaliCP11} 
+unique identification or resources through URIs can become real. Thus entity reconciliation techniques~\citep{Serimi,conf/www/MaaliCP11} 
 coming from the ontology mapping and alignment areas or algorithms based on Natural Language Processing (hereafter NLP) have been 
 designed to link similar resources already available in different vocabularies, datasets or databases such as DBPedia or Freebase. 
 Nevertheless the issue of unifying supplier names as a human would do faces new problems that have been tackled in 
-other research works~\cite{Galvez2006} to extract statistics of performance in bibliographic databases. The main objective is not just a 
+other research works~\citep{Galvez2006} to extract statistics of performance in bibliographic databases. The main objective is not just a 
 mere reconciliation process to link to existing resources but to create a unique name or link ($n$ string literals $\to$ $1$ company $\to$ $1$ URI). 
-For instance in the case of the ongoing example the string literals ``Oracle'' and ``Oracle University'' could be respectively aligned to the entity $<$Oracle\_Corporation$>$ and $<$Oracle\_University$>$ but 
+For instance in the case of the next example the string literals ``Oracle'' and ``Oracle University'' could be respectively aligned to the entity $<$Oracle\_Corporation$>$ and $<$Oracle\_University$>$ but 
 the problem of grouping by a unique (\textit{Big}) name, identifier or resource still remains. That is why a context-aware method based on NLP 
 techniques combined with semantics has been designed, customized and implemented trying to exploit the naming convention of a specific dataset with the aim 
 of grouping $n$ string literals $\to$ $1$ company and, thus, easing the next natural process of entity reconciliation.
 
-The remainder of this paper is structured as follows. Section 2 a literature review is presented. Afterwards next section outlines main mismatches in corporate names. Section 4 presents 
-the CORFU approach to unify corporate names. The evaluation section exposes and discusses the experimentation carried out to test the presented approach using as a dataset the rewarded 
-contracts of Australia in the period 2004-2012. Finally conclusions summarizes the main outcomes of this work 
-and some open issues are also presented as future work.
+The remainder of this paper is structured as follows. Section 2 a literature review is presented. Afterwards next section outlines main mismatches in corporate names and presents the CORFU approach to unify corporate names. Next section outlines the possibilities of using public procurement data as policy-making tool and, more specifically the Public Spending initiative is introduced as a client of the CORFU technique. Afterwards, the evaluation section exposes and discusses the experimentation carried out to test the presented approach using as a dataset the rewarded contracts of Australia in the period 2004-2012. Finally the main outcomes of this work, conclusions and some open issues are also depicted.
 
 
 \section{Related Work}
 According to the previous section, some relevant works can be found and grouped by the topics covered in this paper:
 \begin{itemize}
  \item Natural Language Processing and Computational Linguistics. In these research areas common works dealing with the aforementioned data heterogeneities 
-   such as misspelling errors~\cite{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\cite{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
+   such as misspelling errors~\citep{NorvigSpelling,StanfordSpelling} and name/acronym mismatches~\citep{Yeates99automaticextraction,Ratinov:2004:AES:1025132.1026366}, 
   in the lexical, syntactic and semantic levels can be found. These approaches can be applied to solve general problems and usually follow a 
   traditional approach of text normalization, lexical analysis, pos-tagging word according to a grammar and semantic analysis to filter or 
   provide some kind of service such as information/knowledge extraction, reporting, sentiment analysis or opinion mining. 
-  Well-established APIs such as NLTK~\cite{LoperBird02} for Python, Lingpipe~\cite{Lingpipe}, OpenNLP~\cite{OpenNLP} or Gate~\cite{Gate} for Java, WEKA~\cite{read12:_scalab} 
-  (a data mining library with NLP capabilities), the Apache Lucene and Solr~\cite{rafa2011apache} search engines provide the proper building blocks to build natural-language based applications. 
-  Recent times have seen how the analysis of social networks such as Twitter~\cite{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747}, the extraction of 
-  clinical terms~\cite{Wang:2009:ARN:1667884.1667888} for electronic health records, the creation of bibliometrics~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} or 
-  the identification of gene names~\cite{Krauthammer:2004:TIB:1053007.1053018,Galvez2012} to name a few have tackled the problem of entity recognition and extraction from raw sources. 
-  Other supervised techniques~\cite{Bohn:2006:PHD} have also be used to train data mining-based algorithms with the aim of creation classifiers.
+  Well-established APIs such as NLTK~\citep{LoperBird02} for Python, Lingpipe~\citep{Lingpipe}, OpenNLP~\citep{OpenNLP} or Gate~\citep{Gate} for Java, WEKA~\citep{read12:_scalab} 
+  (a data mining library with NLP capabilities), the Apache Lucene and Solr search engines provide the proper building blocks to build natural-language based applications. 
+  Recent times have seen how the analysis of social networks such as Twitter~\citep{Li:2012:TNE:2348283.2348380,Gimpel:2011:PTT:2002736.2002747,Kontopoulos20134065}, the extraction of 
+  clinical terms~\citep{Wang:2009:ARN:1667884.1667888,Nam20143005} for electronic health records, the creation of bibliometrics~\citep{Galvez2006,Morillo:2013:TAA:2424697.2424727} or 
+  the identification of gene names~\citep{Krauthammer:2004:TIB:1053007.1053018,Galvez2012} to name a few have tackled the problem of entity recognition and extraction from raw sources. 
+  Other supervised techniques~\citep{Bohn:2006:PHD} have also be used to train data mining-based algorithms with the aim of creation classifiers.
  
- \item Semantic Web. More specifically in the LOD initiative~\cite{Berners-Lee-2006} the use of entity reconciliation techniques to uniquely identify resources 
- is being currently explored. Thus an entity reconciliation process can be briefly defined as the method for looking and mapping~\cite{DBLP:conf/semweb/IseleJB10,DBLP:conf/icwe/IseleJB12} two different 
+ \item Semantic Web. More specifically in the LOD initiative~\citep{Berners-Lee-2006} the use of entity reconciliation techniques to uniquely identify resources 
+ is being currently explored. Thus an entity reconciliation process can be briefly defined as the method for looking and mapping~\citep{DBLP:conf/semweb/IseleJB10,DBLP:conf/icwe/IseleJB12} two different 
  concepts or entities under a certain threshold. There are a lot of  works presenting solutions about concept mapping, entity reconciliation, etc. 
- most of them are focused on the previous NLP techniques~\cite{conf/www/MaaliCP11,Serimi} (if two concepts have similar literal descriptions then they should be similar) 
+ most of them are focused on the previous NLP techniques~\citep{conf/www/MaaliCP11,Serimi} (if two concepts have similar literal descriptions then they should be similar) 
  and others (ontology-based) that also exploit the semantic information (hierarchy, number and type of relations) to establish a potential mapping 
  (if two concepts share similar properties and similar super classes then these concepts should be similar). Apart from that 
  there are also machine learning techniques to deal with these mismatches in descriptions using statistical approaches. Recent times, 
- this process has been widely studied and applied to the field of linking entities in the LOD realm, for instance using the DBPedia~\cite{Mendes:2011:DSS:2063518.2063519}. 
+ this process has been widely studied and applied to the field of linking entities in the LOD realm, for instance using the DBPedia~\citep{Mendes:2011:DSS:2063518.2063519}. 
  Although there is no way of automatically creating a mapping with a $100\%$ of confidence (without human validation) a mapping under a certain percentage of confidence can be 
  enough for most of user-based services such as visualization. However, in case of using these techniques as previous step of a reasoning or 
  a formal verification process this ambiguity can lead to infer incorrect facts and must be avoided without a previous human validation. 
 
  On the other hand the use of semantics is also being applied to model organizational structures. In this case the notion 
- of \textit{corporate} is presented in several vocabularies and ontologies as Dave Reynolds (Epimorphics Ltd) 
+ of \textit{corporate} is presented in several vocabularies and ontologies as Dave Reynolds (Epimorphics Ltd.) 
  reports~\footnote{\url{http://www.epimorphics.com/web/wiki/organization-ontology-survey}}. 
  Currently the main effort is focused in the designed of the Organizations Vocabulary (a W3C Working Draft) in which the structure and 
  relationships of companies are being modeled. This proposal is especially relevant in the next aspects:  
@@ -319,7 +323,7 @@ According to the previous section, some relevant works can be found and grouped 
 \end{itemize}
 
  \section{The CORFU technique}
-According to~\cite{Galvez2006,Morillo:2013:TAA:2424697.2424727} institutional name variations can be 
+According to~\citep{Galvez2006,Morillo:2013:TAA:2424697.2424727} institutional name variations can be 
 classified into two different groups: 1) Non-acceptable variations (affect to the meaning) due to misspelling or translation errors and 
 2) acceptable variations (do not affect to the meaning) that correspond to different syntax forms such as abbreviations, use of acronyms or contextual 
 information like country, sub-organization, etc. In order to address these potential variations the CORFU (Company, ORganization and Firm Unifier) approach 
@@ -435,15 +439,15 @@ or Google Maps can ease the identification of these words and their filtering. I
 of Geonames has been selected due to its capabilities to align text with locations.
 
 \item Spell checking (optional). This stage seeks for providing a method for fixing misspelling errors. It is based on the 
-well-known speller~\cite{NorvigSpelling} of Peter Norvig that uses a train dataset for creating a classifier. Although the accuracy of this 
+well-known speller of Peter Norvig~\citep{NorvigSpelling} that uses a train dataset for creating a classifier. Although the accuracy of this 
 algorithm is pretty good for relevant words in corporate names, the empirical and unit tests with a working dataset 
 have demonstrated that misspelled non-relevant words is more efficient and accurate using a stopwords set/dictionary (this set has been 
 built with words that are not in the set of ``most common words'', step 2, and exist in the Wordnet database). Furthermore some spelling corrections 
-are not completely adequate for corporate names due to words could change and, therefore, a non-acceptable variant of the name 
+are not completely adequate for corporate names due to the fact that words could change and, therefore, a non-acceptable variant of the name 
 could be accidentally included. That is why this stage is marked as optional and must be configured and performed with extreme care.
 
 \item Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones. The objective 
-of this stage lies in ``classifying words into their parts of speech and labeling them accordingly is known as part-of-speech tagging''~\cite{LoperBird02}. In order 
+of this stage lies in ``classifying words into their parts of speech and labeling them accordingly is known as part-of-speech tagging''~\citep{LoperBird02}. In order 
 to perform this task both a lemmatizer based on Wordnet and a grammar for corporate names (``NN''-nouns and ``JJ''-adjectives connected with articles and 
 prepositions) have been designed, see Figure~\ref{figure:step-4}. Once words are tagged next step consists in filtering non-relevant categories 
 in corporate names keeping nouns and adjectives, as an example Figure~\ref{figure:step-4} also shows how to walk and filter nodes in the parsed tree.
@@ -478,7 +482,7 @@ implementation.
 \item Validate and reconcile the generated corporate name via an existing reconcile service (optional). This last 
 step has been included with the objective of linking the final corporate name with an existing information 
 resource and adding new alternative labels. The OpenCorporates and DBPedia reconciliation services have 
-been used in order to retrieve an URI to new corporate name. As a consequence the CORFU unifier is partially supporting 
+been used in order to retrieve an URI for the new corporate name. As a consequence the CORFU unifier is partially supporting 
 one of the main principles of the LOD initiative such as unique identification.
 \end{enumerate}
 % 
@@ -487,8 +491,34 @@ one of the main principles of the LOD initiative such as unique identification.
 
 
 \section{Enabling policy-making process using public procurement data. The Public Spending Initiative.}
-In order to enable a policy-making process based on public procurement data different pieces of information should be considered such as geographical information, data and time, amount, type of contract, payer and payee, etc. Most of cases there is already approaches to deliver such information in a standard way easing the access to this valuable data and enabling a better way of exploiting information through 
-the extraction of statistics. Thus, standardized geographical information can be found in some classifications such as NUTS (National Territorial Units in the European Union) or, as previous section has reviewed, the product scheme classifications that have been already unified~\cite{DBLP:journals/chb/RodriguezGGP14} under a common and shared data model (RDF). In the context of this research work, corporate names or, more specifically, payers and payee names are being processed with the CORFU technique to deliver a common name that can be re-used in the "PublicSpending" initiative. Once relevant information is unified in different datasets and can be compared to each other, the use of network analysis techniques that have been widely used in economic networks, are applied to take the most of public spending data. As first step, public spending data is represented as a graph to create a payment network in which interesting relations among underlying agents can be easily captured, see~\ref{fig:results-ps-vendors}. This graph is created by the payments coming from payers (public institutions) to payees (mainly private organizations). Secondly to interpret the graph every node is either the payer or the payee that are linked through a payment, which is characterized by its amount, time and type of contract. Moreover measures of centrality, degree centrality (in-out degree, weighted degree) and measures relative to the rest of the network such as betweenness centrality are used to understand the public spending graph. Finally, as a detailed example, the process of promoting of public spending data and unifying corporate names with the presented technique has been applied to the next geographical entities: United States, United Kingdom, Australia, Greece, the State of Alaska and Massachusetts and the city of Chicago. Thus a policy-maker is now able to understand and explain the public spending and it also enables the possibility of preventing new necessities, ensuring transparency, etc..
+In order to enable a policy-making process based on public procurement data different pieces of information should be considered: geographical information, data and time, amount, type of contract, payer and payee profiles~\citep{DBLP:journals/eswa/SenthilSR14}, etc. As the related work section has outlined, there is already approaches to deliver such information in a standard way easing the access to this valuable data and enabling a better way of exploiting information through the extraction of statistics. Thus, standardized geographical information can be found in some classifications such as NUTS (National Territorial Units) or the product scheme classifications that have been already unified~\citep{DBLP:journals/chb/RodriguezGGP14} under a common and shared data model (RDF). In the context of this research work, corporate names or, more specifically, payers and payee names are being processed with the CORFU technique to deliver a common name that can be re-used in the "PublicSpending" initiative\footnote{\url{http://publicspending.net}}. Once relevant public procurement data is unified in different datasets, network analysis techniques can be used to compare variables such as location, amount, time or type of contract in public spending data. As first step, public spending data is represented as a graph to create a payment network in which interesting relations among underlying agents can be easily captured, see~\ref{fig:results-ps-vendors}. This graph is created by the payments coming from payers (public institutions) to payees (mainly private organizations). Secondly to interpret the graph every node is either the payer or the payee that are linked through a payment, which is characterized by its amount, time and type of contract. Moreover measures of centrality, degree centrality (in-out degree, weighted degree) and measures relative to the rest of the network such as betweenness centrality are used to understand the public spending graph~\citep{DBLP:journals/eswa/IraniSKL14,DBLP:journals/eswa/WangZL13}. Finally, as a detailed example, the process of promoting of public spending data and unifying corporate names with the presented technique has been applied to the next geographical entities: United States, United Kingdom, Australia, Greece, the State of Alaska and Massachusetts and the city of Chicago, see also Table~\ref{stats-ps}. Thus a policy-maker is now able to graphically take the most of public spending data in a certain area and it also enables the possibility of preventing new necessities~\citep{DBLP:journals/eswa/MusaGY14} (products or services) or ensuring transparency to name a few.
+
+
+\begin{table}[!htb]
+	\small
+	\renewcommand{\arraystretch}{1}
+	\begin{center}
+		\begin{tabular}{|p{2cm}|p{2cm}|p{1.5cm}|p{2cm}|p{3cm}|p{2cm}||}
+			\hline
+			\textbf{Region} & \textbf{RDF Triples} & \textbf{Payers} & \textbf{Payees} & \textbf{Payments (€)} & \textbf{\#Decisions}\\  \hline
+			United States &	$494,005$	&	$157$&	$16,780$&	$504,599,838,933$&	$61,359$\\\hline
+			United Kingdom	&	$613,3782$	&	$119$	&	$26,768$	&	$597,659,337,423$&	$1,137,641$\\\hline
+			Australia &	$2,788,939$	&	$165$	&	$51,455$	&	$204,606,056,134$&	$429,435$\\\hline
+			Greece &	$68,804,546$	&	$3904$	&	$204,406$	&	$48,095,068,098$&	$2,303,360$\\\hline
+			State of Alaska &	$74,8319$	&	$22$	&	$28,333$	&	$16,127,397,046$&	$139,821$\\\hline
+			State of Massachusetts &	$8,023,505$	&	$158$	&	$31,068$	&	$51,279,504,691$& $1,305,267$\\\hline
+			City of Chicago &	$63,6526$	&	$54$	&	$7,930$	&	$44,153,540,592$& $84,405$\\\hline
+			\hline
+			\textbf{Total}  &	$87,629,622$	&	$4579$	&	$315,285$	&	$1,466,520,742,920$& $5,461,288$\\ \hline
+			
+			
+			\hline
+		\end{tabular}
+		\caption{Statistics obtained from "PublicSpending.net" after applying the CORFU technique.}
+		\label{stats-ps}
+	\end{center}
+\end{table} 
+
 
 \begin{itemize}
 	\item United States: there is one major node (payer) in the graph ("Department of Defense"), dispersing almost all ($99$\%) the total budget (weight) of the graph. Obviously, defense has the lion's stake in sub prime awards. Furthermore, most of the money ($92$\%) is received by CTA Inc., which is solely connected to this department (no connections to other nodes). The dispersion of the public budget is made through 42 agents to the contractors. There are either payer or payee nodes in the graph (no mixed mode both payer and payee-except Smithsonian Inst.), consequently there are no brokers in the network resulting the diameter to equal 1 and the modularity fairly low at $0.022$. Due to the above characteristics, there are mainly corporates of the deference-military sector (only US companies are eligible to become vendors due to legal restrictions) coupled by some major global enterprises with less weighted degree as they do not awarded purely defense contracts.
@@ -507,6 +537,9 @@ the extraction of statistics. Thus, standardized geographical information can be
 	
 	
 	\end{itemize}
+
+
+
 
 \begin{figure}[htb]
 		\centering
@@ -551,7 +584,7 @@ $fp$ (false positive), $tn$ (true negative) and $fn$ (false negative). In partic
 \end{equation}
 
 
-\subsection{Sample}
+\subsection{Sample dataset}
 As previous sections have introduced there is an increasing interest and commitment 
 in public bodies to create a real transparent public administration. In this sense 
 public administrations are continuously releasing relevant data in different domains 
@@ -574,7 +607,7 @@ to finally generate a dump containing for every supplier the raw name and the un
 			$3$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
 			$4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations (manually) \\ \hline
 			$5$ & Identification of contextual information and filtering & Use of Geonames REST service\\ \hline
-			$6$ & Spell checking (optional) & Train dataset of $128457$ words provided by Peter Norvig's spell-checker~\cite{NorvigSpelling}. \\ \hline
+			$6$ & Spell checking (optional) & Train dataset of $128457$ words provided by Peter Norvig's spell-checker~\citep{NorvigSpelling}. \\ \hline
 			$7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & Default \\ \hline
 			$8$ & Cluster corporate names & Default \\ \hline
 			$9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & Python client and Google Refine \\ \hline
@@ -626,8 +659,8 @@ these names because of their relevance in world economic activities.
 \begin{figure}[htb]
 
 		\centering
-		\includegraphics[width=10cm]{./imgs/corfu-stats}
-		\caption{Full view of supplier and number of appearances in the sample dataset.}
+		\includegraphics[width=8cm]{./imgs/corfu-stats}
+		\caption{Full view of supplier and number of appearances in the Australian rewarded contracts dataset.}
 		\label{fig:results-graph-3}
 \end{figure}
 
@@ -689,30 +722,29 @@ way to unify corporate names and boosting the comparison of rewarded contracts.
 
 Finally, further steps in this work consist in the extension of the stopwords sets 
 for corporate names, a better acronym detection and expansion algorithm, other techniques to 
-make string comparisons such as $n-grams$ and the creation of a new final step to enhance 
-the current implementation with a classifier that can automatically learn new classes of corporate names. 
-Furthermore the technique must be reported to the international ``Public Spending'' initiative, as supporting tool, 
-to be applied over other datasets to correlate and exploit metadata of public contracts.
+make string comparisons such as $n-grams$~\citep{Sidorov2014853} and the creation of a new final step to enhance 
+the current implementation with a classifier that can automatically learn new classes of corporate names or automatically infer grammars for representing any type of corporate name. 
+Furthermore the technique must be reported to the international ``Public Spending'' initiative, as supporting tool, to be applied over other datasets to correlate and exploit metadata of public contracts.
 
 
 \section{Acknowledgements}
-This work is part of the ``PublicSpending.net'' effort carried out in cooperation with 
-Marios Meimaris and Giorgos Vafeiadis (Technical University of Athens), Giannis Xidias (University of the Aegean) and Michalis Klonaras (OTE S.A.).
+This work is part of the ``PublicSpending.net'' effort carried out in cooperation with Giorgos Vafeiadis (Technical University of Athens), Giannis Xidias (University of the Aegean) and Michalis Klonaras (OTE S.A.).
 
 
 
 \bibliography{references}
-\bibliographystyle{model5-names}
+\bibliographystyle{apalike}
+%\bibliographystyle{model5-names}
 
 \pagebreak
 \section*{Appendix I}
-{\scriptsize }
+\tiny
 \begin{table}[!htb]
-\renewcommand{\arraystretch}{1.3}
+\renewcommand{\arraystretch}{1}
 \begin{center}
-\begin{tabular}{|p{8cm}|p{8cm}|}
+\begin{tabular}{|p{8cm}|p{7.5cm}|}
 \hline
-  \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name and URI}  \\  \hline
+  \textbf{Raw Supplier Name} & \textbf{Target Supplier Name and URI}  \\  \hline
   ``Accenture'' & \multirow{6}{*}{``Accenture''} \\
   ``Accenture Aust Holdings'' & \multirow{6}{*}{\scriptsize\url{http://live.dbpedia.org/resource/Accenture}} \\ 
    ``Accenture Aust Holdings'' & \\  
