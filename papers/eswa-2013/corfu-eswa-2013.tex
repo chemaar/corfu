@@ -1,4 +1,4 @@
-\documentclass[preprint,12pt]{elsarticle}
+\documentclass[1p,12pt]{elsarticle}
 
 
 %% The `ecrc' package must be called to make the CRC functionality available
@@ -70,6 +70,8 @@
 \definecolor{green}{rgb}{0,0.5,0}
 
 
+
+
 \begin{document}
 
 
@@ -102,7 +104,26 @@
 %% e.g. \dochead{17th International Conference on Dynamical Processes in Excited States of Solids}
 
 
-\title{Towards a stepwise method for unifying and reconciling corporate names in public contracts metadata. The CORFU technique.}
+\title{Enabling policy making processes by unifying and reconciling corporate names in public procurement data. The CORFU technique.}
+
+\author[rvt,uc3m]{Jose María Alvarez-Rodríguez\corref{cor1}}
+\address[uc3m]{Carlos III University of Madrid\\ Department of Computer Science \\ Avd. de la Universidad, 30, Leganés \\ Madrid, Spain}
+\ead{josemaria.alvarez@uc3m.es}
+
+
+\author[ntu]{Michalis Vafopoulos}
+\address[ntu]{National Technical University of Athens\\ 9 Heroon Polytechneiou st. 15773, Zografou Campus, \\ Athens, Greece}
+\ead{vaf@aegean.gr}
+
+
+\author[ntu]{Marios Meimaris}
+\ead{m.meimaris@medialab.ntua.gr}
+
+\author[uc3m]{Juan Llorens}
+\ead{juan.llorens@uc3m.es}
+
+
+\cortext[cor1]{Corresponding author}
 
 
 %% use optional labels to link authors explicitly to addresses:
@@ -115,7 +136,7 @@
 \address{}
 
 \begin{abstract}
-The present paper introduces a technique to deal with coporate names heterogeneities in the context of public 
+The present paper introduces a technique to deal with corporate names heterogeneities in the context of public 
 procurement metadata. Public bodies are currently facing a big challenge trying to improve both the 
 performance and the transparency of administrative processes. The e-Government and Open Linked Data initiatives have 
 emerged as efforts to tackle existing interoperability and integration issues among ICT-based systems 
@@ -124,11 +145,11 @@ publication of data and information in specific open formats; data and informati
 More specifically in the e-Procurement domain there is a vast amount of valuable metadata that is already available 
 via the Internet protocols and formats and can be used for the creation of new added-value services. Nevertheless the simple 
 extraction of statistics or creation of reports can imply extra tasks with regards to clean, prepare and reconcile data. On the other 
-hand, transparency has become a major objective in public administractions and, in the case of public procurement, 
+hand, transparency has become a major objective in public administrations and, in the case of public procurement, 
 one of the most interesting services lies in tracking rewarded contracts (mainly type, location, and supplier). Although 
 it seems a basic kind of reporting service the truth is that its generation can turn into a complex task due to a 
 lack of standardization in supplier names or the use of different descriptors for the type of contract. In this paper, 
-a stepwise method based on natural language processing and semantics to address the unfication of corporate names 
+a stepwise method based on natural language processing and semantics to address the unification of corporate names 
 is defined and implemented. Moreover a research study to evaluate the precision and recall of the proposed technique, 
 using as use case the public dataset of rewarded public contracts in Australia during the period 2004-2012, is also presented. 
 Finally some discussion, conclusions and future work are also outlined.
@@ -194,7 +215,7 @@ activities such as reporting.
 
 In the case of the type of contract and location, there are already standardized~\cite{DBLP:journals/ijseke/AlvarezLSASL12} product 
 scheme classifications such as the Common Procurement Vocabulary (2003 and 2008), the Combined Nomenclature (2012), 
-the Central Product Classificationby in the European Union, the International Standard Industrial Classification of 
+the Central Product Classification by in the European Union, the International Standard Industrial Classification of 
 All Economic Activities (Rev. 4) in the United Nations or the North American Industry Classification System (2007 and 2012) 
 in the Government of United States that are currently used with different objectives such as statistics, tagging or 
 information retrieval. Geolocated information can be also found in different common datasets and nomenclatures such as 
@@ -289,7 +310,7 @@ According to the previous section, some relevant works can be found and grouped 
  than a source, name standardization, etc. and, as a consequence, difficulty of tracking company activity. In order to tackled these problems some 
  initiatives applying the LOD principles such as the Orgpedia~\footnote{\url{http://tw.rpi.edu/orgpedia/}} in United States or 
  ``The Open Database Of The Corporate World''~\footnote{\url{http://opencorporates.com/}} have scrapped and published the information 
- of companies creating a large database containing ($54,080,317$ of companies in May 2012) with high-valuable information like the company 
+ of companies creating a large database containing ($76,197,263$ of companies in July 2014) with high-valuable information like the company 
  identifier. Apart from that, reconciliation services have also been provided but the problem of mapping ($n$ string literals $\to$ $1$ company $\to$ $1$ URI, 
  as a human would do and the previous section has presented) still remains. Finally public web sites and major social networks such as Google 
  Places, Google Maps, Foursquare, Linkedin Companies or Facebook provide APIs and information managed by the own companies that is supposed 
@@ -391,7 +412,8 @@ def expand_list_wn(self,  list):
 return expanded_set |  source
 
 def list_most_used_words(companies, max):
-  words = flatten(map(lambda company: company.rawname.split(), companies))
+  words = flatten(map(lambda company: company.rawname.split(), 
+  		companies))
   counter = collections.Counter(words)  
   return [x[0].lower() for x in 
   filter ( lambda x: x [1] > max, 
@@ -461,42 +483,39 @@ one of the main principles of the LOD initiative such as unique identification.
 \end{enumerate}
 % 
 %
-\section{Use Case: Unifying supplier names in the Australian e-Procurement domain}
-% % 
-As previous sections have introduced there is an increasing interest and commitment 
-in public bodies to create a real transparent public administration. In this sense 
-public administrations are continuously releasing relevant data in different domains 
-such as tourism, health or public procurement with the aim of easing the implementation 
-of new added-value services and improve their efficiency and transparency. In the particular 
-case of public procurement, main and large administrations have already made publicly available the information 
-with regards to public procurement processes. In this case of study the information of Australia is used 
-to test the CORFU unifier. It is comprised of a dataset of more than $400$K supplier names during the period 2004-2012. In order to be able to extract 
-good statistics from this dataset the unification of names must be applied to. That is why 
-the CORFU stepwise method has been customized to deal with the heterogeneities of this large 
-dataset as Table~\ref{config-corfu} summarizes.
 
 
-\begin{table}[!htb]
-\renewcommand{\arraystretch}{1.3}
-\begin{center}
-\begin{tabular}{|p{1cm}|p{5.5cm}|p{5.5cm}|}
-\hline
-  \textbf{Step} & \textbf{Name} & \textbf{Customization}  \\  \hline
-  $1$ & Normalize raw text and remove duplicates & Default \\ \hline
-  $2$ & Filter the basic set of common stopwords in English & Default\\ \hline
-  $3$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
-  $4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations (manually) \\ \hline
-  $5$ & Identification of contextual information and filtering & Use of Geonames REST service\\ \hline
-  $6$ & Spell checking (optional) & Train dataset of $128457$ words provided by Peter Norvig's spell-checker~\cite{NorvigSpelling}. \\ \hline
-  $7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & Default \\ \hline
-  $8$ & Cluster corporate names & Default \\ \hline
-  $9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & Python client and Google Refine \\ \hline
-  \hline
-  \end{tabular}
-  \caption{Customization of the CORFU technique for Australian supplier names.}
-  \label{config-corfu}
-  \end{center}
-\end{table} 
+
+\section{Enabling policy-making process using public procurement data. The Public Spending Initiative.}
+In order to enable a policy-making process based on public procurement data different pieces of information should be considered such as geographical information, data and time, amount, type of contract, payer and payee, etc. Most of cases there is already approaches to deliver such information in a standard way easing the access to this valuable data and enabling a better way of exploiting information through 
+the extraction of statistics. Thus, standardized geographical information can be found in some classifications such as NUTS (National Territorial Units in the European Union) or, as previous section has reviewed, the product scheme classifications that have been already unified~\cite{DBLP:journals/chb/RodriguezGGP14} under a common and shared data model (RDF). In the context of this research work, corporate names or, more specifically, payers and payee names are being processed with the CORFU technique to deliver a common name that can be re-used in the "PublicSpending" initiative. Once relevant information is unified in different datasets and can be compared to each other, the use of network analysis techniques that have been widely used in economic networks, are applied to take the most of public spending data. As first step, public spending data is represented as a graph to create a payment network in which interesting relations among underlying agents can be easily captured, see~\ref{fig:results-ps-vendors}. This graph is created by the payments coming from payers (public institutions) to payees (mainly private organizations). Secondly to interpret the graph every node is either the payer or the payee that are linked through a payment, which is characterized by its amount, time and type of contract. Moreover measures of centrality, degree centrality (in-out degree, weighted degree) and measures relative to the rest of the network such as betweenness centrality are used to understand the public spending graph. Finally, as a detailed example, the process of promoting of public spending data and unifying corporate names with the presented technique has been applied to the next geographical entities: United States, United Kingdom, Australia, Greece, the State of Alaska and Massachusetts and the city of Chicago. Thus a policy-maker is now able to understand and explain the public spending and it also enables the possibility of preventing new necessities, ensuring transparency, etc..
+
+\begin{itemize}
+	\item United States: there is one major node (payer) in the graph ("Department of Defense"), dispersing almost all ($99$\%) the total budget (weight) of the graph. Obviously, defense has the lion's stake in sub prime awards. Furthermore, most of the money ($92$\%) is received by CTA Inc., which is solely connected to this department (no connections to other nodes). The dispersion of the public budget is made through 42 agents to the contractors. There are either payer or payee nodes in the graph (no mixed mode both payer and payee-except Smithsonian Inst.), consequently there are no brokers in the network resulting the diameter to equal 1 and the modularity fairly low at $0.022$. Due to the above characteristics, there are mainly corporates of the deference-military sector (only US companies are eligible to become vendors due to legal restrictions) coupled by some major global enterprises with less weighted degree as they do not awarded purely defense contracts.
+	
+	\item United Kingdom: is characterized by five major nodes (payers): health, family, education, business innovation and skills, local government disperse $88$\% of the total budget. The major payees are local authorities or funds responsible for the proper exploitation of the funds received. There are also private companies receiving money for goods and services mainly information technology, telecom and consulting. The dispersion of the public budget is made through 26 agents (payers). 
+	
+	\item Australia: there are two major nodes (payers) in the graph (Department of Defense and Defense Materiel Org.), dispersing almost half of the total budget (weight) of the graph. These two nodes are also the top out-degree nodes in the graph ($22$\% of the payment links). This indicates that "Defense" is a major factor in the Australian economy sustaining a network of enterprises that selling goods and services suited for the defense needs of the state. The $35$\% of the budget is spent by institutions related to education, immigration, health and social security, taxation, public order and telecommunication. This reflects, in general, the priorities and major concerns of the Australian state. The dispersion of the public budget is made in a balanced way as there are no private enterprises receiving excessive amounts of money (except FMS and Central Office).
+	
+	\item Greece: there two major projects in Greece: 1) the subway in Athens and Thessaloniki and 2) Egnatia Runway in North Greece. The Ministry of Public Order was involved in significant construction works in regard to other ministries or regional authorities. Universities and research institutes are important hubs in the network maintaining a wide network of payees that offer a variety of services for them and are significant contributors to the dispersion of funds. This also applies to Regional Authorities in local scale. Pension Funds, Labour Office and other social security institutes have a significant amount of payments for services and are important agents in the network presented, independently of their actual spending for pensions or social security allowances.
+	
+	\item State of Alaska: there are distinct characteristics originating from the special conditions that apply to the region's low population, vast areas of natural resources and ecosystems, weather conditions, native (indigenous) population and distance from global markets. All the above result to a payment network where funds are allocated smoothly to local companies and authorities where health, education, environment, natural resource management, transportation and construction have the lead.
+	
+	\item State of Massachusetts: the dispersion of the public budget is made in a balanced way through $157$ payers to a network of local institutes and authorities. There are major global players as well but the amounts receiving are smaller due to the bigger amounts that are targeted to health, education and legal institutions and to local authorities. The graph diameter is 1 as there are payer/payee only nodes and modularity is $0.76$ indicating the local structure of the payment network. It is worth noticing that there is great variety in the services offered, there are many companies present for every sector (competition) and the balanced value of the in degree indicates a mature market. Massachusetts is famous for its health and educational institutions and this fact is validated from the output data.
+	
+	\item City of Chicago is the only city examined (compared to countries or states) but the volume of data ranging from 1993 to 2013 offer a total amount for examination fairly comparable to a state or country. There are distinct characteristics originating from the fact that a city has different needs and priorities from a state/country and of course many resemblances to one (e.g. no need for defense/border safeguarding expenses). The dispersion of the public budget is made in a balanced way through 52 agents (payers) to a network of local companies and authorities and there are also major global players as well. The fact that the city is a transportation hub and resides to lake Michigan is pictured on the graph as major nodes both payers and payees are present and belong to transportation, water management and public utilities sector. 
+	
+	
+	\end{itemize}
+
+\begin{figure}[htb]
+		\centering
+	\includegraphics[width=10cm]{./imgs/ps-network}
+	\caption{Public spending graph of the major vendors of United States, United Kingdom, Australia, Greece, Alaska, Massachusetts and Chicago.}
+	\label{fig:results-ps-vendors}
+\end{figure}
+
+
 
 \section{Evaluation}
 \subsection{Research design}
@@ -504,19 +523,69 @@ Since the CORFU approach has been designed and implemented~\footnote{\url{https:
 establish a method to assess quantitatively the quality of the results.  The steps to carry 
 out this experiment are: 1) Configure the CORFU technique, see Table~\ref{config-corfu};  
 2) Execute the algorithm taking as a parameter the file containing the whole dataset of company names;
-3) Validate (manually) the dump of unified names; 4) Calculate the values of 
-precision and recall. In particular, this evaluation considers the precision of the algorithm as ``the number of supplier 
-names that have been correctly unified under the same name'' while recall is 
-``the number of supplier names that have not been correctly classified under a proper name''. 
+3) Validate (manually) the dump of unified names; 4) Calculate the measures of 
+precision, see Eq.~\ref{eq-1}, recall, see Eq.~\ref{eq-2}, and the F1 score (the harmonic mean of precision and recall), see Eq.~\ref{eq-3} according to the values of $tp$ (true positive), 
+$fp$ (false positive), $tn$ (true negative) and $fn$ (false negative). In particular, this evaluation considers the precision of the algorithm as ``the number of supplier names that have been correctly unified under the same name'' while recall is 
+``the number of supplier names that have not been correctly classified under a proper name''.  More specifically, $tp$ is ``the number of corporate names properly unified'', $fp$ is 
+``the number of corporate names wrongly unified'', $tn$ is ``the number of corporate names properly non-unified'' and $fn$ is ``the number of corporate names wrongly non-unified''.
+
+\begin{figure}[ht]
+	\begin{minipage}[b]{0.45\linewidth}
+		\centering
+		\begin{equation}\label{eq-1}
+			Precision = \frac{tp}{tp+fp} 
+		\end{equation}
+	\end{minipage}
+	\hspace{0.5cm}
+	\begin{minipage}[b]{0.45\linewidth}
+		\centering
+		\begin{equation}\label{eq-2}
+			Recall = \frac{tp}{tp+fn}
+		\end{equation}
+	\end{minipage}
+\end{figure}
+
+
+\begin{equation}\label{eq-3}
+	F1 = 2 \cdot \frac{Precision \cdot Recall}{ Precision + Recall}
+\end{equation}
+
 
 \subsection{Sample}
-In order to validate the CORFU approach the dataset of supplier names in Australia 
-in the period 2004-2012 containing $430188$ full names 
-and $77526$ unique names has been selected. The experiment has been 
-carried out executing the aforementioned steps in the whole dataset 
-to finally generate a dump containing for each supplier the 
-raw name and the unified name. These mappings has been validated 
-by hand to quantify the typical measures of precision and recall. 
+As previous sections have introduced there is an increasing interest and commitment 
+in public bodies to create a real transparent public administration. In this sense 
+public administrations are continuously releasing relevant data in different domains 
+such as tourism, health or public procurement with the aim of easing the implementation 
+of new added-value services and improve their efficiency and transparency. In the particular 
+case of public procurement, main and large administrations have already made publicly available the information 
+with regards to public procurement processes. In this case of study the information of Australia is used 
+to test the CORFU unifier. The dataset of supplier names in Australia in the period 2004-2012 containing $430188$ full names 
+and $77526$ unique names has been selected. The experiment has been carried out executing the aforementioned steps in the whole dataset 
+to finally generate a dump containing for every supplier the raw name and the unified name. On the other hand, the CORFU stepwise method has been customized to deal with the heterogeneities of this large dataset as Table~\ref{config-corfu} summarizes.
+
+\begin{table}[!htb]
+	\renewcommand{\arraystretch}{1.3}
+	\begin{center}
+		\begin{tabular}{|p{1cm}|p{5.5cm}|p{5.5cm}|}
+			\hline
+			\textbf{Step} & \textbf{Name} & \textbf{Customization}  \\  \hline
+			$1$ & Normalize raw text and remove duplicates & Default \\ \hline
+			$2$ & Filter the basic set of common stopwords in English & Default\\ \hline
+			$3$ & Filter the expanded set of most common words in the dataset & Two stopwords sets: $355$ words (manually) and words with more than $n=50 $ apparitions (automatically) \\ \hline
+			$4$ & Dictionary-based expansion of common acronyms and filtering & Set of $50$ acronyms variations (manually) \\ \hline
+			$5$ & Identification of contextual information and filtering & Use of Geonames REST service\\ \hline
+			$6$ & Spell checking (optional) & Train dataset of $128457$ words provided by Peter Norvig's spell-checker~\cite{NorvigSpelling}. \\ \hline
+			$7$ & Pos-tagging parts of speech according to a grammar and filtering the non-relevant ones & Default \\ \hline
+			$8$ & Cluster corporate names & Default \\ \hline
+			$9$ & Validate and reconcile the generated corporate name via an existing reconcile service (optional) & Python client and Google Refine \\ \hline
+			\hline
+		\end{tabular}
+		\caption{Customization of the CORFU technique for Australian supplier names.}
+		\label{config-corfu}
+	\end{center}
+\end{table} 
+
+
 
 %awk -F"\t" '{print $2}' supplier-unified-names.csv | sort -n | uniq -c | sort -rnk1
 %awk -F"\t" '{print $1 ";1"}' supplier-unified-names.csv > original-counters.csv
@@ -524,107 +593,81 @@ by hand to quantify the typical measures of precision and recall.
 \subsection{Results and Discussion}
 
 \begin{table}[!h]
-\renewcommand{\arraystretch}{1.3}
-\begin{center}
-\begin{tabular}{|p{2.5cm}|p{2cm}|p{1.5cm}|p{1.8cm}|l|l|l|}
-\hline
-  \textbf{Total number of companies} & \textbf{Unique names}& \textbf{CORFU unified names}& \textbf{\% of unified names} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 score} \\  \hline
-   $430188$ & $77526$ & $40277$  &$48\%$ & $0.762$ & $0.311$&$0.441$ \\ \hline   
-   $430188$ & $299$ in $77526$ & $68$ & $100\%$&  $0.926$ & $0.926$ &$0.926$\\ \hline
-  \hline
-  \end{tabular}
-  \caption{Results of applying the CORFU approach to the Australian supplier names.}
-  \label{tabla:aus-results}
-  \end{center}
+	\renewcommand{\arraystretch}{1.3}
+	\begin{center}
+		\begin{tabular}{|p{2.5cm}|p{2cm}|p{1.5cm}|p{1.8cm}|l|l|l|}
+			\hline
+			\textbf{Total number of companies} & \textbf{Unique names}& \textbf{CORFU unified names}& \textbf{\% of unified names} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 score} \\  \hline
+			$430188$ & $77526$ & $40277$  &$48\%$ & $0.762$ & $0.311$&$0.441$ \\ \hline   
+			$430188$ & $299$ in $77526$ & $68$ & $100\%$&  $0.926$ & $0.926$ &$0.926$\\ \hline
+			\hline
+		\end{tabular}
+		\caption{Results of applying the CORFU approach to the Australian supplier names.}
+		\label{tabla:aus-results}
+	\end{center}
 \end{table} 
 
 
 According to the results presented in Table~\ref{tabla:aus-results}, the precision 
 and recall of the CORFU technique are consider acceptable for the whole dataset 
 due to $77526-40278=37248$, a $48\%$ of the supplier names, has been unified with 
-a precision of $0.762$ and recall of $0.311$ (best values must be close to $1$). 
-The precision is good enough but the recall presents a low value because a good few of 
-corporate names were not unified under a proper name due to some relevant 
-words have been filtered.
+a precision of $0.762$ and a recall of $0.311$ (best values must be close to $1$). 
+The precision is pretty enough but the recall presents a low value because some 
+corporate names were not unified under a proper name; some of the filters must therefore 
+be improved in terms of accuracy.
 
 In order to improve the results for relevant companies, the experiment has also 
 been performed and evaluated for the first 100 companies in the Forbes list, actually $68$ companies were 
 found in the dataset. In this case, results show a better performance in terms of precision, $0.926$, and recall,$0.926$, and 
-all these supplier names, $299$ in the whole dataset, were unified by a common right name. 
+all these supplier names, $299$ in the whole dataset, were unified by a common correct name. 
 The explanation of this result can be found due to some of the parameters of the CORFU technique were specially selected for unifying 
 these names because of their relevance in world economic activities.
 
-\begin{figure}[ht]
-\begin{minipage}[b]{0.45\linewidth}
-\centering
-	\includegraphics[width=\textwidth]{./imgs/corfu-stats}
- \caption{Full view of supplier and number of appearances in the sample dataset.}
- \label{fig:results-graph-3}
-\end{minipage}
-\hspace{0.5cm}
-\begin{minipage}[b]{0.45\linewidth}
-\centering
-  \includegraphics[width=\textwidth]{./imgs/forbes}
- \caption{Bubble Cloud of the first 100 Forbes companies and number of appearances in the sample dataset. }
-% \includegraphics[width=\textwidth]{./imgs/corfu-forbes-100}
-% \caption{The first 100 Forbes companies and number of appearances in the sample dataset. }
- \label{fig:results-graph-4}
-\end{minipage}
+\begin{figure}[htb]
+
+		\centering
+		\includegraphics[width=10cm]{./imgs/corfu-stats}
+		\caption{Full view of supplier and number of appearances in the sample dataset.}
+		\label{fig:results-graph-3}
 \end{figure}
 
 
-
 On the other hand, it is important to emphasize that the last step of linking these names 
-with existing web information resources using the reconciliation service of 
-OpenCorporates or DBPedia in Google Refine has the potential of generating $28383$ right 
-links ($36.61$\%) instead of the initial $8$\%. Thus the initial problem of linking ($n$ string literals $\to$ 
-$1$ company $\to$ $1$ URI) has been substantially improved. 
-
-Finally, the frequency distribution of supplier and number of appearances is depicted on Figures~\ref{fig:results-graph-3}
-and~\ref{fig:results-graph-4} with the objective of presenting how the cloud of points (appearances) that initially were only one per supplier has 
+with existing web information resources using the reconciliation service of OpenCorporates or DBPedia in Google Refine can generate 
+$37248*0.762=28383$ correct links ($36.61$\%) instead of the initial $8$\%. Thus the initial problem of linking ($n$ string literals $\to$ 
+$1$ company $\to$ $1$ URI) has been substantially improved. Finally, the frequency distribution of supplier and number of appearances is depicted on Figure~\ref{fig:results-graph-3} with the objective of presenting how the cloud of points (appearances) that initially were only one per supplier has 
 emerged due to the unification of names, for instance in the case of ``Oracle'' $75$ apparitions can now be shown. On the other hand and due 
 to the unique identification of supplier names, new RDF instances are generated, see Figure~\ref{fig:results-rdf}, and can be querying via SPARQL to make 
 summary reports of the number of rewarding contracts by company, see Figure~\ref{fig:results-sparql}.
-
-
 \begin{figure}[ht]
-\begin{minipage}[b]{0.45\linewidth}
 \begin{lstlisting}[language=XML]  
 :o1 a org:Organization;
-  skos:prefLabel 
-    ``Microsoft'';
-  skos:altLabel 
-    ``Microsoft Australia'', 
-    ``Microsoft Australia 
-      Pty Ltd'', 
-    ...;
-  skos:closeMatch 
-    dbpedia-res:Microsoft;
-   ...
+	skos:prefLabel 	``Microsoft'';
+	skos:altLabel 	``Microsoft Australia'', 
+	``Microsoft Australia Pty Ltd'', 
+	...;
+	skos:closeMatch dbpedia-res:Microsoft;
+	...
 .
 \end{lstlisting}
-\caption{Example of a RDF organization instance. }
- \label{fig:results-rdf}
-\end{minipage}
-\hspace{0.5cm}
-\begin{minipage}[b]{0.45\linewidth}
+		\caption{Partial example of a RDF organization instance. }
+		\label{fig:results-rdf}
+\end{figure}
+
+\begin{figure}[ht]
 \begin{lstlisting}[language=SQL]  
-SELECT  str(?label) 
- (COUNT(?org) as ?pCount)
-WHERE{
-  ?ppn :rewarded-to ?org .
-  ?org rdf:type org:Organization.
-  ?org skos:prefLabel ?label.
-  ...
+SELECT  str(?label) (COUNT(?org) as ?pCount) WHERE{
+	?ppn :rewarded-to ?org .
+	?org rdf:type org:Organization.
+	?org skos:prefLabel ?label.
+	...
 }
 GROUP BY str(?label) 
 ORDER BY desc(?pCount)
 \end{lstlisting}
 \caption{Example of a SPARQL query for counting supplier names. }
- \label{fig:results-sparql}
-\end{minipage}
+		\label{fig:results-sparql}
 \end{figure}
-
 
 \section{Conclusions and Future Work}
 A technique for unifying corporate names in the e-Procurement sector has been 
@@ -656,16 +699,18 @@ to be applied over other datasets to correlate and exploit metadata of public co
 This work is part of the ``PublicSpending.net'' effort carried out in cooperation with 
 Marios Meimaris and Giorgos Vafeiadis (Technical University of Athens), Giannis Xidias (University of the Aegean) and Michalis Klonaras (OTE S.A.).
 
-\bibliographystyle{elsarticle-num}
+
+
 \bibliography{references}
+\bibliographystyle{model5-names}
 
-
-\newpage
+\pagebreak
 \section*{Appendix I}
+{\scriptsize }
 \begin{table}[!htb]
 \renewcommand{\arraystretch}{1.3}
 \begin{center}
-\begin{tabular}{|p{7cm}|p{7cm}|}
+\begin{tabular}{|p{8cm}|p{8cm}|}
 \hline
   \textbf{Raw Supplier Name} & \textbf{Target (potential) Supplier Name and URI}  \\  \hline
   ``Accenture'' & \multirow{6}{*}{``Accenture''} \\
